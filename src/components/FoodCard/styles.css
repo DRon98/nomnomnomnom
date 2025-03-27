@@ -1,0 +1,62 @@
+.food-card {
+  background-color: white;
+  border-radius: 10px;
+  padding: 15px;
+  cursor: move;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.food-card.high {
+  background-color: #e6f7d9;
+  border-color: #8cc63f;
+}
+
+.food-card.moderate {
+  background-color: #fff6d9;
+  border-color: #ffd966;
+}
+
+.food-card.avoid {
+  background-color: #ffd9d9;
+  border-color: #ff6b6b;
+}
+
+.food-card.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+}
+
+.food-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.food-name {
+  font-family: 'Comic Neue', cursive;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.food-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.food-rating {
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.food-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+} 
