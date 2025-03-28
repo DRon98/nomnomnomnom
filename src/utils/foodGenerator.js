@@ -31,10 +31,14 @@ export const generateRecommendations = async (currentStates, desiredStates, useA
 export const generateMealPlan = (recommendedFoods) => {
   const shuffledFoods = [...recommendedFoods].sort(() => 0.5 - Math.random());
   
+  const preparedFoods = shuffledFoods.map(food => ({
+    ...food
+  }));
+  
   return {
-    breakfast: shuffledFoods.slice(0, 2),
-    lunch: shuffledFoods.slice(2, 4),
-    dinner: shuffledFoods.slice(4, 6),
-    snacks: shuffledFoods.slice(6, 8)
+    breakfast: preparedFoods.slice(0, 2),
+    lunch: preparedFoods.slice(2, 4),
+    dinner: preparedFoods.slice(4, 6),
+    snacks: preparedFoods.slice(6, 8)
   };
-}; 
+};

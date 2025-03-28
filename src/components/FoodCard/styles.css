@@ -93,7 +93,28 @@
 
 .in-meal-plan {
   cursor: default;
+  padding: 8px;
   padding-right: 35px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+} 
+
+.in-meal-plan .food-icon {
+  font-size: 24px;
+  margin-bottom: 0;
+}
+
+.in-meal-plan .food-name {
+  font-size: 16px;
+  margin-bottom: 0;
+}
+
+.meal-foods {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 } 
 
 .food-actions {
@@ -117,4 +138,22 @@
 
 .food-action-button:hover {
   transform: scale(1.1);
+}
+
+/* Styles for nested food items */
+.drop-target {
+  box-shadow: 0 0 0 2px #3498db;
+}
+
+.drop-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(52, 152, 219, 0.2);
+  color: #3498db;
+  text-align: center;
+  padding: 4px;
+  font-size: 12px;
+  border-radius: 0 0 8px 8px;
 }

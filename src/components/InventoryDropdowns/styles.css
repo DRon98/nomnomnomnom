@@ -3,6 +3,15 @@
     gap: 300px; /* Increased from 20px to 40px to provide more space between icons */
   }
   
+  .inventory-child-foods {
+    margin-top: 5px;
+    margin-left: 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  
   .inventory-dropdown {
     position: relative;
   }
@@ -133,4 +142,15 @@
     color: #666;
     font-style: italic;
     font-size: 14px;
+  }
+  
+  .inventory-child-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: #f8f8f8;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    margin-bottom: 4px;
   }

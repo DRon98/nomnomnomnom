@@ -31,6 +31,7 @@
   align-items: center;
   gap: 10px;
   margin-bottom: 10px;
+  position: relative;
 }
 
 .meal-icon {
@@ -45,11 +46,43 @@
   margin: 0;
 }
 
+.meal-time {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 14px;
+  color: #666;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+.meal-time:hover {
+  color: #3498db;
+}
+
+.meal-time-input {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 14px;
+  width: 80px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 2px;
+  outline: none;
+}
+
+.meal-time-input:focus {
+  border-color: #3498db;
+}
+
 .meal-content {
   min-height: 100px;
   padding: 10px;
   border-radius: 5px;
   background-color: white;
+  overflow-y: auto;
+  max-height: 200px;
 }
 
 .drag-placeholder {
@@ -75,4 +108,4 @@
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-} 
+}

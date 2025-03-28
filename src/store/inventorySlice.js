@@ -17,7 +17,9 @@ const inventorySlice = createSlice({
       } else {
         state.pantry.push({
           foodId: food.id,
-          food,
+          food: {
+            ...food
+          },
           amount
         });
       }
@@ -41,7 +43,9 @@ const inventorySlice = createSlice({
       } else {
         state.groceries.push({
           foodId: food.id,
-          food,
+          food: {
+            ...food
+          },
           amount
         });
       }

@@ -11,11 +11,14 @@ import {
 import './styles.css';
 
 const InventoryItem = ({ item, onUpdateAmount, onRemove }) => {
+  
   return (
     <div className="inventory-item">
       <div className="inventory-item-info">
         <span className="inventory-item-icon">{item.food.icon}</span>
-        <span className="inventory-item-name">{item.food.name}</span>
+        <span className="inventory-item-name">
+          {item.food.name}
+        </span>
       </div>
       <div className="inventory-item-actions">
         <input
@@ -33,6 +36,7 @@ const InventoryItem = ({ item, onUpdateAmount, onRemove }) => {
           ×
         </button>
       </div>
+
     </div>
   );
 };

@@ -6,13 +6,15 @@ import './styles.css';
 
 const FoodCard = ({ food, onRemove, inMealPlan = false }) => {
   const dispatch = useDispatch();
+  
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'FOOD',
-    item: { food },
+    item: { food: { ...food } },
     collect: (monitor) => ({
       isDragging: monitor.isDragging()
     })
   }));
+
 
   const getRatingEmoji = (rating) => {
     switch (rating) {
@@ -41,16 +43,21 @@ const FoodCard = ({ food, onRemove, inMealPlan = false }) => {
   };
 
   const handleAddToPantry = () => {
-    dispatch(addToPantry({ food }));
+    dispatch(addToPantry({ food: { ...food } }));
   };
 
   const handleAddToGroceries = () => {
-    dispatch(addToGroceries({ food }));
+    dispatch(addToGroceries({ food: { ...food } }));
+  };
+
+  // Use drag ref
+  const refCombiner = (el) => {
+    drag(el);
   };
 
   return (
     <div
-      ref={drag}
+      ref={refCombiner}
       className={`${getCardClass()} ${isDragging ? 'dragging' : ''} ${inMealPlan ? 'in-meal-plan' : ''}`}
     >
       {inMealPlan && onRemove && (
@@ -63,27 +70,34 @@ const FoodCard = ({ food, onRemove, inMealPlan = false }) => {
         </button>
       )}
       <div className="food-icon">{food.icon}</div>
-      <div className="food-actions">
-        <button
-          className="food-action-button pantry"
-          onClick={handleAddToPantry}
-          title="Add to Pantry"
-        >
-          + 🗄️
-        </button>
-        <button
-          className="food-action-button grocery"
-          onClick={handleAddToGroceries}
-          title="Add to Groceries"
-        >
-          + 🛒
-        </button>
-      </div>
+      {!inMealPlan && (
+        <div className="food-actions">
+          <button
+            className="food-action-button pantry"
+            onClick={handleAddToPantry}
+            title="Add to Pantry"
+          >
+            + 🗄️
+          </button>
+          <button
+            className="food-action-button grocery"
+            onClick={handleAddToGroceries}
+            title="Add to Groceries"
+          >
+            + 🛒
+          </button>
+        </div>
+      )}
       <h3 className="food-name">{food.name}</h3>
-      <p className="food-description">{food.description}</p>
-      <div className="food-rating">
-        Rating: {getRatingEmoji(food.rating)}
-      </div>
+      {!inMealPlan && (
+        <>
+          <p className="food-description">{food.description}</p>
+          <div className="food-rating">
+            Rating: {getRatingEmoji(food.rating)}
+          </div>
+        </>
+      )}
+
     </div>
   );
 };

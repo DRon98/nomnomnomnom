@@ -1,17 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDrop } from 'react-dnd';
-import { addFoodToMeal, clearMealPlan, generateRandomPlan, removeFoodFromMeal } from '../../store/mealPlanSlice';
+import { addFoodToMeal, clearMealPlan, generateRandomPlan, removeFoodFromMeal, updateMealTime } from '../../store/mealPlanSlice';
 import { generateMealPlan } from '../../utils/foodGenerator';
 import FoodCard from '../FoodCard';
 import './styles.css';
 
 const MealSlot = ({ title, icon, meal, foods }) => {
   const dispatch = useDispatch();
+  const mealTimes = useSelector(state => state.mealPlan.mealTimes);
+  const [isEditingTime, setIsEditingTime] = useState(false);
+  const [timeValue, setTimeValue] = useState(mealTimes[meal]);
+  
   const [{ isOver }, drop] = useDrop(() => ({
     accept: 'FOOD',
     drop: (item) => {
-      dispatch(addFoodToMeal({ meal, food: item.food }));
+      dispatch(addFoodToMeal({ 
+        meal, 
+        food: item.food
+      }));
     },
     collect: (monitor) => ({
       isOver: monitor.isOver()
@@ -22,11 +29,38 @@ const MealSlot = ({ title, icon, meal, foods }) => {
     dispatch(removeFoodFromMeal({ meal, foodId }));
   };
 
+  const handleTimeClick = () => {
+    setIsEditingTime(true);
+  };
+
+  const handleTimeChange = (e) => {
+    setTimeValue(e.target.value);
+  };
+
+  const handleTimeBlur = () => {
+    dispatch(updateMealTime({ meal, time: timeValue }));
+    setIsEditingTime(false);
+  };
+
   return (
     <div className="meal-slot">
       <div className="meal-header">
         <span className="meal-icon">{icon}</span>
         <h3 className="meal-title">{title}</h3>
+        {isEditingTime ? (
+          <input
+            type="time"
+            className="meal-time-input"
+            value={timeValue}
+            onChange={handleTimeChange}
+            onBlur={handleTimeBlur}
+            autoFocus
+          />
+        ) : (
+          <span className="meal-time" onClick={handleTimeClick}>
+            {mealTimes[meal]}
+          </span>
+        )}
       </div>
       <div
         ref={drop}
@@ -119,4 +153,4 @@ const MealPlanner = () => {
   );
 };
 
-export default MealPlanner; 
+export default MealPlanner;
