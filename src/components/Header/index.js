@@ -1,4 +1,5 @@
 import React from 'react';
+import InventoryDropdowns from '../InventoryDropdowns';
 import './styles.css';
 
 const Header = () => {
@@ -7,11 +8,12 @@ const Header = () => {
       <div className="logo">
         <h1>nomnomnomnom</h1>
       </div>
-      <div className="profile">
+      <div className="header-actions">
+        <InventoryDropdowns />
         <button className="profile-button">👤</button>
       </div>
     </header>
   );
 };
 
-export default Header; 
+export default Header;

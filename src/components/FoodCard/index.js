@@ -1,8 +1,11 @@
 import React from 'react';
 import { useDrag } from 'react-dnd';
+import { useDispatch } from 'react-redux';
+import { addToPantry, addToGroceries } from '../../store/inventorySlice';
 import './styles.css';
 
 const FoodCard = ({ food, onRemove, inMealPlan = false }) => {
+  const dispatch = useDispatch();
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'FOOD',
     item: { food },
@@ -37,6 +40,14 @@ const FoodCard = ({ food, onRemove, inMealPlan = false }) => {
     }
   };
 
+  const handleAddToPantry = () => {
+    dispatch(addToPantry({ food }));
+  };
+
+  const handleAddToGroceries = () => {
+    dispatch(addToGroceries({ food }));
+  };
+
   return (
     <div
       ref={drag}
@@ -55,10 +66,26 @@ const FoodCard = ({ food, onRemove, inMealPlan = false }) => {
       <h3 className="food-name">{food.name}</h3>
       <p className="food-description">{food.description}</p>
       <div className="food-rating">
-        {food.rating} {getRatingEmoji(food.rating)}
+        Rating: {getRatingEmoji(food.rating)}
+      </div>
+      <div className="food-actions">
+        <button
+          className="food-action-button pantry"
+          onClick={handleAddToPantry}
+          title="Add to Pantry"
+        >
+          🗄️
+        </button>
+        <button
+          className="food-action-button grocery"
+          onClick={handleAddToGroceries}
+          title="Add to Groceries"
+        >
+          🛒
+        </button>
       </div>
     </div>
   );
 };
 
-export default FoodCard; 
+export default FoodCard;
