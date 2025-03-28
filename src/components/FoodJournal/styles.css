@@ -1,0 +1,136 @@
+.food-journal {
+  display: flex;
+  gap: 300px; /* Matching the gap from InventoryDropdowns */
+}
+
+.journal-dropdown {
+  position: relative;
+}
+
+.journal-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 5px;
+  transition: all 0.2s ease;
+}
+
+.journal-button:hover {
+  background-color: #f0f0f0;
+}
+
+.journal-button.active {
+  background-color: #e8f4fd;
+  color: #3498db;
+}
+
+.dropdown-content {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  width: 300px;
+  z-index: 1000;
+  margin-top: 10px;
+}
+
+.date-selector {
+  padding: 10px 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.date-select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.journal-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.journal-item:last-child {
+  border-bottom: none;
+}
+
+.journal-item-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.journal-item-icon {
+  font-size: 20px;
+}
+
+.journal-item-name {
+  font-size: 14px;
+  color: #333;
+}
+
+.journal-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.servings-input {
+  width: 60px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.add-foods-header {
+  margin-top: 20px;
+  padding: 10px;
+  font-size: 16px;
+  color: #333;
+  border-top: 1px solid #eee;
+}
+
+.recommended-foods-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.recommended-food-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.recommended-food-item:hover {
+  background-color: #f5f5f5;
+}
+
+.recommended-food-item .food-icon {
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+.recommended-food-item .food-name {
+  flex: 1;
+  font-size: 14px;
+  color: #333;
+}
+
+.recommended-food-item .add-icon {
+  font-size: 18px;
+  color: #3498db;
+  font-weight: bold;
+}

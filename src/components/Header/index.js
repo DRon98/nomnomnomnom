@@ -1,5 +1,6 @@
 import React from 'react';
 import InventoryDropdowns from '../InventoryDropdowns';
+import FoodJournal from '../FoodJournal';
 import './styles.css';
 
 const Header = () => {
@@ -10,6 +11,7 @@ const Header = () => {
       </div>
       <div className="header-actions">
         <InventoryDropdowns />
+        <FoodJournal />
         <button className="profile-button">👤</button>
       </div>
     </header>
