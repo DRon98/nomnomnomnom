@@ -1,7 +1,17 @@
 import { DUMMY_FOODS } from './constants';
+import { getAIRecommendations } from './aiRecommendations';
 
-export const generateRecommendations = (currentState, desiredState) => {
-  // For now, just randomly select foods based on their recommendation level
+export const generateRecommendations = async (currentStates, desiredStates, useAI = false) => {
+  if (useAI) {
+    try {
+      return await getAIRecommendations(currentStates, desiredStates);
+    } catch (error) {
+      console.error('Failed to get AI recommendations, falling back to default:', error);
+      // Fall back to default recommendations if AI fails
+    }
+  }
+
+  // Default/fallback recommendation logic
   const recommendedFoods = DUMMY_FOODS
     .filter(food => food.recommendation !== 'avoid')
     .sort(() => 0.5 - Math.random())

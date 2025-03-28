@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setRecommendedFoods, setFoodsToAvoid, setLoading } from '../../store/foodsSlice';
 import { generateRecommendations } from '../../utils/foodGenerator';
@@ -8,20 +8,26 @@ import './styles.css';
 const FoodTabs = () => {
   const [activeTab, setActiveTab] = useState('recommended');
   const dispatch = useDispatch();
-  const currentState = useSelector(state => state.user.currentState);
-  const desiredState = useSelector(state => state.user.desiredState);
-  const recommendedFoods = useSelector(state => state.foods.recommendedFoods);
-  const foodsToAvoid = useSelector(state => state.foods.foodsToAvoid);
+  const currentStates = useSelector(state => state.user.currentStates);
+  const desiredStates = useSelector(state => state.user.desiredStates);
+  const recommendedFoods = useSelector(state => state.foods.recommendedFoods) || [];
+  const foodsToAvoid = useSelector(state => state.foods.foodsToAvoid) || [];
   const loading = useSelector(state => state.foods.loading);
 
-  const handleGenerateRecommendations = () => {
-    if (!currentState || !desiredState) return;
+  const handleGenerateRecommendations = async () => {
+    if (currentStates.length === 0 || desiredStates.length === 0) return;
 
-    dispatch(setLoading(true));
-    const { recommended, avoid } = generateRecommendations(currentState, desiredState);
-    dispatch(setRecommendedFoods(recommended));
-    dispatch(setFoodsToAvoid(avoid));
-    dispatch(setLoading(false));
+    try {
+      dispatch(setLoading(true));
+      const { recommended, avoid } = await generateRecommendations(currentStates, desiredStates);
+      dispatch(setRecommendedFoods(recommended));
+      dispatch(setFoodsToAvoid(avoid));
+    } catch (error) {
+      console.error('Failed to generate recommendations:', error);
+      // You might want to dispatch an error action here
+    } finally {
+      dispatch(setLoading(false));
+    }
   };
 
   return (
@@ -41,13 +47,14 @@ const FoodTabs = () => {
         </button>
       </div>
 
-      {currentState && desiredState ? (
+      {currentStates.length > 0 && desiredStates.length > 0 ? (
         <>
           <button
             className="generate-button primary-button"
             onClick={handleGenerateRecommendations}
+            disabled={loading}
           >
-            Generate Recommendations
+            {loading ? 'Generating...' : 'Generate Recommendations'}
           </button>
 
           <div className="tab-content">
@@ -55,14 +62,25 @@ const FoodTabs = () => {
               <div className="loading">Generating recommendations...</div>
             ) : (
               <div className="food-grid">
-                {activeTab === 'recommended'
-                  ? recommendedFoods.map(food => (
+                {activeTab === 'recommended' ? (
+                  recommendedFoods.length > 0 ? (
+                    recommendedFoods.map(food => (
                       <FoodCard key={food.id} food={food} />
                     ))
-                  : foodsToAvoid.map(food => (
-                      <FoodCard key={food.id} food={food} />
-                    ))
-                }
+                  ) : (
+                    <div className="no-foods-message">
+                      Click "Generate Recommendations" to get food suggestions
+                    </div>
+                  )
+                ) : foodsToAvoid.length > 0 ? (
+                  foodsToAvoid.map(food => (
+                    <FoodCard key={food.id} food={food} />
+                  ))
+                ) : (
+                  <div className="no-foods-message">
+                    Click "Generate Recommendations" to get foods to avoid
+                  </div>
+                )}
               </div>
             )}
           </div>

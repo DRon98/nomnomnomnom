@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDrop } from 'react-dnd';
-import { addFoodToMeal, clearMealPlan, generateRandomPlan } from '../../store/mealPlanSlice';
+import { addFoodToMeal, clearMealPlan, generateRandomPlan, removeFoodFromMeal } from '../../store/mealPlanSlice';
 import { generateMealPlan } from '../../utils/foodGenerator';
 import FoodCard from '../FoodCard';
 import './styles.css';
@@ -18,6 +18,10 @@ const MealSlot = ({ title, icon, meal, foods }) => {
     })
   }));
 
+  const handleRemoveFood = (foodId) => {
+    dispatch(removeFoodFromMeal({ meal, foodId }));
+  };
+
   return (
     <div className="meal-slot">
       <div className="meal-header">
@@ -29,9 +33,16 @@ const MealSlot = ({ title, icon, meal, foods }) => {
         className={`meal-content droppable ${isOver ? 'active' : ''}`}
       >
         {foods.length > 0 ? (
-          foods.map(food => (
-            <FoodCard key={food.id} food={food} />
-          ))
+          <div className="meal-foods">
+            {foods.map(food => (
+              <FoodCard
+                key={food.id}
+                food={food}
+                onRemove={handleRemoveFood}
+                inMealPlan={true}
+              />
+            ))}
+          </div>
         ) : (
           <div className="drag-placeholder">
             Drag a food here

@@ -1,24 +1,38 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
-import { setCurrentState, setDesiredState } from '../../store/userSlice';
+import {
+  addCurrentState,
+  removeCurrentState,
+  addDesiredState,
+  removeDesiredState
+} from '../../store/userSlice';
 import './styles.css';
 
 const StateSelector = ({ type, options, question }) => {
   const dispatch = useDispatch();
-  const selectedState = useSelector(state => 
-    type === 'current' ? state.user.currentState : state.user.desiredState
+  const selectedStates = useSelector(state => 
+    type === 'current' ? state.user.currentStates : state.user.desiredStates
   );
 
   const handleStateChange = (selected) => {
-    const action = type === 'current' ? setCurrentState : setDesiredState;
+    if (!selected) return;
+    
+    const action = type === 'current' ? addCurrentState : addDesiredState;
     dispatch(action(selected.value));
   };
 
-  const selectOptions = options.map(option => ({
-    value: option,
-    label: option
-  }));
+  const handleRemoveState = (stateToRemove) => {
+    const action = type === 'current' ? removeCurrentState : removeDesiredState;
+    dispatch(action(stateToRemove));
+  };
+
+  const selectOptions = options
+    .filter(option => !selectedStates.includes(option))
+    .map(option => ({
+      value: option,
+      label: option
+    }));
 
   const customStyles = {
     control: (provided) => ({
@@ -47,12 +61,22 @@ const StateSelector = ({ type, options, question }) => {
         isSearchable
         className="state-dropdown"
         styles={customStyles}
+        value={null}
       />
-      {selectedState && (
-        <div className={`state-bubble ${type}-state`}>
-          {selectedState}
-        </div>
-      )}
+      <div className="state-bubbles">
+        {selectedStates.map(state => (
+          <div key={state} className={`state-bubble ${type}-state`}>
+            {state}
+            <button 
+              className="remove-state"
+              onClick={() => handleRemoveState(state)}
+              aria-label={`Remove ${state}`}
+            >
+              ×
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

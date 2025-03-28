@@ -5,6 +5,7 @@
   cursor: move;
   transition: all 0.2s ease;
   border: 2px solid transparent;
+  position: relative;
 }
 
 .food-card.high {
@@ -59,4 +60,38 @@
 .food-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.food-remove-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+  z-index: 1;
+}
+
+.food-remove-button:hover {
+  opacity: 1;
+  background-color: #ffebee;
+  color: #ff5252;
+}
+
+.food-remove-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 82, 82, 0.2);
+}
+
+.in-meal-plan {
+  cursor: default;
+  padding-right: 35px;
 } 

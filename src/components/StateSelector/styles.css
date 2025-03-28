@@ -18,14 +18,28 @@
   margin-bottom: 10px;
 }
 
+.state-bubbles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
 .state-bubble {
-  display: inline-block;
-  padding: 8px 16px;
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
   border-radius: 20px;
   color: white;
   font-size: 14px;
   font-weight: 500;
-  margin-top: 10px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.state-bubble:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .current-state {
@@ -34,4 +48,28 @@
 
 .desired-state {
   background-color: #3498db;
+}
+
+.remove-state {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  margin-left: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.remove-state:hover {
+  color: white;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.remove-state:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
 } 

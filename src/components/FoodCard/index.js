@@ -2,7 +2,7 @@ import React from 'react';
 import { useDrag } from 'react-dnd';
 import './styles.css';
 
-const FoodCard = ({ food }) => {
+const FoodCard = ({ food, onRemove, inMealPlan = false }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'FOOD',
     item: { food },
@@ -40,8 +40,17 @@ const FoodCard = ({ food }) => {
   return (
     <div
       ref={drag}
-      className={`${getCardClass()} ${isDragging ? 'dragging' : ''}`}
+      className={`${getCardClass()} ${isDragging ? 'dragging' : ''} ${inMealPlan ? 'in-meal-plan' : ''}`}
     >
+      {inMealPlan && onRemove && (
+        <button 
+          className="food-remove-button"
+          onClick={() => onRemove(food.id)}
+          aria-label={`Remove ${food.name}`}
+        >
+          ×
+        </button>
+      )}
       <div className="food-icon">{food.icon}</div>
       <h3 className="food-name">{food.name}</h3>
       <p className="food-description">{food.description}</p>

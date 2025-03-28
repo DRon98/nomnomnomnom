@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  currentState: null,
-  desiredState: null,
+  currentStates: [],
+  desiredStates: [],
   dietaryRestrictions: {
     vegan: false,
     glutenFree: false
@@ -13,11 +13,21 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setCurrentState: (state, action) => {
-      state.currentState = action.payload;
+    addCurrentState: (state, action) => {
+      if (!state.currentStates.includes(action.payload)) {
+        state.currentStates.push(action.payload);
+      }
     },
-    setDesiredState: (state, action) => {
-      state.desiredState = action.payload;
+    removeCurrentState: (state, action) => {
+      state.currentStates = state.currentStates.filter(s => s !== action.payload);
+    },
+    addDesiredState: (state, action) => {
+      if (!state.desiredStates.includes(action.payload)) {
+        state.desiredStates.push(action.payload);
+      }
+    },
+    removeDesiredState: (state, action) => {
+      state.desiredStates = state.desiredStates.filter(s => s !== action.payload);
     },
     toggleDietaryRestriction: (state, action) => {
       const restriction = action.payload;
@@ -26,5 +36,11 @@ const userSlice = createSlice({
   }
 });
 
-export const { setCurrentState, setDesiredState, toggleDietaryRestriction } = userSlice.actions;
+export const {
+  addCurrentState,
+  removeCurrentState,
+  addDesiredState,
+  removeDesiredState,
+  toggleDietaryRestriction
+} = userSlice.actions;
 export default userSlice.reducer; 
