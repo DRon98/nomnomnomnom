@@ -1,6 +1,6 @@
 .inventory-dropdowns {
     display: flex;
-    gap: 10px;
+    gap: 300px; /* Increased from 20px to 40px to provide more space between icons */
   }
   
   .inventory-dropdown {

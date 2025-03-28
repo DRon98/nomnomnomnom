@@ -63,26 +63,26 @@ const FoodCard = ({ food, onRemove, inMealPlan = false }) => {
         </button>
       )}
       <div className="food-icon">{food.icon}</div>
-      <h3 className="food-name">{food.name}</h3>
-      <p className="food-description">{food.description}</p>
-      <div className="food-rating">
-        Rating: {getRatingEmoji(food.rating)}
-      </div>
       <div className="food-actions">
         <button
           className="food-action-button pantry"
           onClick={handleAddToPantry}
           title="Add to Pantry"
         >
-          🗄️
+          + 🗄️
         </button>
         <button
           className="food-action-button grocery"
           onClick={handleAddToGroceries}
           title="Add to Groceries"
         >
-          🛒
+          + 🛒
         </button>
+      </div>
+      <h3 className="food-name">{food.name}</h3>
+      <p className="food-description">{food.description}</p>
+      <div className="food-rating">
+        Rating: {getRatingEmoji(food.rating)}
       </div>
     </div>
   );
