@@ -62,6 +62,7 @@ const StateSelector = ({ type, options, question }) => {
         className="state-dropdown"
         styles={customStyles}
         value={null}
+        data-testid="state-selector"
       />
       <div className="state-bubbles">
         {selectedStates.map(state => (
@@ -81,4 +82,4 @@ const StateSelector = ({ type, options, question }) => {
   );
 };
 
-export default StateSelector; 
+export default StateSelector;
