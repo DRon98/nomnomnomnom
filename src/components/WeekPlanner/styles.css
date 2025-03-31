@@ -1,0 +1,92 @@
+.week-planner {
+  margin-bottom: 20px;
+}
+
+.week-state-selectors {
+  margin-bottom: 20px;
+}
+
+.week-feelings-section {
+  margin-bottom: 20px;
+}
+
+.feeling-assignment {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.feeling-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.feeling-bubble {
+  background-color: #3498db;
+  color: white;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.remove-feeling {
+  background: none;
+  border: none;
+  color: #dc3545;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.day-selector {
+  margin-top: 10px;
+}
+
+.day-selector-label {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #666;
+}
+
+.day-bubbles {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.day-bubble {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e9ecef;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.day-bubble.selected {
+  background-color: #3498db;
+  color: white;
+}
+
+.recommendations-filter {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.day-dropdown {
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 1px solid #ced4da;
+  background-color: white;
+  font-size: 14px;
+}

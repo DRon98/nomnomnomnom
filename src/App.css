@@ -27,9 +27,18 @@ body {
 
 .app-content {
   display: flex;
-  flex: 1;
-  margin-top: 20px;
+  flex-direction: column;
   gap: 20px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.day-view,
+.week-view {
+  display: flex;
+  gap: 20px;
+  width: 100%;
 }
 
 .left-section {
@@ -115,4 +124,4 @@ button:active {
 .droppable.active {
   border-color: #3498db;
   background-color: #ebf5fb;
-} 
+}

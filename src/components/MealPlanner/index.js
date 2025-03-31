@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useDrop } from 'react-dnd';
+import { useDrop } from 'react-dnd/dist/hooks';
 import { addFoodToMeal, clearMealPlan, generateRandomPlan, removeFoodFromMeal, updateMealTime } from '../../store/mealPlanSlice';
 import { generateMealPlan } from '../../utils/foodGenerator';
 import FoodCard from '../FoodCard';

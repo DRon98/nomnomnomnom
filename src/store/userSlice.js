@@ -6,7 +6,10 @@ const initialState = {
   dietaryRestrictions: {
     vegan: false,
     glutenFree: false
-  }
+  },
+  activeView: 'day', // 'day' or 'week'
+  weekFeelings: [], // Array to store feelings assigned to days of the week
+  hasSeenWeekViewTooltip: false // Track if user has seen the week view tooltip
 };
 
 const userSlice = createSlice({
@@ -32,6 +35,26 @@ const userSlice = createSlice({
     toggleDietaryRestriction: (state, action) => {
       const restriction = action.payload;
       state.dietaryRestrictions[restriction] = !state.dietaryRestrictions[restriction];
+    },
+    setActiveView: (state, action) => {
+      state.activeView = action.payload;
+    },
+    addWeekFeeling: (state, action) => {
+      const { feeling, days } = action.payload;
+      state.weekFeelings.push({ feeling, days });
+    },
+    removeWeekFeeling: (state, action) => {
+      state.weekFeelings = state.weekFeelings.filter(f => f.feeling !== action.payload);
+    },
+    updateWeekFeelingDays: (state, action) => {
+      const { feeling, days } = action.payload;
+      const feelingIndex = state.weekFeelings.findIndex(f => f.feeling === feeling);
+      if (feelingIndex !== -1) {
+        state.weekFeelings[feelingIndex].days = days;
+      }
+    },
+    setHasSeenWeekViewTooltip: (state) => {
+      state.hasSeenWeekViewTooltip = true;
     }
   }
 });
@@ -41,6 +64,11 @@ export const {
   removeCurrentState,
   addDesiredState,
   removeDesiredState,
-  toggleDietaryRestriction
+  toggleDietaryRestriction,
+  setActiveView,
+  addWeekFeeling,
+  removeWeekFeeling,
+  updateWeekFeelingDays,
+  setHasSeenWeekViewTooltip
 } = userSlice.actions;
-export default userSlice.reducer; 
+export default userSlice.reducer;

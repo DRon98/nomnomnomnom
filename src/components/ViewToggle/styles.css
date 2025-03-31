@@ -1,0 +1,34 @@
+.view-toggle {
+  margin-bottom: 20px;
+}
+
+.week-view-tooltip {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  padding: 10px 15px;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #495057;
+  position: relative;
+}
+
+.week-view-tooltip:before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  border-width: 0 10px 10px;
+  border-style: solid;
+  border-color: transparent transparent #dee2e6;
+}
+
+.week-view-tooltip:after {
+  content: '';
+  position: absolute;
+  top: -9px;
+  right: 21px;
+  border-width: 0 9px 9px;
+  border-style: solid;
+  border-color: transparent transparent #f8f9fa;
+}
