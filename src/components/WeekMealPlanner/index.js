@@ -24,6 +24,16 @@ const MEAL_TITLES = {
   snacks: 'Snacks'
 };
 
+// Color palette for emotions (copied from WeekPlanner)
+const EMOTION_COLORS = [
+  '#3498db', // Blue
+  '#27ae60', // Dark Green
+  '#8e44ad', // Purple
+  '#e67e22', // Orange
+  '#c0392b', // Red
+  '#16a085', // Teal
+];
+
 const WeekMealSlot = ({ day, title, icon, meal, foods, onCopyToDay }) => {
   const dispatch = useDispatch();
   const mealTimes = useSelector(state => state.mealPlan.mealTimes);
@@ -140,7 +150,10 @@ const DaySection = ({ day, mealPlan, weekFeelings, onCopyToDay }) => {
   // Find feelings assigned to this day
   const dayFeelings = weekFeelings
     .filter(({ days }) => days.includes(day.substring(0, 3)))
-    .map(({ feeling }) => feeling);
+    .map(({ feeling }, index) => ({
+      feeling,
+      color: EMOTION_COLORS[index % EMOTION_COLORS.length]
+    }));
 
   return (
     <div className="day-section">
@@ -153,8 +166,12 @@ const DaySection = ({ day, mealPlan, weekFeelings, onCopyToDay }) => {
           <h3 className="day-title">{day}</h3>
           {dayFeelings.length > 0 && (
             <div className="day-feelings">
-              {dayFeelings.map(feeling => (
-                <span key={feeling} className="day-feeling-bubble">
+              {dayFeelings.map(({ feeling, color }) => (
+                <span 
+                  key={feeling} 
+                  className="day-feeling-bubble"
+                  style={{ backgroundColor: color }}
+                >
                   {feeling}
                 </span>
               ))}

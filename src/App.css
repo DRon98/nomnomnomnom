@@ -16,7 +16,7 @@ body {
 }
 
 .container {
-  max-width: 1600px;
+  max-width: 1800px;
   min-height: 1000px;
   margin: 0 auto;
   padding: 20px;
@@ -30,32 +30,50 @@ body {
   flex-direction: column;
   gap: 20px;
   padding: 20px;
-  max-width: 1200px;
+  max-width: 1600px;
   margin: 0 auto;
-}
-
-.day-view,
-.week-view {
-  display: flex;
-  gap: 20px;
   width: 100%;
 }
 
+/* View toggle styles */
+.view-toggle {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.view-toggle .tabs-header {
+  width: 300px;
+  margin: 0 auto;
+}
+
+/* Main content layout */
+.day-view,
+.week-view {
+  display: flex;
+  gap: 30px;
+  width: 100%;
+  flex: 1;
+}
+
 .left-section {
-  flex: 3;
+  flex: 2;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  min-width: 0;
 }
 
 .right-section {
-  flex: 2;
+  flex: 1;
   background-color: white;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  padding: 20px;
+  padding: 25px;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .dietary-restrictions {
@@ -68,8 +86,9 @@ body {
 }
 
 /* For responsive design */
-@media (max-width: 1200px) {
-  .app-content {
+@media (max-width: 1400px) {
+  .day-view,
+  .week-view {
     flex-direction: column;
   }
   

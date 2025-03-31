@@ -9,7 +9,7 @@ import {
 } from '../../store/userSlice';
 import './styles.css';
 
-const StateSelector = ({ type, options, question }) => {
+const StateSelector = ({ type, options, question, onStateSelect, showSelectedStates = true }) => {
   const dispatch = useDispatch();
   const selectedStates = useSelector(state => 
     type === 'current' ? state.user.currentStates : state.user.desiredStates
@@ -20,6 +20,11 @@ const StateSelector = ({ type, options, question }) => {
     
     const action = type === 'current' ? addCurrentState : addDesiredState;
     dispatch(action(selected.value));
+
+    // If this is a desired state and we have an onStateSelect callback, call it
+    if (type === 'desired' && onStateSelect) {
+      onStateSelect(selected.value);
+    }
   };
 
   const handleRemoveState = (stateToRemove) => {
@@ -64,20 +69,22 @@ const StateSelector = ({ type, options, question }) => {
         value={null}
         data-testid="state-selector"
       />
-      <div className="state-bubbles">
-        {selectedStates.map(state => (
-          <div key={state} className={`state-bubble ${type}-state`}>
-            {state}
-            <button 
-              className="remove-state"
-              onClick={() => handleRemoveState(state)}
-              aria-label={`Remove ${state}`}
-            >
-              ×
-            </button>
-          </div>
-        ))}
-      </div>
+      {showSelectedStates && (
+        <div className="state-bubbles">
+          {selectedStates.map(state => (
+            <div key={state} className={`state-bubble ${type}-state`}>
+              {state}
+              <button 
+                className="remove-state"
+                onClick={() => handleRemoveState(state)}
+                aria-label={`Remove ${state}`}
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

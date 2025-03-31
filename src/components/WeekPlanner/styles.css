@@ -8,6 +8,10 @@
 
 .week-feelings-section {
   margin-bottom: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .feeling-assignment {
@@ -15,13 +19,14 @@
   border-radius: 8px;
   padding: 15px;
   margin-bottom: 15px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .feeling-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 .feeling-bubble {
@@ -38,6 +43,68 @@
   color: #dc3545;
   font-size: 20px;
   cursor: pointer;
+  padding: 0;
+  margin-left: 10px;
+  line-height: 1;
+}
+
+.emotion-toggle {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.emotion-button-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.emotion-button {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid;
+  background-color: transparent;
+  font-size: 14px;
+  margin-right: 24px;
+}
+
+.emotion-button:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.95);
+}
+
+.emotion-button.active {
+  transform: scale(1.05);
+}
+
+.remove-emotion {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #dc3545;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.remove-emotion:hover {
+  background-color: #dc3545;
+  color: white;
 }
 
 .day-selector {
@@ -45,35 +112,82 @@
 }
 
 .day-selector-label {
-  margin-bottom: 10px;
-  font-size: 14px;
-  color: #666;
+  margin-bottom: 15px;
+  font-size: 15px;
+  color: #495057;
+  font-weight: 500;
 }
 
 .day-bubbles {
   display: flex;
-  gap: 8px;
+  gap: 12px;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .day-bubble {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #e9ecef;
   border: none;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
+  color: white;
   transition: all 0.2s ease;
+  position: relative;
 }
 
-.day-bubble.selected {
-  background-color: #3498db;
+.day-bubble:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.95);
+}
+
+.day-bubble:active {
+  transform: scale(0.95);
+}
+
+/* Styles for the right side week planner */
+.week-day {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  margin-bottom: 8px;
+}
+
+.week-day-emotions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.week-day-emotion {
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 13px;
+  font-weight: 500;
   color: white;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.week-day-emotion .remove-emotion {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.week-day-emotion .remove-emotion:hover {
+  color: white;
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .recommendations-filter {
