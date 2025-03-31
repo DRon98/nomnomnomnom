@@ -1,0 +1,43 @@
+import React from 'react';
+import { useSelector } from 'react-redux';
+import StateSelector from '../components/StateSelector';
+import FoodTabs from '../components/FoodTabs';
+import MealPlanner from '../components/MealPlanner';
+import { CURRENT_STATES, DESIRED_STATES } from '../utils/constants';
+
+function Home() {
+  const dietaryRestrictions = useSelector(state => state.user.dietaryRestrictions);
+  
+  return (
+    <div className="app-content">
+      <div className="left-section">
+        <StateSelector
+          type="current"
+          options={CURRENT_STATES}
+          question="How do you feel today?"
+        />
+        <StateSelector
+          type="desired"
+          options={DESIRED_STATES}
+          question="How do you want to feel today?"
+        />
+        <div className="dietary-restrictions">
+          Dietary restrictions applied: {'{'}{
+            Object.entries(dietaryRestrictions)
+              .filter(([_, value]) => value)
+              .map(([key]) => key)
+              .join(', ')
+          }
+          {' '}
+          (Edit in Profile)
+        </div>
+        <FoodTabs />
+      </div>
+      <div className="right-section">
+        <MealPlanner />
+      </div>
+    </div>
+  );
+}
+
+export default Home;
