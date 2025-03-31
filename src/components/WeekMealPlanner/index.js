@@ -4,8 +4,11 @@ import { useDrop } from 'react-dnd/dist/hooks';
 import { 
   addFoodToMeal, 
   removeFoodFromMeal, 
-  updateMealTime 
+  updateMealTime,
+  generateRandomPlan,
+  clearMealPlan
 } from '../../store/mealPlanSlice';
+import { generateMealPlan } from '../../utils/foodGenerator';
 import FoodCard from '../FoodCard';
 import './styles.css';
 
@@ -39,6 +42,8 @@ const WeekMealSlot = ({ day, title, icon, meal, foods, onCopyToDay }) => {
   const mealTimes = useSelector(state => state.mealPlan.mealTimes);
   const [isEditingTime, setIsEditingTime] = useState(false);
   const [timeValue, setTimeValue] = useState(mealTimes[meal]);
+  const [showCopyOptions, setShowCopyOptions] = useState(false);
+  const [selectedDays, setSelectedDays] = useState([]);
   
   const [{ isOver }, drop] = useDrop(() => ({
     accept: 'FOOD',
@@ -71,7 +76,21 @@ const WeekMealSlot = ({ day, title, icon, meal, foods, onCopyToDay }) => {
     setIsEditingTime(false);
   };
 
-  const [showCopyOptions, setShowCopyOptions] = useState(false);
+  const handleDayToggle = (targetDay) => {
+    setSelectedDays(prev => 
+      prev.includes(targetDay) 
+        ? prev.filter(d => d !== targetDay)
+        : [...prev, targetDay]
+    );
+  };
+
+  const handleCopy = () => {
+    selectedDays.forEach(targetDay => {
+      onCopyToDay(day, targetDay, meal);
+    });
+    setShowCopyOptions(false);
+    setSelectedDays([]);
+  };
 
   return (
     <div className="week-meal-slot">
@@ -95,27 +114,39 @@ const WeekMealSlot = ({ day, title, icon, meal, foods, onCopyToDay }) => {
         {foods.length > 0 && (
           <button 
             className="copy-meal-button"
-            onClick={() => setShowCopyOptions(!showCopyOptions)}
+            onClick={() => {
+              setShowCopyOptions(!showCopyOptions);
+              if (!showCopyOptions) {
+                setSelectedDays([]);
+              }
+            }}
           >
-            Copy to Another Day
+            Copy to Other Days
           </button>
         )}
       </div>
       
       {showCopyOptions && (
-        <div className="copy-options">
-          {DAYS_OF_WEEK.filter(d => d !== day).map(targetDay => (
+        <div className="copy-options-container">
+          <div className="copy-options">
+            {DAYS_OF_WEEK.filter(d => d !== day).map(targetDay => (
+              <button 
+                key={targetDay}
+                className={`copy-day-button ${selectedDays.includes(targetDay) ? 'selected' : ''}`}
+                onClick={() => handleDayToggle(targetDay)}
+              >
+                {targetDay}
+              </button>
+            ))}
+          </div>
+          {selectedDays.length > 0 && (
             <button 
-              key={targetDay}
-              className="copy-day-button"
-              onClick={() => {
-                onCopyToDay(day, targetDay, meal);
-                setShowCopyOptions(false);
-              }}
+              className="copy-confirm-button"
+              onClick={handleCopy}
             >
-              {targetDay}
+              Copy to {selectedDays.length} day{selectedDays.length > 1 ? 's' : ''}
             </button>
-          ))}
+          )}
         </div>
       )}
       
@@ -146,6 +177,8 @@ const WeekMealSlot = ({ day, title, icon, meal, foods, onCopyToDay }) => {
 
 const DaySection = ({ day, mealPlan, weekFeelings, onCopyToDay }) => {
   const [isExpanded, setIsExpanded] = useState(day === 'Monday');
+  const dispatch = useDispatch();
+  const recommendedFoods = useSelector(state => state.foods.recommendedFoods);
   
   // Find feelings assigned to this day and maintain their original colors
   const dayFeelings = weekFeelings
@@ -158,6 +191,17 @@ const DaySection = ({ day, mealPlan, weekFeelings, onCopyToDay }) => {
         color: EMOTION_COLORS[originalIndex % EMOTION_COLORS.length]
       };
     });
+
+  const handleGeneratePlan = () => {
+    if (recommendedFoods.length === 0) return;
+    
+    const plan = generateMealPlan(recommendedFoods);
+    dispatch(generateRandomPlan({ ...plan, day }));
+  };
+
+  const handleClearPlan = () => {
+    dispatch(clearMealPlan({ day }));
+  };
 
   return (
     <div className="day-section">
@@ -186,6 +230,22 @@ const DaySection = ({ day, mealPlan, weekFeelings, onCopyToDay }) => {
       
       {isExpanded && (
         <div className="day-meals">
+          <div className="planner-actions">
+            <button
+              className="primary-button"
+              onClick={handleGeneratePlan}
+              disabled={recommendedFoods.length === 0}
+            >
+              Generate Plan
+            </button>
+            <button
+              className="secondary-button"
+              onClick={handleClearPlan}
+            >
+              Clear Plan
+            </button>
+          </div>
+          
           {MEAL_TYPES.map(mealType => (
             <WeekMealSlot
               key={`${day}-${mealType}`}

@@ -107,6 +107,22 @@ const MealPlanner = () => {
     <div className="meal-planner">
       <h2 className="planner-title">Plan Your Day</h2>
       
+      <div className="planner-actions">
+        <button
+          className="primary-button"
+          onClick={handleGeneratePlan}
+          disabled={recommendedFoods.length === 0}
+        >
+          Generate Plan
+        </button>
+        <button
+          className="secondary-button"
+          onClick={handleClearPlan}
+        >
+          Clear Plan
+        </button>
+      </div>
+      
       <div className="meal-slots">
         <MealSlot
           title="Breakfast"
@@ -132,22 +148,6 @@ const MealPlanner = () => {
           meal="snacks"
           foods={mealPlan.snacks}
         />
-      </div>
-
-      <div className="planner-actions">
-        <button
-          className="primary-button"
-          onClick={handleGeneratePlan}
-          disabled={recommendedFoods.length === 0}
-        >
-          Generate Plan
-        </button>
-        <button
-          className="secondary-button"
-          onClick={handleClearPlan}
-        >
-          Clear Plan
-        </button>
       </div>
     </div>
   );
