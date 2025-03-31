@@ -147,13 +147,17 @@ const WeekMealSlot = ({ day, title, icon, meal, foods, onCopyToDay }) => {
 const DaySection = ({ day, mealPlan, weekFeelings, onCopyToDay }) => {
   const [isExpanded, setIsExpanded] = useState(day === 'Monday');
   
-  // Find feelings assigned to this day
+  // Find feelings assigned to this day and maintain their original colors
   const dayFeelings = weekFeelings
     .filter(({ days }) => days.includes(day.substring(0, 3)))
-    .map(({ feeling }, index) => ({
-      feeling,
-      color: EMOTION_COLORS[index % EMOTION_COLORS.length]
-    }));
+    .map(feeling => {
+      // Find the original index of this feeling in the weekFeelings array
+      const originalIndex = weekFeelings.findIndex(f => f.feeling === feeling.feeling);
+      return {
+        feeling: feeling.feeling,
+        color: EMOTION_COLORS[originalIndex % EMOTION_COLORS.length]
+      };
+    });
 
   return (
     <div className="day-section">
