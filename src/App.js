@@ -4,6 +4,7 @@ import Layout from './components/Layout';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import GroceryBuilder from './pages/GroceryBuilder';
+import FoodSurvey from './pages/FoodSurvey';
 import ErrorBoundary from './components/ErrorBoundary';
 import './App.css';
 import './components/ErrorBoundary/styles.css';
@@ -16,6 +17,7 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="grocery-builder" element={<GroceryBuilder />} />
+            <Route path="food-survey" element={<FoodSurvey />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

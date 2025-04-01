@@ -1,0 +1,521 @@
+.food-survey-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 30px;
+  font-family: Arial, sans-serif;
+}
+
+.food-survey-container h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 32px;
+  color: #333;
+}
+
+/* Progress dots */
+.progress-dots {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.progress-dot {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  margin: 0 8px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.progress-dot.active {
+  background-color: #3498db;
+  transform: scale(1.2);
+}
+
+.progress-dot.active::after {
+  content: '';
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 2px solid #3498db;
+  top: -7px;
+  left: -7px;
+  opacity: 0.5;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+}
+
+/* Survey content */
+.survey-content {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  min-height: 400px;
+}
+
+.survey-step {
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.survey-step h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #3498db;
+  font-size: 24px;
+}
+
+.survey-step p {
+  margin-bottom: 20px;
+  color: #555;
+  font-size: 16px;
+}
+
+/* Dietary restrictions */
+.restriction-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.restriction-bubble {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 2px solid #ddd;
+  padding: 10px 20px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+.restriction-bubble:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.restriction-bubble.active {
+  background-color: #3498db;
+  color: white;
+  border-color: #3498db;
+  transform: scale(1.05);
+}
+
+.other-restriction {
+  margin-top: 15px;
+}
+
+.other-input {
+  margin-left: 10px;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 250px;
+  font-size: 16px;
+}
+
+/* Spice tolerance */
+.spice-slider-container {
+  position: relative;
+  padding: 20px 0;
+  margin: 30px 0;
+}
+
+.spice-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.spice-labels span {
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+  width: 20%;
+}
+
+.spice-slider {
+  display: flex;
+  background-color: #f0f0f0;
+  height: 60px;
+  border-radius: 30px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.spice-level {
+  flex: 1;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.spice-level:hover {
+  transform: scale(1.1);
+}
+
+.spice-slider::before {
+  content: '';
+  position: absolute;
+  height: 100%;
+  background: linear-gradient(to right, #f8f9fa, #e9ecef 25%, #ffc107 50%, #fd7e14 75%, #dc3545 100%);
+  width: 100%;
+  z-index: 1;
+}
+
+.spice-level.active {
+  color: white;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.spice-indicator {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background-color: white;
+  border: 2px solid #3498db;
+  border-radius: 50%;
+  bottom: -15px;
+  transform: translateX(-50%);
+  transition: left 0.3s ease;
+  z-index: 3;
+}
+
+.spice-examples {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.spice-examples span {
+  font-size: 12px;
+  color: #777;
+  text-align: center;
+  width: 20%;
+}
+
+/* Food preferences */
+.preference-legend {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legend-bubble {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  background-color: #f5f5f5;
+}
+
+.legend-bubble.loved {
+  background-color: #27ae60;
+  border-color: #27ae60;
+}
+
+.legend-bubble.hated {
+  background-color: #e74c3c;
+  border-color: #e74c3c;
+}
+
+/* Section tabs for toggling food items and cooking methods */
+.section-tabs {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.section-tab {
+  padding: 10px 20px;
+  margin: 0 5px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #666;
+}
+
+.section-tab:hover {
+  color: #3498db;
+}
+
+.section-tab.active {
+  color: #3498db;
+  border-bottom-color: #3498db;
+  font-weight: bold;
+}
+
+.food-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-top: 30px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.food-category h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #555;
+  font-size: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
+
+.food-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+/* Cuisine items special styling */
+.cuisine-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+  max-height: 350px;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.cuisine-items .food-item {
+  height: 110px;
+  display: flex;
+  justify-content: center;
+}
+
+.cuisine-items .food-icon {
+  font-size: 34px;
+  margin-bottom: 10px;
+}
+
+.food-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+  border-radius: 10px;
+  background-color: #f8f9fa;
+  border: 2px solid #ddd;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 80px;
+  position: relative;
+}
+
+.food-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.food-icon {
+  font-size: 30px;
+  margin-bottom: 5px;
+}
+
+.food-name {
+  font-size: 14px;
+  color: #333;
+  text-align: center;
+}
+
+.food-item.loved {
+  background-color: rgba(39, 174, 96, 0.1);
+  border-color: #27ae60;
+}
+
+.food-item.loved .food-name {
+  color: #27ae60;
+  font-weight: bold;
+}
+
+.food-item.hated {
+  background-color: rgba(231, 76, 60, 0.1);
+  border-color: #e74c3c;
+}
+
+.food-item.hated .food-name {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.food-item.loved::after {
+  content: "❤️";
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  animation: bounceIn 0.5s;
+}
+
+.food-item.hated::after {
+  content: "🚫";
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  animation: bounceIn 0.5s;
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Additional preferences */
+textarea {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  resize: vertical;
+  min-height: 150px;
+  font-family: inherit;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.3);
+}
+
+/* Navigation buttons */
+.survey-navigation {
+  display: flex;
+  justify-content: space-between;
+}
+
+.next-button, .back-button {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.next-button {
+  background-color: #3498db;
+  color: white;
+  margin-left: auto;
+}
+
+.next-button:hover {
+  background-color: #2980b9;
+  transform: translateX(2px);
+}
+
+.next-button:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.back-button {
+  background-color: #ecf0f1;
+  color: #555;
+}
+
+.back-button:hover {
+  background-color: #bdc3c7;
+  transform: translateX(-2px);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .food-survey-container {
+    padding: 15px;
+  }
+  
+  .survey-content {
+    padding: 20px;
+  }
+  
+  .restriction-options {
+    gap: 8px;
+  }
+  
+  .restriction-bubble {
+    padding: 8px 15px;
+    font-size: 14px;
+  }
+  
+  .other-input {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 10px;
+  }
+  
+  .food-item {
+    min-width: 70px;
+    padding: 10px;
+  }
+  
+  .food-icon {
+    font-size: 24px;
+  }
+  
+  .food-name {
+    font-size: 12px;
+  }
+} 

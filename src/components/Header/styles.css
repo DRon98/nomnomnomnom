@@ -21,7 +21,7 @@
   gap: 20px;
 }
 
-.profile-button, .grocery-button {
+.profile-button, .grocery-button, .survey-button {
   background: none;
   border: none;
   font-size: 24px;
@@ -31,11 +31,11 @@
   transition: all 0.2s ease;
 }
 
-.profile-button:hover, .grocery-button:hover {
+.profile-button:hover, .grocery-button:hover, .survey-button:hover {
   background-color: #f0f0f0;
 }
 
-.profile-button.active, .grocery-button.active {
+.profile-button.active, .grocery-button.active, .survey-button.active {
   background-color: #e8f4fd;
   color: #3498db;
 }
