@@ -15,6 +15,9 @@ const Header = () => {
       <div className="header-actions">
         <InventoryDropdowns />
         <FoodJournal />
+        <NavLink to="/grocery-builder" className={({ isActive }) => isActive ? "grocery-button active" : "grocery-button"}>
+          🛒
+        </NavLink>
         <NavLink to="/profile" className={({ isActive }) => isActive ? "profile-button active" : "profile-button"}>
           👤
         </NavLink>
