@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import InventoryDropdowns from '../InventoryDropdowns';
 import FoodJournal from '../FoodJournal';
 import './styles.css';
@@ -15,21 +15,15 @@ const Header = () => {
       <div className="header-actions">
         <InventoryDropdowns />
         <FoodJournal />
-        <NavLink to="/grocery-builder" className={({ isActive }) => isActive ? "grocery-button active" : "grocery-button"}>
-          🛒
-        </NavLink>
-        <NavLink to="/recipe-builder" className={({ isActive }) => isActive ? "recipe-button active" : "recipe-button"}>
+        <Link to="/recipe-builder" className="recipe-button">
           🥘
-        </NavLink>
-        <NavLink to="/food-survey" className={({ isActive }) => isActive ? "survey-button active" : "survey-button"}>
+        </Link>
+        <Link to="/food-survey" className="survey-button">
           📋
-        </NavLink>
-        <NavLink to="/pantry" className={({ isActive }) => isActive ? "pantry-button active" : "pantry-button"}>
-          🗄️
-        </NavLink>
-        <NavLink to="/profile" className={({ isActive }) => isActive ? "profile-button active" : "profile-button"}>
+        </Link>
+        <Link to="/profile" className="profile-button">
           👤
-        </NavLink>
+        </Link>
       </div>
     </header>
   );

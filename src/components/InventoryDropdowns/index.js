@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 import {
   removeFromPantry,
   updatePantryAmount,
@@ -80,6 +81,9 @@ const InventoryDropdowns = () => {
                 Clear All
               </button>
             </div>
+            <div className="dropdown-link">
+              <Link to="/pantry" className="inventory-link">Go to Pantry Manager</Link>
+            </div>
             <div className="items-list">
               {pantryItems.length > 0 ? (
                 pantryItems.map(item => (
@@ -115,6 +119,9 @@ const InventoryDropdowns = () => {
               >
                 Clear All
               </button>
+            </div>
+            <div className="dropdown-link">
+              <Link to="/grocery-builder" className="inventory-link">Go to Grocery Builder</Link>
             </div>
             <div className="items-list">
               {groceryItems.length > 0 ? (

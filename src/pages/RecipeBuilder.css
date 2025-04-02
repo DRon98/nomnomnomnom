@@ -600,43 +600,91 @@
 .nutrition-info {
   max-width: 400px;
   border: 1px solid #333;
-  padding: 15px;
+  padding: 10px 15px;
   font-family: 'Helvetica', 'Arial', sans-serif;
+  box-sizing: border-box;
 }
 
 .nutrition-info h4 {
-  font-size: 24px;
-  margin: 0 0 10px;
-  padding-bottom: 10px;
-  border-bottom: 8px solid #333;
+  font-size: 28px;
+  font-weight: 900;
+  margin: 0 0 4px;
+  padding-bottom: 6px;
+  border-bottom: 10px solid #000;
+  text-transform: uppercase;
 }
 
 .nutrition-table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 14px;
 }
 
 .nutrition-table td {
-  padding: 5px 0;
-  border-bottom: 1px solid #ccc;
-}
-
-.nutrition-table td:first-child {
-  font-weight: bold;
+  padding: 4px 0;
+  font-weight: normal;
 }
 
 .nutrition-table td:last-child {
   text-align: right;
+  font-weight: bold;
+}
+
+/* Serving size row */
+.nutrition-table tr:first-child td {
+  padding-top: 6px;
+  font-size: 16px;
+  font-weight: normal;
+}
+
+/* Servings per container row */
+.nutrition-table tr:nth-child(2) td {
+  padding-bottom: 6px;
+  font-size: 16px;
+  font-weight: normal;
+}
+
+/* Calories row */
+.nutrition-table tr:nth-child(3) td {
+  padding: 6px 0;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* Daily Value header */
+.nutrition-table tr:nth-child(4) td {
+  font-weight: bold;
+  font-size: 14px;
+  padding-bottom: 6px;
+}
+
+/* Nutrient rows */
+.nutrition-table tr td strong {
+  font-weight: bold;
+}
+
+/* Alternating row background for better readability */
+.nutrition-table tr:nth-child(even) {
+  background-color: #f8f8f8;
 }
 
 .nutrition-table .thick-line {
-  border-bottom: 8px solid #333;
+  border-bottom: 10px solid #000;
 }
 
 .nutrition-table .medium-line {
-  border-bottom: 4px solid #333;
+  border-bottom: 4px solid #000;
 }
 
 .nutrition-table .thin-line {
-  border-bottom: 1px solid #333;
-} 
+  border-bottom: 1px solid #000;
+}
+
+/* Footnote styling */
+.nutrition-table tr:last-child td {
+  padding-top: 6px;
+  font-size: 10px;
+  line-height: 1.2;
+  font-weight: normal;
+  border-top: 6px solid #000;
+}
