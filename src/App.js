@@ -6,6 +6,7 @@ import NotFound from './pages/NotFound';
 import GroceryBuilder from './pages/GroceryBuilder';
 import FoodSurvey from './pages/FoodSurvey';
 import RecipeBuilder from './pages/RecipeBuilder';
+import PantryManager from './pages/PantryManager';
 import ErrorBoundary from './components/ErrorBoundary';
 import './App.css';
 import './components/ErrorBoundary/styles.css';
@@ -20,6 +21,7 @@ function App() {
             <Route path="grocery-builder" element={<GroceryBuilder />} />
             <Route path="food-survey" element={<FoodSurvey />} />
             <Route path="recipe-builder" element={<RecipeBuilder />} />
+            <Route path="pantry" element={<PantryManager />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

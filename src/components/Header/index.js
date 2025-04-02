@@ -24,6 +24,9 @@ const Header = () => {
         <NavLink to="/food-survey" className={({ isActive }) => isActive ? "survey-button active" : "survey-button"}>
           📋
         </NavLink>
+        <NavLink to="/pantry" className={({ isActive }) => isActive ? "pantry-button active" : "pantry-button"}>
+          🗄️
+        </NavLink>
         <NavLink to="/profile" className={({ isActive }) => isActive ? "profile-button active" : "profile-button"}>
           👤
         </NavLink>
