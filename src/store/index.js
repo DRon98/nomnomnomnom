@@ -1,18 +1,24 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './userSlice';
-import foodsReducer from './foodsSlice';
 import mealPlanReducer from './mealPlanSlice';
-import inventoryReducer from './inventorySlice';
+import userReducer from './userSlice';
 import foodJournalReducer from './foodJournalSlice';
+import inventoryReducer from './inventorySlice';
+import foodsReducer from './foodsSlice';
+import surveyReducer from './surveySlice';
 
 const store = configureStore({
   reducer: {
-    user: userReducer,
-    foods: foodsReducer,
     mealPlan: mealPlanReducer,
+    user: userReducer,
+    foodJournal: foodJournalReducer,
     inventory: inventoryReducer,
-    foodJournal: foodJournalReducer
-  }
+    foods: foodsReducer,
+    survey: surveyReducer
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false
+    })
 });
 
 export default store;

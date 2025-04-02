@@ -16,7 +16,7 @@ const MealSlot = ({ title, icon, meal, foods }) => {
     accept: 'FOOD',
     drop: (item) => {
       dispatch(addFoodToMeal({ 
-        meal, 
+        mealType: meal, 
         food: item.food
       }));
     },
@@ -26,7 +26,7 @@ const MealSlot = ({ title, icon, meal, foods }) => {
   }));
 
   const handleRemoveFood = (foodId) => {
-    dispatch(removeFoodFromMeal({ meal, foodId }));
+    dispatch(removeFoodFromMeal({ mealType: meal, mealId: foodId }));
   };
 
   const handleTimeClick = () => {
@@ -66,13 +66,13 @@ const MealSlot = ({ title, icon, meal, foods }) => {
         ref={drop}
         className={`meal-content droppable ${isOver ? 'active' : ''}`}
       >
-        {foods.length > 0 ? (
+        {foods && foods.length > 0 ? (
           <div className="meal-foods">
             {foods.map(food => (
               <FoodCard
                 key={food.id}
                 food={food}
-                onRemove={handleRemoveFood}
+                onRemove={() => handleRemoveFood(food.id)}
                 inMealPlan={true}
               />
             ))}
@@ -91,6 +91,7 @@ const MealPlanner = () => {
   const dispatch = useDispatch();
   const recommendedFoods = useSelector(state => state.foods.recommendedFoods);
   const mealPlan = useSelector(state => state.mealPlan);
+  const dayPlan = mealPlan.dayPlan;
 
   const handleGeneratePlan = () => {
     if (recommendedFoods.length === 0) return;
@@ -128,25 +129,25 @@ const MealPlanner = () => {
           title="Breakfast"
           icon="☀️"
           meal="breakfast"
-          foods={mealPlan.breakfast}
+          foods={dayPlan.breakfast}
         />
         <MealSlot
           title="Lunch"
           icon="🍽️"
           meal="lunch"
-          foods={mealPlan.lunch}
+          foods={dayPlan.lunch}
         />
         <MealSlot
           title="Dinner"
           icon="🌙"
           meal="dinner"
-          foods={mealPlan.dinner}
+          foods={dayPlan.dinner}
         />
         <MealSlot
           title="Snacks"
           icon="🍎"
           meal="snacks"
-          foods={mealPlan.snacks}
+          foods={dayPlan.snacks}
         />
       </div>
     </div>

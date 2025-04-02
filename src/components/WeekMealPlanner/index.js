@@ -49,7 +49,7 @@ const WeekMealSlot = ({ day, title, icon, meal, foods, onCopyToDay }) => {
     accept: 'FOOD',
     drop: (item) => {
       dispatch(addFoodToMeal({ 
-        meal, 
+        mealType: meal, 
         food: item.food,
         day
       }));
@@ -60,7 +60,7 @@ const WeekMealSlot = ({ day, title, icon, meal, foods, onCopyToDay }) => {
   }));
 
   const handleRemoveFood = (foodId) => {
-    dispatch(removeFoodFromMeal({ meal, foodId, day }));
+    dispatch(removeFoodFromMeal({ mealType: meal, mealId: foodId, day }));
   };
 
   const handleTimeClick = () => {
@@ -111,7 +111,7 @@ const WeekMealSlot = ({ day, title, icon, meal, foods, onCopyToDay }) => {
             {mealTimes[meal]}
           </span>
         )}
-        {foods.length > 0 && (
+        {foods && foods.length > 0 && (
           <button 
             className="copy-meal-button"
             onClick={() => {
@@ -154,13 +154,13 @@ const WeekMealSlot = ({ day, title, icon, meal, foods, onCopyToDay }) => {
         ref={drop}
         className={`meal-content droppable ${isOver ? 'active' : ''}`}
       >
-        {foods.length > 0 ? (
+        {foods && foods.length > 0 ? (
           <div className="meal-foods">
             {foods.map(food => (
               <FoodCard
                 key={food.id}
                 food={food}
-                onRemove={handleRemoveFood}
+                onRemove={() => handleRemoveFood(food.id)}
                 inMealPlan={true}
               />
             ))}
@@ -273,7 +273,7 @@ const WeekMealPlanner = () => {
     
     foodsToCopy.forEach(food => {
       dispatch(addFoodToMeal({
-        meal,
+        mealType: meal,
         food,
         day: targetDay
       }));
