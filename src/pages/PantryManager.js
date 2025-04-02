@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FaPlus, FaMinus, FaSearch, FaFilter, FaSort } from 'react-icons/fa';
+import { updatePantryAmount } from '../store/inventorySlice';
 import './PantryManager.css';
 
 const CATEGORIES = ['Protein', 'Carbs', 'Vegetables', 'Fruits', 'Dairy', 'Fats', 'Condiments', 'Spices'];
@@ -38,9 +39,9 @@ const PantryManager = () => {
   };
 
   const filteredItems = pantryItems.filter(item => {
-    if (!item) return false;
-    const matchesSearch = !searchTerm || (item.name && item.name.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesCategory = !selectedCategories.length || (item.category && selectedCategories.includes(item.category));
+    if (!item || !item.food) return false;
+    const matchesSearch = !searchTerm || (item.food.name && item.food.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesCategory = !selectedCategories.length || (item.food.category && selectedCategories.includes(item.food.category));
     return matchesSearch && matchesCategory;
   });
 
@@ -128,24 +129,30 @@ const PantryManager = () => {
         <div className="table-body">
           {Array.isArray(filteredItems) && filteredItems.length > 0 ? (
             filteredItems.map(item => (
-              <div key={item.id || Math.random()} className="table-row">
-                <div className="cell">{item.name || 'Unnamed Item'}</div>
-                <div className="cell">{item.category || 'Uncategorized'}</div>
+              <div key={item.foodId || Math.random()} className="table-row">
+                <div className="cell">{item.food.name || 'Unnamed Item'}</div>
+                <div className="cell">{item.food.category || 'Uncategorized'}</div>
                 <div className="cell quantity-cell">
-                  {renderQuantityIndicator(item.quantity || 0)}
+                  {renderQuantityIndicator(item.amount || 0)}
                 </div>
                 <div className="cell">
-                  {item.expiration ? new Date(item.expiration).toLocaleDateString('en-US', {
+                  {item.food.expiration ? new Date(item.food.expiration).toLocaleDateString('en-US', {
                     month: 'short',
                     day: '2-digit',
                     year: 'numeric'
                   }) : '-'}
                 </div>
                 <div className="cell actions">
-                  <button className="action-icon">
+                  <button 
+                    className="action-icon"
+                    onClick={() => dispatch(updatePantryAmount({ foodId: item.foodId, amount: item.amount + 1 }))}
+                  >
                     <FaPlus />
                   </button>
-                  <button className="action-icon">
+                  <button 
+                    className="action-icon"
+                    onClick={() => dispatch(updatePantryAmount({ foodId: item.foodId, amount: Math.max(1, item.amount - 1) }))}
+                  >
                     <FaMinus />
                   </button>
                 </div>
@@ -163,4 +170,4 @@ const PantryManager = () => {
   );
 };
 
-export default PantryManager; 
+export default PantryManager;
