@@ -15,7 +15,7 @@ const Header = () => {
       <div className="header-actions">
         <InventoryDropdowns />
         <FoodJournal />
-        <Link to="/recipe-builder" className="recipe-button">
+        <Link to="/recipe-generator" className="recipe-button">
           🥘
         </Link>
         <Link to="/food-survey" className="survey-button">
