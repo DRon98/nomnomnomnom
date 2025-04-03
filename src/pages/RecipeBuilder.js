@@ -280,11 +280,17 @@ const RecipeBuilder = () => {
                 <div className="step-content">
                   <div className="step-header">
                     <span className="step-name">{step.name}</span>
-                    <span className="step-duration">
-                      <FaClock /> {step.duration}min
-                    </span>
+                    <div className="step-meta">
+                      <div className="info-tooltip">
+                        <FaInfoCircle className="info-icon" />
+                        <span className="tooltip-text">{step.description}</span>
+                      </div>
+                      <span className="step-duration">
+                        <FaClock /> {step.duration}min
+                      </span>
+                    </div>
                   </div>
-                  <p className="step-description">{step.description}</p>
+                  <div className="step-description">{step.description}</div>
                 </div>
                 {step.intensity === 'high' && (
                   <div className="intensity-indicator">
@@ -542,47 +548,9 @@ const RecipeBuilder = () => {
             </div>
           </div>
         </div>
-        <div className="recipe-filters">
-          <div className="filter-section">
-            <h4>Time & Difficulty</h4>
-            <div className="time-filter">
-              <label>Max Time:</label>
-              <input
-                type="number"
-                value={maxTime}
-                onChange={(e) => setMaxTime(parseInt(e.target.value))}
-                min="0"
-              />
-              <span>min</span>
-            </div>
-            <div className="filter-tags">
-              {['easy', 'medium', 'hard'].map(diff => (
-                <button
-                  key={diff}
-                  className={`filter-tag ${difficulty === diff ? 'active' : ''}`}
-                  onClick={() => setDifficulty(diff)}
-                >
-                  {diff.charAt(0).toUpperCase() + diff.slice(1)}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="filter-section">
-            <h4>Recipe Tags</h4>
-            <div className="filter-tags">
-              {tags.map(tag => (
-                <button
-                  key={tag}
-                  className="filter-tag remove"
-                  onClick={() => setTags(tags.filter(t => t !== tag))}
-                >
-                  {tag} <FaTrash />
-                </button>
-              ))}
-              <button className="filter-tag">+ Add Tag</button>
-            </div>
-          </div>
-        </div>
+  
+
+      {renderTasteAdjustments()}
       </div>
 
       <div className="recipe-content">
@@ -633,11 +601,6 @@ const RecipeBuilder = () => {
         </button>
       </div>
 
-      <div className="recipe-stats-container">
-        {renderRecipeStats()}
-      </div>
-
-      {renderTasteAdjustments()}
     </div>
   );
 };

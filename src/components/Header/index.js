@@ -18,6 +18,9 @@ const Header = () => {
         <Link to="/recipe-generator" className="recipe-button">
           🥘
         </Link>
+        <Link to="/kitchen-appliances" className="appliances-button">
+          ⚡
+        </Link>
         <Link to="/food-survey" className="survey-button">
           📋
         </Link>
