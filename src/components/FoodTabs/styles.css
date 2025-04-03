@@ -13,8 +13,8 @@
 
 .tab-button {
   flex: 1;
-  padding: 12px;
-  font-size: 16px;
+  padding: 10px;
+  font-size: 15px;
   font-weight: 500;
   background-color: #f0f0f0;
   border: none;
@@ -28,71 +28,59 @@
   color: white;
 }
 
+.action-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
 .action-buttons {
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
 }
 
 .generate-button {
-  flex: 2;
-  min-width: 200px;
-}
-
-.filter-batch-container {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-left: 15px;
-}
-
-.status-filters {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.filter-button {
-  padding: 8px 12px;
-  font-size: 14px;
+  flex: 1;
+  padding: 10px 20px;
+  font-size: 15px;
   font-weight: 500;
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
+  background-color: #3498db;
+  color: white;
+  border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: #495057;
 }
 
-.filter-button:hover {
-  background-color: #e9ecef;
+.generate-button:hover {
+  background-color: #2980b9;
 }
 
-.filter-button.active {
-  background-color: #e3f2fd;
-  border-color: #3498db;
-  color: #3498db;
+.batch-buttons {
+  display: flex;
+  gap: 8px;
 }
 
 .batch-select-button {
-  padding: 8px 12px;
-  font-size: 14px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
   font-weight: 500;
-  background-color: #f8f9fa;
+  background-color: white;
   border: 1px solid #dee2e6;
   border-radius: 5px;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 6px;
-  min-width: 100px;
+  white-space: nowrap;
+  color: #666;
 }
 
 .batch-select-button:hover {
-  background-color: #e9ecef;
+  background-color: #f0f0f0;
 }
 
 .batch-select-button.active {
@@ -106,10 +94,8 @@
 }
 
 .confirm-batch-button {
-  flex: 1;
-  min-width: 180px;
-  padding: 12px;
-  font-size: 14px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
   font-weight: 500;
   background-color: #3498db;
   color: white;
@@ -117,10 +103,143 @@
   border-radius: 5px;
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .confirm-batch-button:hover {
   background-color: #2980b9;
+}
+
+.filters-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.filters-container h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #000;
+  text-align: center;
+}
+
+.filter-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.filter-section h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #000;
+  white-space: nowrap;
+}
+
+.filter-button {
+  padding: 8px 20px;
+  border: 1px solid #ddd;
+  border-radius: 100px;
+  background: white;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #000;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  min-width: fit-content;
+}
+
+.filter-button:hover {
+  background: #f0f0f0;
+  border-color: #ccc;
+}
+
+.filter-button.active {
+  background: #007bff;
+  color: white;
+  border-color: #0056b3;
+}
+
+/* Status filter colors */
+.filter-button[data-status="all"].active {
+  background: #6c757d;
+  border-color: #6c757d;
+}
+
+.filter-button[data-status="pantry"].active {
+  background: #28a745;
+  border-color: #28a745;
+}
+
+.filter-button[data-status="shopping_list"].active {
+  background: #007bff;
+  border-color: #007bff;
+}
+
+.filter-button[data-status="need_to_purchase"].active {
+  background: #dc3545;
+  border-color: #dc3545;
+}
+
+/* Food type colors */
+.filter-button[data-category="protein"] {
+  border-color: #FF6B6B;
+}
+
+.filter-button[data-category="protein"].active {
+  background: #FF6B6B;
+  border-color: #FF6B6B;
+}
+
+.filter-button[data-category="vegetables"] {
+  border-color: #4ECB71;
+}
+
+.filter-button[data-category="vegetables"].active {
+  background: #4ECB71;
+  border-color: #4ECB71;
+}
+
+.filter-button[data-category="fruits"] {
+  border-color: #FFB84D;
+}
+
+.filter-button[data-category="fruits"].active {
+  background: #FFB84D;
+  border-color: #FFB84D;
+}
+
+.filter-button[data-category="grains"] {
+  border-color: #B5916F;
+}
+
+.filter-button[data-category="grains"].active {
+  background: #B5916F;
+  border-color: #B5916F;
+}
+
+.filter-button[data-category="dairy"] {
+  border-color: #72CCF4;
+}
+
+.filter-button[data-category="dairy"].active {
+  background: #72CCF4;
+  border-color: #72CCF4;
+}
+
+.filter-button[data-category="fats"] {
+  border-color: #B39DDB;
+}
+
+.filter-button[data-category="fats"].active {
+  background: #B39DDB;
+  border-color: #B39DDB;
 }
 
 .tab-content {
@@ -147,4 +266,4 @@
   font-size: 16px;
   background-color: #f8f8f8;
   border-radius: 5px;
-} 
+}

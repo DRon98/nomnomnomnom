@@ -1,11 +1,13 @@
 import React from 'react';
 import { useDrag } from 'react-dnd/dist/hooks';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addToPantry, addToGroceries } from '../../store/inventorySlice';
 import './styles.css';
 
-const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isSelected = false, onSelect, status }) => {
+const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isSelected = false, onSelect }) => {
   const dispatch = useDispatch();
+  const pantryItems = useSelector(state => state.inventory.pantry) || [];
+  const shoppingListItems = useSelector(state => state.inventory.groceries) || [];
   
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'FOOD',
@@ -51,6 +53,15 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
     return className;
   };
 
+  const getItemStatus = () => {
+    const inPantry = pantryItems.some(item => item.food.id === food.id);
+    const inShoppingList = shoppingListItems.some(item => item.food.id === food.id);
+    
+    if (inPantry) return { text: 'In Pantry', className: 'status-tag pantry' };
+    if (inShoppingList) return { text: 'In Shopping List', className: 'status-tag shopping' };
+    return { text: 'Need to Purchase', className: 'status-tag need-purchase' };
+  };
+
   const handleAddToPantry = () => {
     dispatch(addToPantry({ food: { ...food } }));
   };
@@ -70,18 +81,7 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
     drag(el);
   };
 
-  const getStatusIndicator = () => {
-    switch (status) {
-      case 'pantry':
-        return <span className="status-indicator pantry">🗄️ In Pantry</span>;
-      case 'shopping':
-        return <span className="status-indicator shopping">🛒 In Shopping List</span>;
-      case 'need':
-        return <span className="status-indicator need">➕ Need to Purchase</span>;
-      default:
-        return null;
-    }
-  };
+  const status = getItemStatus();
 
   return (
     <div
@@ -138,8 +138,13 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
           <div className="food-rating">
             Rating: {getRatingEmoji(food.rating)}
           </div>
-          {getStatusIndicator()}
         </>
+      )}
+      
+      {!inMealPlan && (
+        <div className={status.className}>
+          {status.text}
+        </div>
       )}
     </div>
   );

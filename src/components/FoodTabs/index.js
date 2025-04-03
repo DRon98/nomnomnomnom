@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setRecommendedFoods, setFoodsToAvoid, setLoading } from '../../store/foodsSlice';
 import { addToGroceries } from '../../store/inventorySlice';
 import { generateRecommendations } from '../../utils/foodGenerator';
+import { FILTER_OPTIONS, FOOD_CATEGORIES } from '../../constants';
 import FoodCard from '../FoodCard';
 import './styles.css';
 
@@ -10,7 +11,7 @@ const FoodTabs = () => {
   const [activeTab, setActiveTab] = useState('recommended');
   const [isBatchMode, setIsBatchMode] = useState(false);
   const [selectedFoods, setSelectedFoods] = useState(new Set());
-  const [statusFilters, setStatusFilters] = useState(new Set(['all']));
+  const [activeFilters, setActiveFilters] = useState(new Set([FILTER_OPTIONS.ALL]));
   const dispatch = useDispatch();
   const currentStates = useSelector(state => state.user.currentStates);
   const desiredStates = useSelector(state => state.user.desiredStates);
@@ -18,41 +19,17 @@ const FoodTabs = () => {
   const foodsToAvoid = useSelector(state => state.foods.foodsToAvoid) || [];
   const loading = useSelector(state => state.foods.loading);
   const pantryItems = useSelector(state => state.inventory.pantry) || [];
-  const groceryItems = useSelector(state => state.inventory.groceries) || [];
+  const shoppingListItems = useSelector(state => state.inventory.groceries) || [];
 
-  const toggleStatusFilter = (filter) => {
-    setStatusFilters(prev => {
-      const newSet = new Set(prev);
-      if (filter === 'all') {
-        return new Set(['all']);
-      }
-      if (newSet.has(filter)) {
-        newSet.delete(filter);
-        if (newSet.size === 0) {
-          newSet.add('all');
-        }
-      } else {
-        newSet.delete('all');
-        newSet.add(filter);
-      }
-      return newSet;
-    });
-  };
-
-  const getFoodStatus = (food) => {
-    const inPantry = pantryItems.some(item => item.foodId === food.id);
-    const inGrocery = groceryItems.some(item => item.foodId === food.id);
-    
-    if (inPantry) return 'pantry';
-    if (inGrocery) return 'shopping';
-    return 'need';
-  };
-
-  const filteredFoods = (activeTab === 'recommended' ? recommendedFoods : foodsToAvoid).filter(food => {
-    if (statusFilters.has('all')) return true;
-    const status = getFoodStatus(food);
-    return statusFilters.has(status);
-  });
+  // Select all items when entering batch mode
+  useEffect(() => {
+    if (isBatchMode) {
+      const currentFoods = activeTab === 'recommended' ? recommendedFoods : foodsToAvoid;
+      setSelectedFoods(new Set(currentFoods.map(food => food.id)));
+    } else {
+      setSelectedFoods(new Set());
+    }
+  }, [isBatchMode, activeTab, recommendedFoods, foodsToAvoid]);
 
   const handleGenerateRecommendations = async () => {
     if (currentStates.length === 0 || desiredStates.length === 0) return;
@@ -81,6 +58,27 @@ const FoodTabs = () => {
     });
   };
 
+  const toggleFilter = (filter) => {
+    setActiveFilters(prev => {
+      const newSet = new Set(prev);
+      if (filter === FILTER_OPTIONS.ALL) {
+        newSet.clear();
+        newSet.add(FILTER_OPTIONS.ALL);
+      } else {
+        newSet.delete(FILTER_OPTIONS.ALL);
+        if (newSet.has(filter)) {
+          newSet.delete(filter);
+          if (newSet.size === 0) {
+            newSet.add(FILTER_OPTIONS.ALL);
+          }
+        } else {
+          newSet.add(filter);
+        }
+      }
+      return newSet;
+    });
+  };
+
   const handleBatchAdd = () => {
     const foodsToAdd = (activeTab === 'recommended' ? recommendedFoods : foodsToAvoid)
       .filter(food => selectedFoods.has(food.id));
@@ -93,6 +91,47 @@ const FoodTabs = () => {
     setIsBatchMode(false);
     setSelectedFoods(new Set());
   };
+
+  const getFilteredFoods = (foods) => {
+    if (activeFilters.has(FILTER_OPTIONS.ALL)) {
+      return foods;
+    }
+
+    // Separate status and category filters
+    const statusFilters = new Set(
+      Array.from(activeFilters).filter(filter => 
+        [FILTER_OPTIONS.PANTRY, FILTER_OPTIONS.SHOPPING_LIST, FILTER_OPTIONS.NEED_TO_PURCHASE].includes(filter)
+      )
+    );
+    
+    const categoryFilters = new Set(
+      Array.from(activeFilters).filter(filter => 
+        Object.values(FOOD_CATEGORIES).includes(filter)
+      )
+    );
+
+    return foods.filter(food => {
+      const inPantry = pantryItems.some(item => item.food?.name?.toLowerCase() === food.name?.toLowerCase());
+      const inShoppingList = shoppingListItems.some(item => item.food?.name?.toLowerCase() === food.name?.toLowerCase());
+      
+      // If no status filters are selected, don't filter by status
+      const matchesStatusFilter = statusFilters.size === 0 ? true : (
+        (statusFilters.has(FILTER_OPTIONS.PANTRY) && inPantry) ||
+        (statusFilters.has(FILTER_OPTIONS.SHOPPING_LIST) && inShoppingList) ||
+        (statusFilters.has(FILTER_OPTIONS.NEED_TO_PURCHASE) && !inPantry && !inShoppingList)
+      );
+
+      // If no category filters are selected, don't filter by category
+      const matchesCategoryFilter = categoryFilters.size === 0 ? true :
+        categoryFilters.has(food.category);
+
+      // Item must match both status AND category filters if they are active
+      return matchesStatusFilter && matchesCategoryFilter;
+    });
+  };
+
+  const filteredRecommendedFoods = getFilteredFoods(recommendedFoods);
+  const filteredFoodsToAvoid = getFilteredFoods(foodsToAvoid);
 
   return (
     <div className="food-tabs">
@@ -113,51 +152,21 @@ const FoodTabs = () => {
 
       {currentStates.length > 0 && desiredStates.length > 0 ? (
         <>
-          <div className="action-buttons">
-            <button
-              className="generate-button primary-button"
-              onClick={handleGenerateRecommendations}
-              disabled={loading}
-            >
-              {loading ? 'Generating...' : 'Generate Recommendations'}
-            </button>
-            
-            <div className="filter-batch-container">
-              <div className="status-filters">
-                <button
-                  className={`filter-button ${statusFilters.has('all') ? 'active' : ''}`}
-                  onClick={() => toggleStatusFilter('all')}
-                >
-                  All
-                </button>
-                <button
-                  className={`filter-button ${statusFilters.has('pantry') ? 'active' : ''}`}
-                  onClick={() => toggleStatusFilter('pantry')}
-                >
-                  In Pantry
-                </button>
-                <button
-                  className={`filter-button ${statusFilters.has('shopping') ? 'active' : ''}`}
-                  onClick={() => toggleStatusFilter('shopping')}
-                >
-                  In Shopping List
-                </button>
-                <button
-                  className={`filter-button ${statusFilters.has('need') ? 'active' : ''}`}
-                  onClick={() => toggleStatusFilter('need')}
-                >
-                  Need to Purchase
-                </button>
-              </div>
-
-              {filteredFoods.length > 0 && (
+          <div className="action-bar">
+            <div className="action-buttons">
+              <button
+                className="generate-button"
+                onClick={handleGenerateRecommendations}
+                disabled={loading}
+              >
+                {loading ? 'Generating...' : 'Generate Recommendations'}
+              </button>
+              <div className="batch-buttons">
                 <button
                   className={`batch-select-button ${isBatchMode ? 'active' : ''}`}
                   onClick={() => {
                     if (isBatchMode) {
                       setSelectedFoods(new Set());
-                    } else {
-                      setSelectedFoods(new Set(filteredFoods.map(food => food.id)));
                     }
                     setIsBatchMode(!isBatchMode);
                   }}
@@ -165,16 +174,66 @@ const FoodTabs = () => {
                   <span className="icon">📋</span>
                   {isBatchMode ? 'Cancel' : 'Batch Add'}
                 </button>
-              )}
-            </div>
 
-            {isBatchMode && selectedFoods.size > 0 && (
-              <button
-                className="confirm-batch-button"
-                onClick={handleBatchAdd}
-              >
-                Add {selectedFoods.size} items to Shopping List
-              </button>
+                {isBatchMode && selectedFoods.size > 0 && (
+                  <button
+                    className="confirm-batch-button"
+                    onClick={handleBatchAdd}
+                  >
+                    Add {selectedFoods.size} items
+                  </button>
+                )}
+              </div>
+            </div>
+            
+            {(activeTab === 'recommended' ? recommendedFoods : foodsToAvoid).length > 0 && (
+              <div className="filters-container">
+                <h1>Food Inventory</h1>
+                <div className="filter-section">
+                  <h4>Status:</h4>
+                  <button
+                    className={`filter-button ${activeFilters.has(FILTER_OPTIONS.ALL) ? 'active' : ''}`}
+                    onClick={() => toggleFilter(FILTER_OPTIONS.ALL)}
+                    data-status="all"
+                  >
+                    All
+                  </button>
+                  <button
+                    className={`filter-button ${activeFilters.has(FILTER_OPTIONS.PANTRY) ? 'active' : ''}`}
+                    onClick={() => toggleFilter(FILTER_OPTIONS.PANTRY)}
+                    data-status="pantry"
+                  >
+                    In Pantry
+                  </button>
+                  <button
+                    className={`filter-button ${activeFilters.has(FILTER_OPTIONS.SHOPPING_LIST) ? 'active' : ''}`}
+                    onClick={() => toggleFilter(FILTER_OPTIONS.SHOPPING_LIST)}
+                    data-status="shopping_list"
+                  >
+                    In Shopping List
+                  </button>
+                  <button
+                    className={`filter-button ${activeFilters.has(FILTER_OPTIONS.NEED_TO_PURCHASE) ? 'active' : ''}`}
+                    onClick={() => toggleFilter(FILTER_OPTIONS.NEED_TO_PURCHASE)}
+                    data-status="need_to_purchase"
+                  >
+                    Need to Purchase
+                  </button>
+                </div>
+                <div className="filter-section">
+                  <h4>Type:</h4>
+                  {Object.values(FOOD_CATEGORIES).map(category => (
+                    <button
+                      key={category}
+                      className={`filter-button ${activeFilters.has(category) ? 'active' : ''}`}
+                      onClick={() => toggleFilter(category)}
+                      data-category={category}
+                    >
+                      {category.charAt(0).toUpperCase() + category.slice(1)}
+                    </button>
+                  ))}
+                </div>
+              </div>
             )}
           </div>
 
@@ -184,36 +243,34 @@ const FoodTabs = () => {
             ) : (
               <div className="food-grid">
                 {activeTab === 'recommended' ? (
-                  filteredFoods.length > 0 ? (
-                    filteredFoods.map(food => (
+                  filteredRecommendedFoods.length > 0 ? (
+                    filteredRecommendedFoods.map(food => (
                       <FoodCard
                         key={food.id}
                         food={food}
                         isBatchMode={isBatchMode}
                         isSelected={selectedFoods.has(food.id)}
                         onSelect={() => toggleFoodSelection(food.id)}
-                        status={getFoodStatus(food)}
                       />
                     ))
                   ) : (
                     <div className="no-foods-message">
-                      Click "Generate Recommendations" to get food suggestions
+                      {recommendedFoods.length > 0 ? 'No foods match the selected filters' : 'Click "Generate Recommendations" to get food suggestions'}
                     </div>
                   )
-                ) : filteredFoods.length > 0 ? (
-                  filteredFoods.map(food => (
+                ) : filteredFoodsToAvoid.length > 0 ? (
+                  filteredFoodsToAvoid.map(food => (
                     <FoodCard
                       key={food.id}
                       food={food}
                       isBatchMode={isBatchMode}
                       isSelected={selectedFoods.has(food.id)}
                       onSelect={() => toggleFoodSelection(food.id)}
-                      status={getFoodStatus(food)}
                     />
                   ))
                 ) : (
                   <div className="no-foods-message">
-                    Click "Generate Recommendations" to get foods to avoid
+                    {foodsToAvoid.length > 0 ? 'No foods match the selected filters' : 'Click "Generate Recommendations" to get foods to avoid'}
                   </div>
                 )}
               </div>

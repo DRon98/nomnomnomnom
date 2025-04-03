@@ -6,6 +6,9 @@
   transition: all 0.2s ease;
   border: 2px solid transparent;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 200px;
 }
 
 .food-card.high {
@@ -90,6 +93,7 @@
   display: flex;
   align-items: center;
   gap: 5px;
+  margin-bottom: 10px;
 }
 
 .food-card:hover {
@@ -186,6 +190,32 @@
   background-color: #e8f5e9;
 }
 
+/* Status tags */
+.status-tag {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  color: white;
+}
+
+.status-tag.pantry {
+  background-color: #4caf50;
+}
+
+.status-tag.shopping {
+  background-color: #2196f3;
+}
+
+.status-tag.need-purchase {
+  background-color: #ff9800;
+}
+
 /* Styles for nested food items */
 .drop-target {
   box-shadow: 0 0 0 2px #3498db;
@@ -202,30 +232,4 @@
   padding: 4px;
   font-size: 12px;
   border-radius: 0 0 8px 8px;
-}
-
-.status-indicator {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 500;
-  margin-top: 8px;
-}
-
-.status-indicator.pantry {
-  background-color: #e3f2fd;
-  color: #1976d2;
-}
-
-.status-indicator.shopping {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-}
-
-.status-indicator.need {
-  background-color: #fff3e0;
-  color: #f57c00;
 }

@@ -9,11 +9,24 @@ export const MEAL_TYPES = {
 // Food Categories
 export const FOOD_CATEGORIES = {
   PROTEIN: 'protein',
-  CARBS: 'carbs',
   VEGETABLES: 'vegetables',
   FRUITS: 'fruits',
+  GRAINS: 'grains',
   DAIRY: 'dairy',
   FATS: 'fats'
+};
+
+// Filter Options
+export const FILTER_OPTIONS = {
+  ALL: 'all',
+  PANTRY: 'pantry',
+  SHOPPING_LIST: 'shopping_list',
+  NEED_TO_PURCHASE: 'need_to_purchase',
+  // Food Categories
+  ...Object.entries(FOOD_CATEGORIES).reduce((acc, [key, value]) => ({
+    ...acc,
+    [key]: value
+  }), {})
 };
 
 // Survey Questions
