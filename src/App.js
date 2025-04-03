@@ -9,6 +9,7 @@ import RecipeBuilder from './pages/RecipeBuilder';
 import RecipeGenerator from './pages/RecipeGenerator';
 import PantryManager from './pages/PantryManager';
 import KitchenAppliances from './components/KitchenAppliances';
+import FoodJournalPage from './pages/FoodJournalPage';
 import ErrorBoundary from './components/ErrorBoundary';
 import './App.css';
 import './components/ErrorBoundary/styles.css';
@@ -26,6 +27,7 @@ function App() {
             <Route path="recipe-generator" element={<RecipeGenerator />} />
             <Route path="pantry" element={<PantryManager />} />
             <Route path="kitchen-appliances" element={<KitchenAppliances />} />
+            <Route path="food-journal" element={<FoodJournalPage />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

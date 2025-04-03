@@ -45,6 +45,9 @@ const Header = () => {
               <Link to="/profile" className="dropdown-item">
                 <FaUser /> View Profile
               </Link>
+              <Link to="/food-journal" className="dropdown-item">
+                <FaChartBar /> Food Journal
+              </Link>
               <Link to="/kitchen-appliances" className="dropdown-item">
                 <FaCog /> Kitchen Appliances
               </Link>
