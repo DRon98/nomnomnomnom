@@ -1,100 +1,35 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useDrop } from 'react-dnd/dist/hooks';
-import { addFoodToMeal, clearMealPlan, generateRandomPlan, removeFoodFromMeal, updateMealTime } from '../../store/mealPlanSlice';
+import { clearMealPlan, generateRandomPlan } from '../../store/mealPlanSlice';
 import { generateMealPlan } from '../../utils/foodGenerator';
-import FoodCard from '../FoodCard';
-import './styles.css';
+import MealSlot from '../MealSlot';
 import { selectDayPlanMeals } from '../../store/mealPlanSlice';
+import './styles.css';
 
-const MealSlot = ({ title, icon, meal, foods }) => {
-  const dispatch = useDispatch();
-  const mealTimes = useSelector(state => state.mealPlan.mealTimes);
-  const [isEditingTime, setIsEditingTime] = useState(false);
-  const [timeValue, setTimeValue] = useState(mealTimes[meal]);
-  
-  const [{ isOver }, drop] = useDrop(() => ({
-    accept: 'FOOD',
-    drop: (item) => {
-      dispatch(addFoodToMeal({ 
-        mealType: meal, 
-        food: item.food
-      }));
-    },
-    collect: (monitor) => ({
-      isOver: monitor.isOver()
-    })
-  }));
-
-  const handleRemoveFood = (foodId) => {
-    dispatch(removeFoodFromMeal({ mealType: meal, mealId: foodId }));
-  };
-
-  const handleTimeClick = () => {
-    setIsEditingTime(true);
-  };
-
-  const handleTimeChange = (e) => {
-    setTimeValue(e.target.value);
-  };
-
-  const handleTimeBlur = () => {
-    dispatch(updateMealTime({ meal, time: timeValue }));
-    setIsEditingTime(false);
-  };
-
-  return (
-    <div className="meal-slot">
-      <div className="meal-header">
-        <span className="meal-icon">{icon}</span>
-        <h3 className="meal-title">{title}</h3>
-        {isEditingTime ? (
-          <input
-            type="time"
-            className="meal-time-input"
-            value={timeValue}
-            onChange={handleTimeChange}
-            onBlur={handleTimeBlur}
-            autoFocus
-          />
-        ) : (
-          <span className="meal-time" onClick={handleTimeClick}>
-            {mealTimes[meal]}
-          </span>
-        )}
-      </div>
-      <div
-        ref={drop}
-        className={`meal-content droppable ${isOver ? 'active' : ''}`}
-      >
-        {foods && foods.length > 0 ? (
-          <div className="meal-foods">
-            {foods.map(food => (
-              <FoodCard
-                key={food.id}
-                food={food}
-                onRemove={() => handleRemoveFood(food.id)}
-                inMealPlan={true}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="drag-placeholder">
-            Drag a food here
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+const MEAL_CONFIG = [
+  { type: 'breakfast', title: 'Breakfast', icon: '☀️' },
+  { type: 'lunch', title: 'Lunch', icon: '🍽️' },
+  { type: 'dinner', title: 'Dinner', icon: '🌙' },
+  { type: 'snacks', title: 'Snacks', icon: '🍎' }
+];
 
 const MealPlanner = () => {
   const dispatch = useDispatch();
   const recommendedFoods = useSelector(state => state.foods.recommendedFoods);
-  const breakfast = useSelector(state => selectDayPlanMeals(state, 'breakfast'));
-  const lunch = useSelector(state => selectDayPlanMeals(state, 'lunch'));
-  const dinner = useSelector(state => selectDayPlanMeals(state, 'dinner'));
-  const snacks = useSelector(state => selectDayPlanMeals(state, 'snacks'));
+  
+  // Move selectors to the top level
+  const breakfastMeals = useSelector(state => selectDayPlanMeals(state, 'breakfast'));
+  const lunchMeals = useSelector(state => selectDayPlanMeals(state, 'lunch'));
+  const dinnerMeals = useSelector(state => selectDayPlanMeals(state, 'dinner'));
+  const snacksMeals = useSelector(state => selectDayPlanMeals(state, 'snacks'));
+  
+  // Create meals map after the selectors
+  const mealsByType = {
+    breakfast: breakfastMeals,
+    lunch: lunchMeals,
+    dinner: dinnerMeals,
+    snacks: snacksMeals
+  };
   
   const handleGeneratePlan = () => {
     if (recommendedFoods.length === 0) return;
@@ -128,30 +63,18 @@ const MealPlanner = () => {
       </div>
       
       <div className="meal-slots">
-        <MealSlot
-          title="Breakfast"
-          icon="☀️"
-          meal="breakfast"
-          foods={breakfast}
-        />
-        <MealSlot
-          title="Lunch"
-          icon="🍽️"
-          meal="lunch"
-          foods={lunch}
-        />
-        <MealSlot
-          title="Dinner"
-          icon="🌙"
-          meal="dinner"
-          foods={dinner}
-        />
-        <MealSlot
-          title="Snacks"
-          icon="🍎"
-          meal="snacks"
-          foods={snacks}
-        />
+        {MEAL_CONFIG.map(({ type, title, icon }) => (
+          <MealSlot
+            key={type}
+            title={title}
+            icon={icon}
+            meal={type}
+            foods={mealsByType[type]}
+          />
+         
+        ))
+        
+        }
       </div>
     </div>
   );

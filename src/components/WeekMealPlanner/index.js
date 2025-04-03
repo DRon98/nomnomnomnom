@@ -1,33 +1,24 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useDrop } from 'react-dnd/dist/hooks';
 import { 
   addFoodToMeal, 
-  removeFoodFromMeal, 
-  updateMealTime,
   generateRandomPlan,
-  clearMealPlan
+  clearMealPlan,
+  selectWeekPlanMeals
 } from '../../store/mealPlanSlice';
 import { generateMealPlan } from '../../utils/foodGenerator';
-import FoodCard from '../FoodCard';
+import MealSlot from '../MealSlot';
 import './styles.css';
 
 const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-const MEAL_TYPES = ['breakfast', 'lunch', 'dinner', 'snacks'];
-const MEAL_ICONS = {
-  breakfast: '☀️',
-  lunch: '🍽️',
-  dinner: '🌙',
-  snacks: '🍎'
-};
-const MEAL_TITLES = {
-  breakfast: 'Breakfast',
-  lunch: 'Lunch',
-  dinner: 'Dinner',
-  snacks: 'Snacks'
-};
+const MEAL_CONFIG = [
+  { type: 'breakfast', title: 'Breakfast', icon: '☀️' },
+  { type: 'lunch', title: 'Lunch', icon: '🍽️' },
+  { type: 'dinner', title: 'Dinner', icon: '🌙' },
+  { type: 'snacks', title: 'Snacks', icon: '🍎' }
+];
 
-// Color palette for emotions (copied from WeekPlanner)
+// Color palette for emotions
 const EMOTION_COLORS = [
   '#3498db', // Blue
   '#27ae60', // Dark Green
@@ -37,154 +28,29 @@ const EMOTION_COLORS = [
   '#16a085', // Teal
 ];
 
-const WeekMealSlot = ({ day, title, icon, meal, foods, onCopyToDay }) => {
-  const dispatch = useDispatch();
-  const mealTimes = useSelector(state => state.mealPlan.mealTimes);
-  const [isEditingTime, setIsEditingTime] = useState(false);
-  const [timeValue, setTimeValue] = useState(mealTimes[meal]);
-  const [showCopyOptions, setShowCopyOptions] = useState(false);
-  const [selectedDays, setSelectedDays] = useState([]);
-  
-  const [{ isOver }, drop] = useDrop(() => ({
-    accept: 'FOOD',
-    drop: (item) => {
-      dispatch(addFoodToMeal({ 
-        mealType: meal, 
-        food: item.food,
-        day
-      }));
-    },
-    collect: (monitor) => ({
-      isOver: monitor.isOver()
-    })
-  }));
-
-  const handleRemoveFood = (foodId) => {
-    dispatch(removeFoodFromMeal({ mealType: meal, mealId: foodId, day }));
-  };
-
-  const handleTimeClick = () => {
-    setIsEditingTime(true);
-  };
-
-  const handleTimeChange = (e) => {
-    setTimeValue(e.target.value);
-  };
-
-  const handleTimeBlur = () => {
-    dispatch(updateMealTime({ meal, time: timeValue, day }));
-    setIsEditingTime(false);
-  };
-
-  const handleDayToggle = (targetDay) => {
-    setSelectedDays(prev => 
-      prev.includes(targetDay) 
-        ? prev.filter(d => d !== targetDay)
-        : [...prev, targetDay]
-    );
-  };
-
-  const handleCopy = () => {
-    selectedDays.forEach(targetDay => {
-      onCopyToDay(day, targetDay, meal);
-    });
-    setShowCopyOptions(false);
-    setSelectedDays([]);
-  };
-
-  return (
-    <div className="week-meal-slot">
-      <div className="meal-header">
-        <span className="meal-icon">{icon}</span>
-        <h4 className="meal-title">{title}</h4>
-        {isEditingTime ? (
-          <input
-            type="time"
-            className="meal-time-input"
-            value={timeValue}
-            onChange={handleTimeChange}
-            onBlur={handleTimeBlur}
-            autoFocus
-          />
-        ) : (
-          <span className="meal-time" onClick={handleTimeClick}>
-            {mealTimes[meal]}
-          </span>
-        )}
-        {foods && foods.length > 0 && (
-          <button 
-            className="copy-meal-button"
-            onClick={() => {
-              setShowCopyOptions(!showCopyOptions);
-              if (!showCopyOptions) {
-                setSelectedDays([]);
-              }
-            }}
-          >
-            Copy to Other Days
-          </button>
-        )}
-      </div>
-      
-      {showCopyOptions && (
-        <div className="copy-options-container">
-          <div className="copy-options">
-            {DAYS_OF_WEEK.filter(d => d !== day).map(targetDay => (
-              <button 
-                key={targetDay}
-                className={`copy-day-button ${selectedDays.includes(targetDay) ? 'selected' : ''}`}
-                onClick={() => handleDayToggle(targetDay)}
-              >
-                {targetDay}
-              </button>
-            ))}
-          </div>
-          {selectedDays.length > 0 && (
-            <button 
-              className="copy-confirm-button"
-              onClick={handleCopy}
-            >
-              Copy to {selectedDays.length} day{selectedDays.length > 1 ? 's' : ''}
-            </button>
-          )}
-        </div>
-      )}
-      
-      <div
-        ref={drop}
-        className={`meal-content droppable ${isOver ? 'active' : ''}`}
-      >
-        {foods && foods.length > 0 ? (
-          <div className="meal-foods">
-            {foods.map(food => (
-              <FoodCard
-                key={food.id}
-                food={food}
-                onRemove={() => handleRemoveFood(food.id)}
-                inMealPlan={true}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="drag-placeholder">
-            Drag a food here
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-const DaySection = ({ day, mealPlan, weekFeelings, onCopyToDay }) => {
+const DaySection = ({ day, weekFeelings, onCopyToDay }) => {
   const [isExpanded, setIsExpanded] = useState(day === 'Monday');
   const dispatch = useDispatch();
   const recommendedFoods = useSelector(state => state.foods.recommendedFoods);
+  
+  // Move selectors to the top level
+  const breakfastMeals = useSelector(state => selectWeekPlanMeals(state, day, 'breakfast'));
+  const lunchMeals = useSelector(state => selectWeekPlanMeals(state, day, 'lunch'));
+  const dinnerMeals = useSelector(state => selectWeekPlanMeals(state, day, 'dinner'));
+  const snacksMeals = useSelector(state => selectWeekPlanMeals(state, day, 'snacks'));
+  
+  // Create meals map after the selectors
+  const mealsByType = {
+    breakfast: breakfastMeals,
+    lunch: lunchMeals,
+    dinner: dinnerMeals,
+    snacks: snacksMeals
+  };
   
   // Find feelings assigned to this day and maintain their original colors
   const dayFeelings = weekFeelings
     .filter(({ days }) => days.includes(day.substring(0, 3)))
     .map(feeling => {
-      // Find the original index of this feeling in the weekFeelings array
       const originalIndex = weekFeelings.findIndex(f => f.feeling === feeling.feeling);
       return {
         feeling: feeling.feeling,
@@ -246,15 +112,16 @@ const DaySection = ({ day, mealPlan, weekFeelings, onCopyToDay }) => {
             </button>
           </div>
           
-          {MEAL_TYPES.map(mealType => (
-            <WeekMealSlot
-              key={`${day}-${mealType}`}
+          {MEAL_CONFIG.map(({ type, title, icon }) => (
+            <MealSlot
+              key={`${day}-${type}`}
+              title={title}
+              icon={icon}
+              meal={type}
+              foods={mealsByType[type]}
               day={day}
-              title={MEAL_TITLES[mealType]}
-              icon={MEAL_ICONS[mealType]}
-              meal={mealType}
-              foods={mealPlan[day]?.[mealType] || []}
-              onCopyToDay={onCopyToDay}
+              onCopyToDay={() => onCopyToDay(day, type)}
+              className="week-meal-slot"
             />
           ))}
         </div>
@@ -265,31 +132,79 @@ const DaySection = ({ day, mealPlan, weekFeelings, onCopyToDay }) => {
 
 const WeekMealPlanner = () => {
   const dispatch = useDispatch();
-  const weekMealPlan = useSelector(state => state.mealPlan.weekPlan || {});
   const weekFeelings = useSelector(state => state.user.weekFeelings);
+  const [selectedDays, setSelectedDays] = useState([]);
+  const [copyingMeal, setCopyingMeal] = useState(null);
 
-  const handleCopyToDay = (sourceDay, targetDay, meal) => {
-    const foodsToCopy = weekMealPlan[sourceDay]?.[meal] || [];
+  // Get foods for copying at the top level
+  const foodsToCopy = useSelector(state => 
+    copyingMeal 
+      ? selectWeekPlanMeals(state, copyingMeal.sourceDay, copyingMeal.meal)
+      : []
+  );
+
+  const handleCopyToDay = (sourceDay, meal) => {
+    setCopyingMeal({ sourceDay, meal });
+  };
+
+  const handleDayToggle = (targetDay) => {
+    setSelectedDays(prev => 
+      prev.includes(targetDay) 
+        ? prev.filter(d => d !== targetDay)
+        : [...prev, targetDay]
+    );
+  };
+
+  const handleCopy = () => {
+    if (!copyingMeal) return;
     
-    foodsToCopy.forEach(food => {
-      dispatch(addFoodToMeal({
-        mealType: meal,
-        food,
-        day: targetDay
-      }));
+    selectedDays.forEach(targetDay => {
+      foodsToCopy.forEach(food => {
+        dispatch(addFoodToMeal({
+          mealType: copyingMeal.meal,
+          food,
+          day: targetDay
+        }));
+      });
     });
+
+    setCopyingMeal(null);
+    setSelectedDays([]);
   };
 
   return (
     <div className="week-meal-planner">
       <h2 className="planner-title">Plan Your Week</h2>
       
+      {copyingMeal && (
+        <div className="copy-options-container">
+          <div className="copy-options">
+            {DAYS_OF_WEEK.filter(d => d !== copyingMeal.sourceDay).map(targetDay => (
+              <button 
+                key={targetDay}
+                className={`copy-day-button ${selectedDays.includes(targetDay) ? 'selected' : ''}`}
+                onClick={() => handleDayToggle(targetDay)}
+              >
+                {targetDay}
+              </button>
+            ))}
+          </div>
+          {selectedDays.length > 0 && (
+            <button 
+              className="copy-confirm-button"
+              onClick={handleCopy}
+            >
+              Copy to {selectedDays.length} day{selectedDays.length > 1 ? 's' : ''}
+            </button>
+          )}
+        </div>
+      )}
+      
       <div className="week-days">
         {DAYS_OF_WEEK.map(day => (
           <DaySection 
             key={day}
             day={day}
-            mealPlan={weekMealPlan}
             weekFeelings={weekFeelings}
             onCopyToDay={handleCopyToDay}
           />

@@ -1,0 +1,104 @@
+.meal-slot {
+  background-color: #f8f8f8;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.meal-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.meal-icon {
+  font-size: 24px;
+}
+
+.meal-title {
+  font-family: 'Comic Neue', cursive;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+.meal-time {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 14px;
+  color: #666;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+.meal-time:hover {
+  color: #3498db;
+}
+
+.meal-time-input {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 14px;
+  width: 80px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 2px;
+  outline: none;
+}
+
+.meal-time-input:focus {
+  border-color: #3498db;
+}
+
+.meal-content {
+  min-height: 100px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: white;
+  overflow-y: auto;
+  max-height: 200px;
+}
+
+.meal-content.droppable {
+  border: 2px dashed #ccc;
+}
+
+.meal-content.droppable.active {
+  border-color: #3498db;
+  background-color: rgba(52, 152, 219, 0.1);
+}
+
+.meal-foods {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.drag-placeholder {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 14px;
+  font-style: italic;
+}
+
+.copy-meal-button {
+  margin-left: auto;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.copy-meal-button:hover {
+  background-color: #e0e0e0;
+} 

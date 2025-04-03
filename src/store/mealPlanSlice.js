@@ -241,11 +241,15 @@ const mealPlanSlice = createSlice({
 
 // Selectors
 export const selectMealById = (state, id) => state.mealPlan.meals.byId[id];
+
 export const selectDayPlanMeals = (state, mealType) => 
   state.mealPlan.dayPlan[mealType]
     .map(id => {
       const meal = state.mealPlan.meals.byId[id];
-      return meal ? meal.food : null;
+      return meal ? {
+        ...meal.food,
+        mealId: meal.id  // Include the mealId for removal
+      } : null;
     })
     .filter(Boolean);
 
@@ -253,7 +257,10 @@ export const selectWeekPlanMeals = (state, day, mealType) =>
   state.mealPlan.weekPlan[day][mealType]
     .map(id => {
       const meal = state.mealPlan.meals.byId[id];
-      return meal ? meal.food : null;
+      return meal ? {
+        ...meal.food,
+        mealId: meal.id  // Include the mealId for removal
+      } : null;
     })
     .filter(Boolean);
 
