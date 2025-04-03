@@ -77,6 +77,7 @@ const mealPlanSlice = createSlice({
         id: mealId,
         type: mealType,
         foodId: food.id,
+        food: { ...food },  // Store the complete food data
         day: day || null,
         createdAt: Date.now()
       };
@@ -199,6 +200,7 @@ const mealPlanSlice = createSlice({
             id: mealId,
             type: mealType,
             foodId: food.id,
+            food: { ...food },  // Store the complete food data
             day: targetDay || null,
             createdAt: Date.now()
           };
@@ -240,9 +242,21 @@ const mealPlanSlice = createSlice({
 // Selectors
 export const selectMealById = (state, id) => state.mealPlan.meals.byId[id];
 export const selectDayPlanMeals = (state, mealType) => 
-  state.mealPlan.dayPlan[mealType].map(id => state.mealPlan.meals.byId[id]).filter(Boolean);
+  state.mealPlan.dayPlan[mealType]
+    .map(id => {
+      const meal = state.mealPlan.meals.byId[id];
+      return meal ? meal.food : null;
+    })
+    .filter(Boolean);
+
 export const selectWeekPlanMeals = (state, day, mealType) => 
-  state.mealPlan.weekPlan[day][mealType].map(id => state.mealPlan.meals.byId[id]).filter(Boolean);
+  state.mealPlan.weekPlan[day][mealType]
+    .map(id => {
+      const meal = state.mealPlan.meals.byId[id];
+      return meal ? meal.food : null;
+    })
+    .filter(Boolean);
+
 export const selectMealTimes = state => state.mealPlan.mealTimes;
 
 export const { 

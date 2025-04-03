@@ -5,6 +5,7 @@ import { addFoodToMeal, clearMealPlan, generateRandomPlan, removeFoodFromMeal, u
 import { generateMealPlan } from '../../utils/foodGenerator';
 import FoodCard from '../FoodCard';
 import './styles.css';
+import { selectDayPlanMeals } from '../../store/mealPlanSlice';
 
 const MealSlot = ({ title, icon, meal, foods }) => {
   const dispatch = useDispatch();
@@ -90,9 +91,11 @@ const MealSlot = ({ title, icon, meal, foods }) => {
 const MealPlanner = () => {
   const dispatch = useDispatch();
   const recommendedFoods = useSelector(state => state.foods.recommendedFoods);
-  const mealPlan = useSelector(state => state.mealPlan);
-  const dayPlan = mealPlan.dayPlan;
-
+  const breakfast = useSelector(state => selectDayPlanMeals(state, 'breakfast'));
+  const lunch = useSelector(state => selectDayPlanMeals(state, 'lunch'));
+  const dinner = useSelector(state => selectDayPlanMeals(state, 'dinner'));
+  const snacks = useSelector(state => selectDayPlanMeals(state, 'snacks'));
+  
   const handleGeneratePlan = () => {
     if (recommendedFoods.length === 0) return;
     
@@ -129,25 +132,25 @@ const MealPlanner = () => {
           title="Breakfast"
           icon="☀️"
           meal="breakfast"
-          foods={dayPlan.breakfast}
+          foods={breakfast}
         />
         <MealSlot
           title="Lunch"
           icon="🍽️"
           meal="lunch"
-          foods={dayPlan.lunch}
+          foods={lunch}
         />
         <MealSlot
           title="Dinner"
           icon="🌙"
           meal="dinner"
-          foods={dayPlan.dinner}
+          foods={dinner}
         />
         <MealSlot
           title="Snacks"
           icon="🍎"
           meal="snacks"
-          foods={dayPlan.snacks}
+          foods={snacks}
         />
       </div>
     </div>

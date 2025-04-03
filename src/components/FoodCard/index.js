@@ -15,7 +15,6 @@ const FoodCard = ({ food, onRemove, inMealPlan = false }) => {
     })
   }));
 
-
   const getRatingEmoji = (rating) => {
     switch (rating) {
       case 'Nomnomnomnom':
@@ -97,7 +96,6 @@ const FoodCard = ({ food, onRemove, inMealPlan = false }) => {
           </div>
         </>
       )}
-
     </div>
   );
 };
