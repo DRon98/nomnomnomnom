@@ -1,7 +1,6 @@
 .recipe-generator {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 20px;
+  max-width: calc(100% - 40px);
+  margin: 20px 20px 0;
   display: grid;
   grid-template-columns: 300px 1fr;
   gap: 30px;
@@ -16,6 +15,7 @@
   height: fit-content;
   position: sticky;
   top: 20px;
+  width: 300px;
 }
 
 .filters-section h2 {
@@ -108,7 +108,12 @@
 
 /* Recipes Section */
 .recipes-section {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   min-height: 500px;
+  flex-grow: 1;
 }
 
 .recipe-grid {
@@ -228,12 +233,14 @@
 
   .filters-section {
     position: static;
+    width: 100%;
   }
 }
 
 @media (max-width: 768px) {
   .recipe-generator {
-    padding: 10px;
+    margin: 15px 10px 0;
+    max-width: calc(100% - 20px);
   }
 
   .recipe-grid {
