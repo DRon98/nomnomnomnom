@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './RecipeBuilder.css';
-import { FaFire, FaClock, FaUtensils, FaListUl, FaChartBar, FaPlus, FaMinus, FaTrash } from 'react-icons/fa';
+import { FaFire, FaClock, FaUtensils, FaListUl, FaChartBar, FaPlus, FaMinus, FaTrash, FaInfoCircle } from 'react-icons/fa';
 
 const HEAT_STATES = {
   OFF: 'off',
@@ -121,7 +121,7 @@ const INITIAL_RECIPE = {
 };
 
 const RecipeBuilder = () => {
-  const [recipeTitle, setRecipeTitle] = useState(INITIAL_RECIPE.title);
+  const [recipe, setRecipe] = useState(INITIAL_RECIPE);
   const [selectedStep, setSelectedStep] = useState(null);
   const [activeTab, setActiveTab] = useState('full');
   const [steps, setSteps] = useState(INITIAL_RECIPE.steps);
@@ -132,6 +132,8 @@ const RecipeBuilder = () => {
   const [pantryItems, setPantryItems] = useState([
     'soy sauce', 'mirin', 'sake', 'eggs', 'green onions', 'garlic', 'ginger'
   ]);
+  const [activeTastes, setActiveTastes] = useState([]);
+  const [highlightedIngredients, setHighlightedIngredients] = useState([]);
 
   const timelineRef = useRef(null);
 
@@ -231,6 +233,29 @@ const RecipeBuilder = () => {
       addToPantry(newIngredient.trim());
       setNewIngredient('');
     }
+  };
+
+  const handleTasteClick = (taste) => {
+    setActiveTastes(prev => {
+      const newTastes = prev.includes(taste)
+        ? prev.filter(t => t !== taste)
+        : [...prev, taste];
+      
+      // Update highlighted ingredients based on active tastes
+      const newHighlights = [];
+      if (newTastes.includes('less salty')) {
+        newHighlights.push('soy sauce', 'salt');
+      }
+      if (newTastes.includes('more spicy')) {
+        newHighlights.push('chili flakes', 'hot sauce');
+      }
+      if (newTastes.includes('less sweet')) {
+        newHighlights.push('sugar', 'honey');
+      }
+      setHighlightedIngredients(newHighlights);
+      
+      return newTastes;
+    });
   };
 
   const renderTimeline = () => {
@@ -340,15 +365,23 @@ const RecipeBuilder = () => {
 
     return (
       <div className="prep-steps">
-        <h4>{selectedStep.name} Preparation</h4>
+        <div className="prep-header">
+          <h4>{selectedStep.name}</h4>
+          <div className="info-tooltip">
+            <FaInfoCircle className="info-icon" />
+            <span className="tooltip-text">{selectedStep.description}</span>
+          </div>
+        </div>
         <div className="prep-details">
           <div className="prep-section">
             <h5>Ingredients Needed</h5>
             <ul>
               {selectedStep.ingredients.map((ingredient, index) => (
-                <li key={index}>
+                <li key={index} className={`${highlightedIngredients.includes(ingredient) ? 'highlighted' : ''}`}>
                   {ingredient}
-                  {pantryItems.includes(ingredient) && " (in pantry)"}
+                  {pantryItems.includes(ingredient) && (
+                    <span className="pantry-badge">in pantry</span>
+                  )}
                 </li>
               ))}
             </ul>
@@ -431,6 +464,55 @@ const RecipeBuilder = () => {
     );
   };
 
+  const renderRecipeStats = () => (
+    <div className="recipe-stats">
+      <div className="recipe-stats-row">
+        <div>
+          <FaClock />
+          <span>{recipe.maxTime} min</span>
+        </div>
+        <div>
+          <FaUtensils />
+          <span>{recipe.difficulty}</span>
+        </div>
+      </div>
+      <div className="recipe-tags">
+        {recipe.tags.map((tag, index) => (
+          <span key={index} className="tag">{tag}</span>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderTasteAdjustments = () => (
+    <div className="taste-adjustments">
+      <h4>Taste Adjustments</h4>
+      <div className="taste-tags">
+        {['less salty', 'more spicy', 'less sweet', 'more umami', 'less bitter'].map(taste => (
+          <span
+            key={taste}
+            className={`taste-tag ${activeTastes.includes(taste) ? 'active' : ''}`}
+            onClick={() => handleTasteClick(taste)}
+          >
+            {taste}
+          </span>
+        ))}
+      </div>
+      {highlightedIngredients.length > 0 && (
+        <div className="ingredient-highlights">
+          <h5>Suggested Ingredient Adjustments</h5>
+          <div className="highlighted-ingredients">
+            {highlightedIngredients.map((ingredient, index) => (
+              <span key={index} className="highlighted-ingredient">
+                {ingredient}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="recipe-builder-container">
       <div className="recipe-header">
@@ -438,9 +520,28 @@ const RecipeBuilder = () => {
           type="text"
           className="recipe-title-input"
           placeholder="Enter Recipe Title"
-          value={recipeTitle}
-          onChange={(e) => setRecipeTitle(e.target.value)}
+          value={recipe.title}
+          onChange={(e) => setRecipe({ ...recipe, title: e.target.value })}
         />
+        <div className="recipe-meta">
+          <div className="recipe-stats">
+            <div className="recipe-stats-row">
+              <div className="stat-item">
+                <FaClock />
+                <span>{maxTime} min</span>
+              </div>
+              <div className="stat-item">
+                <FaUtensils />
+                <span className="capitalize">{difficulty}</span>
+              </div>
+              <div className="recipe-tags">
+                {tags.map((tag, index) => (
+                  <span key={index} className="tag">{tag}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="recipe-filters">
           <div className="filter-section">
             <h4>Time & Difficulty</h4>
@@ -531,6 +632,12 @@ const RecipeBuilder = () => {
           Save Recipe
         </button>
       </div>
+
+      <div className="recipe-stats-container">
+        {renderRecipeStats()}
+      </div>
+
+      {renderTasteAdjustments()}
     </div>
   );
 };

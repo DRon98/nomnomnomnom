@@ -210,8 +210,9 @@
 }
 
 .loading .spinner {
-  font-size: 24px;
   animation: spin 1s linear infinite;
+  font-size: 24px;
+  margin-bottom: 10px;
 }
 
 @keyframes spin {

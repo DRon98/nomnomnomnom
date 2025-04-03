@@ -25,6 +25,53 @@
   border-color: #3498db;
 }
 
+.recipe-meta {
+  margin-bottom: 20px;
+}
+
+.recipe-stats {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.recipe-stats-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  font-size: 1.1em;
+}
+
+.stat-item svg {
+  color: #3498db;
+}
+
+.stat-item .capitalize {
+  text-transform: capitalize;
+}
+
+.recipe-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  padding: 6px 12px;
+  background-color: #e8f4fd;
+  color: #3498db;
+  border-radius: 20px;
+  font-size: 0.9em;
+}
+
 /* Recipe Filters */
 .recipe-filters {
   display: flex;
@@ -434,10 +481,73 @@
 }
 
 /* Prep Steps Tab */
-.prep-steps h4 {
-  margin-top: 0;
-  color: #333;
+.prep-steps {
+  padding: 20px;
+}
+
+.prep-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin-bottom: 20px;
+}
+
+.prep-header h4 {
+  margin: 0;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.info-tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.info-icon {
+  color: #666;
+  cursor: help;
+  font-size: 1.2em;
+  transition: color 0.2s;
+}
+
+.info-icon:hover {
+  color: #3498db;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  width: 250px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 10px;
+  position: absolute;
+  z-index: 10;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s, visibility 0.3s;
+  font-size: 0.9em;
+  line-height: 1.4;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
+
+.info-tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }
 
 .prep-details {
@@ -448,14 +558,14 @@
 
 .prep-section {
   background-color: #f8f9fa;
-  padding: 15px;
+  padding: 20px;
   border-radius: 8px;
 }
 
 .prep-section h5 {
-  margin-top: 0;
-  margin-bottom: 10px;
+  margin: 0 0 15px 0;
   color: #3498db;
+  font-size: 1.1em;
 }
 
 .prep-section ul {
@@ -469,11 +579,94 @@
   color: #666;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s;
 }
 
-.prep-section li::before {
-  content: '•';
+.prep-section li:last-child {
+  border-bottom: none;
+}
+
+.prep-section li.highlighted {
+  background-color: #e3f2fd;
+  border-radius: 4px;
+  padding: 8px;
+  margin: 4px 0;
+}
+
+.pantry-badge {
+  font-size: 0.8em;
+  padding: 2px 8px;
+  background-color: #4caf50;
+  color: white;
+  border-radius: 12px;
+  margin-left: 8px;
+}
+
+/* Taste Adjustments */
+.taste-adjustments {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.taste-adjustments h4 {
+  margin: 0 0 15px 0;
+  color: #333;
+}
+
+.taste-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.taste-tag {
+  padding: 8px 16px;
+  background-color: #e9ecef;
+  border-radius: 20px;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.taste-tag:hover {
+  background-color: #dee2e6;
+  transform: translateY(-1px);
+}
+
+.taste-tag.active {
+  background-color: #3498db;
+  color: white;
+}
+
+.ingredient-highlights {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.ingredient-highlights h5 {
+  margin: 0 0 10px 0;
+  color: #666;
+}
+
+.highlighted-ingredients {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.highlighted-ingredient {
+  padding: 6px 12px;
+  background-color: #e3f2fd;
+  border-radius: 4px;
+  font-size: 0.9em;
   color: #3498db;
 }
 

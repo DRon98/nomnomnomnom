@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { FaUtensils, FaSearch, FaSpinner } from 'react-icons/fa';
+import { FaClock, FaUtensils, FaSearch, FaSpinner } from 'react-icons/fa';
+import { FaUsers } from 'react-icons/fa';
 import './RecipeGenerator.css';
 
 const DEFAULT_FILTERS = {
@@ -13,8 +14,8 @@ const DEFAULT_FILTERS = {
   skillLevel: 'intermediate'
 };
 
-const CUISINES = ['Japanese', 'Italian', 'Mexican', 'Indian', 'Chinese', 'Thai', 'Mediterranean', 'American'];
-const TASTES = ['Savory', 'Sweet', 'Spicy', 'Sour', 'Umami', 'Bitter'];
+const AVAILABLE_CUISINES = ['Japanese', 'Italian', 'Mexican', 'Indian', 'Chinese', 'American', 'Mediterranean'];
+const AVAILABLE_TASTES = ['savory', 'sweet', 'spicy', 'umami', 'sour', 'bitter'];
 const COOKING_TIMES = ['any', '15', '30', '45', '60'];
 const MEAL_TYPES = ['breakfast', 'lunch', 'dinner', 'snack'];
 const SKILL_LEVELS = ['beginner', 'intermediate', 'advanced'];
@@ -32,13 +33,12 @@ const RecipeGenerator = () => {
   };
 
   const handleBubbleSelect = (filterName, value) => {
-    setFilters(prev => {
-      const currentValues = prev[filterName];
-      const newValues = currentValues.includes(value)
-        ? currentValues.filter(v => v !== value)
-        : [...currentValues, value];
-      return { ...prev, [filterName]: newValues };
-    });
+    setFilters(prev => ({
+      ...prev,
+      [filterName]: prev[filterName].includes(value)
+        ? prev[filterName].filter(v => v !== value)
+        : [...prev[filterName], value]
+    }));
   };
 
   const generateRecipes = () => {
@@ -50,66 +50,61 @@ const RecipeGenerator = () => {
         {
           recipe_id: '1',
           name: 'Japanese-Style Pork Belly Donburi',
-          image_url: 'https://example.com/pork-donburi.jpg',
-          description: 'A delicious Japanese rice bowl with tender pork belly, soft-boiled egg, and green onions.',
+          description: 'A delicious rice bowl topped with tender pork belly, soft-boiled egg, and green onions.',
           stats: {
             calories: 650,
             totalTime: 45,
             servings: 4
           },
-          tags: ['Japanese', 'Pork', 'Rice'],
+          tags: ['Japanese', 'Pork', 'Rice', 'Dinner'],
           link: '/recipe-builder?recipe=1'
         },
         {
           recipe_id: '2',
           name: 'Garlic Soy Pork Stir-Fry',
-          image_url: 'https://example.com/pork-stirfry.jpg',
           description: 'Quick and flavorful stir-fry with pork, garlic, and soy sauce.',
           stats: {
             calories: 580,
             totalTime: 25,
             servings: 4
           },
-          tags: ['Asian', 'Pork', 'Quick'],
+          tags: ['Asian', 'Pork', 'Quick', 'Dinner'],
           link: '/recipe-builder?recipe=2'
         },
         {
           recipe_id: '3',
           name: 'Pasta alla Carbonara',
-          image_url: 'https://example.com/carbonara.jpg',
           description: 'Classic Italian pasta dish with eggs, cheese, pancetta, and black pepper.',
           stats: {
             calories: 680,
             totalTime: 30,
             servings: 4
           },
-          tags: ['Italian', 'Pasta', 'Quick'],
+          tags: ['Italian', 'Pasta', 'Dinner'],
           link: '/recipe-builder?recipe=3'
         },
         {
           recipe_id: '4',
           name: 'Japanese-Style Pork and Egg Rice Bowl',
-          image_url: 'https://example.com/pork-egg-bowl.jpg',
           description: 'Simple and satisfying rice bowl with pork and soft-boiled egg.',
           stats: {
             calories: 620,
             totalTime: 35,
             servings: 4
           },
-          tags: ['Japanese', 'Pork', 'Rice'],
+          tags: ['Japanese', 'Pork', 'Rice', 'Dinner'],
           link: '/recipe-builder?recipe=4'
         },
         {
           recipe_id: '5',
           name: 'Garlic Ginger Pork Noodles',
-          image_url: 'https://example.com/pork-noodles.jpg',
-          description: 'Flavorful noodle dish with pork, garlic, and ginger.',
+          description: 'Stir-fried noodles with pork, garlic, and ginger in a savory sauce.',
           stats: {
             calories: 590,
             totalTime: 40,
             servings: 4
           },
-          tags: ['Asian', 'Pork', 'Noodles'],
+          tags: ['Asian', 'Pork', 'Noodles', 'Dinner'],
           link: '/recipe-builder?recipe=5'
         }
       ];
@@ -127,7 +122,7 @@ const RecipeGenerator = () => {
         </h2>
         
         <div className="filter-group">
-          <label>Servings:</label>
+          <label>Servings</label>
           <input
             type="number"
             min="1"
@@ -138,7 +133,7 @@ const RecipeGenerator = () => {
         </div>
 
         <div className="filter-group">
-          <label>Max Calories per Serving:</label>
+          <label>Max Calories per Serving</label>
           <input
             type="number"
             min="200"
@@ -160,9 +155,9 @@ const RecipeGenerator = () => {
         </div>
 
         <div className="filter-group">
-          <label>Cuisines:</label>
+          <label>Cuisines</label>
           <div className="bubble-select">
-            {CUISINES.map(cuisine => (
+            {AVAILABLE_CUISINES.map(cuisine => (
               <button
                 key={cuisine}
                 className={`bubble ${filters.cuisines.includes(cuisine) ? 'active' : ''}`}
@@ -175,9 +170,9 @@ const RecipeGenerator = () => {
         </div>
 
         <div className="filter-group">
-          <label>Taste Preferences:</label>
+          <label>Taste Preferences</label>
           <div className="bubble-select">
-            {TASTES.map(taste => (
+            {AVAILABLE_TASTES.map(taste => (
               <button
                 key={taste}
                 className={`bubble ${filters.tastes.includes(taste) ? 'active' : ''}`}
@@ -190,21 +185,21 @@ const RecipeGenerator = () => {
         </div>
 
         <div className="filter-group">
-          <label>Cooking Time (minutes):</label>
+          <label>Cooking Time (minutes)</label>
           <select
             value={filters.cookingTime}
             onChange={(e) => handleFilterChange('cookingTime', e.target.value)}
           >
             {COOKING_TIMES.map(time => (
               <option key={time} value={time}>
-                {time === 'any' ? 'Any' : `Under ${time}`}
+                {time === 'any' ? 'Any' : `Under ${time} minutes`}
               </option>
             ))}
           </select>
         </div>
 
         <div className="filter-group">
-          <label>Meal Type:</label>
+          <label>Meal Type</label>
           <select
             value={filters.mealType}
             onChange={(e) => handleFilterChange('mealType', e.target.value)}
@@ -218,7 +213,7 @@ const RecipeGenerator = () => {
         </div>
 
         <div className="filter-group">
-          <label>Skill Level:</label>
+          <label>Skill Level</label>
           <select
             value={filters.skillLevel}
             onChange={(e) => handleFilterChange('skillLevel', e.target.value)}
@@ -258,10 +253,10 @@ const RecipeGenerator = () => {
                     <FaUtensils /> {recipe.stats.calories} cal
                   </span>
                   <span>
-                    {recipe.stats.totalTime} min
+                    <FaClock /> {recipe.stats.totalTime} min
                   </span>
                   <span>
-                    <FaUtensils /> {recipe.stats.servings} servings
+                    <FaUsers /> {recipe.stats.servings} servings
                   </span>
                 </div>
                 <div className="tags">
@@ -278,7 +273,7 @@ const RecipeGenerator = () => {
         ) : (
           <div className="empty-state">
             <FaUtensils />
-            <p>Set your filters and generate some recipes!</p>
+            <p>Set your filters and click "Generate Recipes" to get started!</p>
           </div>
         )}
       </div>
