@@ -1,10 +1,25 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { FaUser, FaChartBar, FaLifeRing, FaCog, FaStar, FaMoon, FaSignOutAlt } from 'react-icons/fa';
 import InventoryDropdowns from '../InventoryDropdowns';
 import FoodJournal from '../FoodJournal';
 import './styles.css';
 
 const Header = () => {
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsProfileOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
     <header className="header">
       <div className="logo">
@@ -18,15 +33,51 @@ const Header = () => {
         <Link to="/recipe-generator" className="recipe-button">
           🥘
         </Link>
-        <Link to="/kitchen-appliances" className="appliances-button">
-          ⚡
-        </Link>
-        <Link to="/food-survey" className="survey-button">
-          📋
-        </Link>
-        <Link to="/profile" className="profile-button">
-          👤
-        </Link>
+        <div className="profile-dropdown" ref={dropdownRef}>
+          <button 
+            className={`profile-button ${isProfileOpen ? 'active' : ''}`}
+            onClick={() => setIsProfileOpen(!isProfileOpen)}
+          >
+            👤
+          </button>
+          {isProfileOpen && (
+            <div className="dropdown-menu">
+              <Link to="/profile" className="dropdown-item">
+                <FaUser /> View Profile
+              </Link>
+              <Link to="/kitchen-appliances" className="dropdown-item">
+                <FaCog /> Kitchen Appliances
+              </Link>
+              <Link to="/food-survey" className="dropdown-item">
+                <FaChartBar /> Food Preferences
+              </Link>
+              <Link to="/analytics" className="dropdown-item">
+                <FaChartBar /> Analytics & Data
+              </Link>
+              <Link to="/help" className="dropdown-item">
+                <FaLifeRing /> Help Center
+              </Link>
+              <Link to="/settings" className="dropdown-item">
+                <FaCog /> Account Settings
+              </Link>
+              <div className="dropdown-divider"></div>
+              <Link to="/upgrade" className="dropdown-item">
+                <FaStar /> Upgrade Plan
+              </Link>
+              <button className="dropdown-item">
+                <FaMoon /> Dark Mode
+                <div className="toggle-switch">
+                  <input type="checkbox" id="dark-mode-toggle" />
+                  <label htmlFor="dark-mode-toggle"></label>
+                </div>
+              </button>
+              <div className="dropdown-divider"></div>
+              <button className="dropdown-item text-danger">
+                <FaSignOutAlt /> Log Out
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
