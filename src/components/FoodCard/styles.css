@@ -28,6 +28,41 @@
   transform: scale(0.95);
 }
 
+.food-card.batch-mode {
+  cursor: pointer;
+}
+
+.food-card.batch-mode:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.food-card.batch-mode.selected {
+  border-color: #3498db;
+  background-color: #ebf5fb;
+}
+
+.food-checkbox {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+}
+
+.food-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  border: 2px solid #3498db;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.food-checkbox input[type="checkbox"]:checked {
+  background-color: #3498db;
+  border-color: #3498db;
+}
+
 .food-icon {
   font-size: 32px;
   margin-bottom: 10px;
@@ -122,9 +157,8 @@
 .food-actions {
   position: absolute;
   top: 10px;
-  left: 10px;
+  right: 10px;
   display: flex;
-  flex-direction: column;
   gap: 5px;
 }
 
@@ -133,13 +167,23 @@
   border: none;
   font-size: 16px;
   cursor: pointer;
-  padding: 4px;
+  padding: 4px 8px;
   border-radius: 4px;
   transition: all 0.2s ease;
+  opacity: 0.7;
 }
 
 .food-action-button:hover {
-  transform: scale(1.1);
+  opacity: 1;
+  background-color: rgba(0,0,0,0.05);
+}
+
+.food-action-button.pantry:hover {
+  background-color: #e3f2fd;
+}
+
+.food-action-button.grocery:hover {
+  background-color: #e8f5e9;
 }
 
 /* Styles for nested food items */
@@ -158,4 +202,30 @@
   padding: 4px;
   font-size: 12px;
   border-radius: 0 0 8px 8px;
+}
+
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+.status-indicator.pantry {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.status-indicator.shopping {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-indicator.need {
+  background-color: #fff3e0;
+  color: #f57c00;
 }

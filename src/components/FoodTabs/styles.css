@@ -28,9 +28,99 @@
   color: white;
 }
 
-.generate-button {
-  width: 100%;
+.action-buttons {
+  display: flex;
+  gap: 10px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.generate-button {
+  flex: 2;
+  min-width: 200px;
+}
+
+.filter-batch-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-left: 15px;
+}
+
+.status-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-button {
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #495057;
+}
+
+.filter-button:hover {
+  background-color: #e9ecef;
+}
+
+.filter-button.active {
+  background-color: #e3f2fd;
+  border-color: #3498db;
+  color: #3498db;
+}
+
+.batch-select-button {
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 100px;
+}
+
+.batch-select-button:hover {
+  background-color: #e9ecef;
+}
+
+.batch-select-button.active {
+  background-color: #e9ecef;
+  border-color: #3498db;
+  color: #3498db;
+}
+
+.batch-select-button .icon {
+  font-size: 14px;
+}
+
+.confirm-batch-button {
+  flex: 1;
+  min-width: 180px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.confirm-batch-button:hover {
+  background-color: #2980b9;
 }
 
 .tab-content {
