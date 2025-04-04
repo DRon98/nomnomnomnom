@@ -200,6 +200,8 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
                   title="Add to Pantry"
                 >
                   + 🗄️
+                  {pantryItems.some(item => item.food.id === food.id) && 
+                    <span className="food-action-checkmark">✓</span>}
                 </button>
                 <button
                   className="food-action-button grocery"
@@ -207,6 +209,8 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
                   title="Add to Groceries"
                 >
                   + 🛒
+                  {shoppingListItems.some(item => item.food.id === food.id) && 
+                    <span className="food-action-checkmark">✓</span>}
                 </button>
               </div>
             </>

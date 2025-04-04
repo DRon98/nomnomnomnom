@@ -27,8 +27,16 @@ const InventoryItem = ({ item, onUpdateAmount, onRemove }) => {
           min="1"
           value={item.amount}
           onChange={(e) => onUpdateAmount(item.foodId, parseInt(e.target.value, 10))}
-          className="amount-input"
+          className="narrow-amount-input"
         />
+        <select className="unit-select">
+          <option value="oz">oz</option>
+          <option value="g">g</option>
+          <option value="lb">lb</option>
+          <option value="kg">kg</option>
+          <option value="ml">ml</option>
+          <option value="cup">cup</option>
+        </select>
         <button
           onClick={() => onRemove(item.foodId)}
           className="remove-item-button"

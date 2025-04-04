@@ -6,9 +6,6 @@
   transition: all 0.2s ease;
   border: 2px solid transparent;
   position: relative;
-  display: flex;
-  flex-direction: column;
-  min-height: 200px;
 }
 
 .food-card.high {
@@ -29,41 +26,6 @@
 .food-card.dragging {
   opacity: 0.5;
   transform: scale(0.95);
-}
-
-.food-card.batch-mode {
-  cursor: pointer;
-}
-
-.food-card.batch-mode:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.food-card.batch-mode.selected {
-  border-color: #3498db;
-  background-color: #ebf5fb;
-}
-
-.food-checkbox {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 2;
-}
-
-.food-checkbox input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  border: 2px solid #3498db;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-}
-
-.food-checkbox input[type="checkbox"]:checked {
-  background-color: #3498db;
-  border-color: #3498db;
 }
 
 .food-icon {
@@ -93,7 +55,6 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  margin-bottom: 10px;
 }
 
 .food-card:hover {
@@ -137,8 +98,6 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  margin-bottom: 2px;
   margin-bottom: 5px;
 } 
 
@@ -161,8 +120,9 @@
 .food-actions {
   position: absolute;
   top: 10px;
-  right: 10px;
+  left: 10px;
   display: flex;
+  flex-direction: column;
   gap: 5px;
 }
 
@@ -171,49 +131,34 @@
   border: none;
   font-size: 16px;
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 4px;
   border-radius: 4px;
   transition: all 0.2s ease;
-  opacity: 0.7;
+  position: relative;
 }
 
 .food-action-button:hover {
-  opacity: 1;
-  background-color: rgba(0,0,0,0.05);
-}
-
-.food-action-button.pantry:hover {
-  background-color: #e3f2fd;
+  transform: scale(1.1);
 }
 
 .food-action-button.grocery:hover {
   background-color: #e8f5e9;
 }
 
-/* Status tags */
-.status-tag {
+/* Checkmark indicators */
+.food-action-checkmark {
   position: absolute;
-  bottom: 10px;
-  left: 10px;
-  right: 10px;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
-  text-align: center;
-  color: white;
-}
-
-.status-tag.pantry {
+  top: -5px;
+  right: -5px;
+  width: 16px;
+  height: 16px;
   background-color: #4caf50;
-}
-
-.status-tag.shopping {
-  background-color: #2196f3;
-}
-
-.status-tag.need-purchase {
-  background-color: #ff9800;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 10px;
 }
 
 /* Styles for nested food items */
@@ -232,150 +177,4 @@
   padding: 4px;
   font-size: 12px;
   border-radius: 0 0 8px 8px;
-}
-
-/* Specific styles for food cards in meal slots */
-.meal-content .food-card {
-  min-height: unset;
-  padding: 8px 12px;
-  border-radius: 6px;
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-  border-width: 1px;
-  position: relative;
-  background: white;
-}
-
-.meal-content .food-card .food-icon {
-  font-size: 16px;
-  margin: 0;
-}
-
-.meal-content .food-card .food-name {
-  font-size: 14px;
-  margin: 0;
-}
-
-.meal-content .food-card .food-description,
-.meal-content .food-card .food-rating,
-.meal-content .food-card .status-tag {
-  display: none;
-}
-
-/* Recipe base card styles */
-.meal-content .food-card.recipe-base {
-  background-color: #f8f9fa;
-  border: 1px dashed #ced4da;
-  padding: 8px;
-  min-height: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.meal-content .food-card.recipe-base.drop-target {
-  background-color: #f0f7ff;
-  border-color: #3498db;
-}
-
-.meal-content .food-card.recipe-base .recipe-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.meal-content .food-card.recipe-base .food-icon {
-  font-size: 16px;
-  margin: 0;
-}
-
-.meal-content .food-card.recipe-base .food-name {
-  font-size: 14px;
-  margin: 0;
-  font-weight: 500;
-  flex: 1;
-}
-
-.meal-content .food-card.recipe-base .recipe-ingredients {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  padding-top: 4px;
-  border-top: 1px solid #e9ecef;
-  min-height: 28px;
-}
-
-.meal-content .food-card.recipe-base .recipe-ingredient {
-  display: flex;
-  align-items: center;
-  background: white;
-  padding: 2px 4px;
-  border-radius: 4px;
-  border: 1px solid #e9ecef;
-  font-size: 12px;
-}
-
-.meal-content .food-card.recipe-base .recipe-ingredient .food-icon {
-  font-size: 14px;
-}
-
-.meal-content .food-card.recipe-base .recipe-ingredient .remove-button {
-  margin-left: 2px;
-  background: none;
-  border: none;
-  color: #666;
-  font-size: 12px;
-  cursor: pointer;
-  padding: 0 2px;
-  opacity: 0.6;
-  display: flex;
-  align-items: center;
-}
-
-.meal-content .food-card.recipe-base .recipe-ingredient .remove-button:hover {
-  opacity: 1;
-  color: #dc3545;
-}
-
-.meal-content .food-card .make-recipe-button {
-  position: absolute;
-  right: 8px;
-  background: none;
-  border: none;
-  color: #6c757d;
-  font-size: 14px;
-  cursor: pointer;
-  padding: 4px;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.meal-content .food-card:hover .make-recipe-button {
-  opacity: 0.7;
-}
-
-.meal-content .food-card .make-recipe-button:hover {
-  opacity: 1;
-  color: #3498db;
-}
-
-.meal-content .food-card.recipe-base .generate-recipe-link {
-  position: absolute;
-  right: 8px;
-  top: 8px;
-  background: none;
-  border: none;
-  color: #3498db;
-  font-size: 12px;
-  text-decoration: none;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  padding: 2px 4px;
-  border-radius: 4px;
-}
-
-.meal-content .food-card.recipe-base:hover .generate-recipe-link {
-  opacity: 1;
-  background-color: #ebf5fb;
 }

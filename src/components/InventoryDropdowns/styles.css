@@ -114,12 +114,21 @@
     gap: 10px;
   }
   
-  .amount-input {
-    width: 60px;
+  .narrow-amount-input {
+    width: 40px;
     padding: 5px;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 14px;
+  }
+
+  .unit-select {
+    width: 50px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: #f8f8f8;
   }
   
   .remove-item-button {

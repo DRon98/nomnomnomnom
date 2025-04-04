@@ -204,7 +204,7 @@
 .meal-foods {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 5px;
 }
 
 .drag-placeholder {
