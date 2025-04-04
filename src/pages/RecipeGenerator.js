@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { FaClock, FaUtensils, FaSearch, FaSpinner } from 'react-icons/fa';
+import React, { useState, useCallback, useRef } from 'react';
+import { useSelector } from 'react-redux';
+import { FaClock, FaUtensils, FaSearch, FaSpinner, FaChevronDown, FaChevronUp, FaChevronLeft, FaChevronRight, FaPlus } from 'react-icons/fa';
 import { FaUsers } from 'react-icons/fa';
 import './RecipeGenerator.css';
 
@@ -20,26 +21,146 @@ const COOKING_TIMES = ['any', '15', '30', '45', '60'];
 const MEAL_TYPES = ['breakfast', 'lunch', 'dinner', 'snack'];
 const SKILL_LEVELS = ['beginner', 'intermediate', 'advanced'];
 
+const DUMMY_INGREDIENTS = [
+  { foodId: 'ice-cream', food: { name: 'Ice Cream', icon: '🍨' } },
+  { foodId: 'chocolate', food: { name: 'Chocolate', icon: '🍫' } },
+  { foodId: 'banana', food: { name: 'Banana', icon: '🍌' } },
+  { foodId: 'pizza', food: { name: 'Pizza', icon: '🍕' } },
+  { foodId: 'sushi', food: { name: 'Sushi', icon: '🍱' } },
+];
+
+const ScrollableIngredientList = ({ items, onSelect, selectedIds, emptyMessage, showRemoveButton }) => {
+  const containerRef = useRef(null);
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(false);
+  const [translateX, setTranslateX] = useState(0);
+  const [containerWidth, setContainerWidth] = useState(0);
+  const [contentWidth, setContentWidth] = useState(0);
+
+  const checkOverflow = useCallback(() => {
+    if (containerRef.current) {
+      const container = containerRef.current;
+      const containerWidth = container.clientWidth;
+      const contentWidth = container.scrollWidth;
+      
+      setContainerWidth(containerWidth);
+      setContentWidth(contentWidth);
+      setShowLeftArrow(translateX < 0);
+      setShowRightArrow(contentWidth > containerWidth + Math.abs(translateX));
+    }
+  }, [translateX]);
+
+  const scroll = (direction) => {
+    const scrollAmount = direction === 'left' ? 200 : -200;
+    const newTranslateX = Math.min(0, Math.max(translateX + scrollAmount, -(contentWidth - containerWidth)));
+    setTranslateX(newTranslateX);
+  };
+
+  React.useEffect(() => {
+    checkOverflow();
+    window.addEventListener('resize', checkOverflow);
+    return () => window.removeEventListener('resize', checkOverflow);
+  }, [items, checkOverflow]);
+
+  React.useEffect(() => {
+    checkOverflow();
+  }, [translateX, checkOverflow]);
+
+  return (
+    <div className="ingredients-scroll">
+      {showLeftArrow && (
+        <button className="scroll-button left" onClick={() => scroll('left')}>
+          <FaChevronLeft />
+        </button>
+      )}
+      <div 
+        className="ingredients-scroll-container" 
+        ref={containerRef}
+        style={{ transform: `translateX(${translateX}px)` }}
+      >
+        {items.map(item => (
+          <div 
+            key={item.foodId} 
+            className={`ingredient-pill ${!showRemoveButton ? 'clickable' : ''} ${selectedIds.includes(item.foodId) ? 'selected' : ''}`}
+            onClick={() => !showRemoveButton && onSelect(item)}
+          >
+            <span className="ingredient-icon">{item.food.icon}</span>
+            <span className="ingredient-name">{item.food.name}</span>
+            {showRemoveButton && (
+              <button
+                className="remove-ingredient"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelect(item.foodId);
+                }}
+              >
+                ×
+              </button>
+            )}
+          </div>
+        ))}
+        {items.length === 0 && (
+          <div className="empty-message">{emptyMessage}</div>
+        )}
+      </div>
+      {showRightArrow && (
+        <button className="scroll-button right" onClick={() => scroll('right')}>
+          <FaChevronRight />
+        </button>
+      )}
+    </div>
+  );
+};
+
 const RecipeGenerator = () => {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [recipes, setRecipes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCuisinesExpanded, setIsCuisinesExpanded] = useState(false);
+  const [isTastesExpanded, setIsTastesExpanded] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedIngredients, setSelectedIngredients] = useState([]);
 
-  const handleFilterChange = (filterName, value) => {
+  // Get real inventory state from Redux
+  const pantryItems = useSelector(state => state.inventory.pantry) || [];
+  const shoppingListItems = useSelector(state => state.inventory.groceries) || [];
+
+  // Filter dummy ingredients based on search query
+  const filteredIngredients = DUMMY_INGREDIENTS.filter(item =>
+    item.food.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleIngredientSelect = (ingredient) => {
+    // Toggle selection: if already selected, remove it
+    if (selectedIngredients.find(item => item.foodId === ingredient.foodId)) {
+      handleIngredientRemove(ingredient.foodId);
+    } else {
+      setSelectedIngredients([...selectedIngredients, ingredient]);
+    }
+    setSearchQuery('');
+    setShowDropdown(false);
+  };
+
+  const handleIngredientRemove = (ingredientId) => {
+    setSelectedIngredients(selectedIngredients.filter(item => item.foodId !== ingredientId));
+  };
+
+  const handleFilterChange = useCallback((filterName, value) => {
     setFilters(prev => ({
       ...prev,
       [filterName]: value
     }));
-  };
+  }, []);
 
-  const handleBubbleSelect = (filterName, value) => {
+  const handleBubbleSelect = useCallback((filterName, value) => {
     setFilters(prev => ({
       ...prev,
       [filterName]: prev[filterName].includes(value)
         ? prev[filterName].filter(v => v !== value)
         : [...prev[filterName], value]
     }));
-  };
+  }, []);
 
   const generateRecipes = () => {
     setIsLoading(true);
@@ -114,12 +235,89 @@ const RecipeGenerator = () => {
     }, 1000);
   };
 
+  const renderIngredientsList = () => (
+    <div className="ingredients-list">
+      <div className="ingredients-section">
+        <h3>Pantry Items</h3>
+        <ScrollableIngredientList
+          items={pantryItems}
+          onSelect={handleIngredientSelect}
+          selectedIds={selectedIngredients.map(item => item.foodId)}
+          emptyMessage="No items in pantry"
+          showRemoveButton={false}
+        />
+      </div>
+      <div className="ingredients-section">
+        <h3>Shopping List</h3>
+        <ScrollableIngredientList
+          items={shoppingListItems}
+          onSelect={handleIngredientSelect}
+          selectedIds={selectedIngredients.map(item => item.foodId)}
+          emptyMessage="No items in shopping list"
+          showRemoveButton={false}
+        />
+      </div>
+      <div className="ingredients-section">
+        <h3>Add More Ingredients</h3>
+        <div className="search-container">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setShowDropdown(true);
+            }}
+            onFocus={() => setShowDropdown(true)}
+            placeholder="Search for ingredients..."
+            className="ingredient-search"
+          />
+          {showDropdown && searchQuery && (
+            <div className="search-dropdown">
+              {filteredIngredients.map(item => (
+                <div
+                  key={item.foodId}
+                  className="dropdown-item"
+                  onClick={() => handleIngredientSelect(item)}
+                >
+                  <span className="ingredient-icon">{item.food.icon}</span>
+                  <span className="ingredient-name">{item.food.name}</span>
+                </div>
+              ))}
+              {filteredIngredients.length === 0 && (
+                <div className="dropdown-item empty">No ingredients found</div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="ingredients-section">
+        <h3>Ingredients to Use</h3>
+        <ScrollableIngredientList
+          items={selectedIngredients}
+          onSelect={handleIngredientRemove}
+          selectedIds={[]}
+          emptyMessage="No ingredients selected"
+          showRemoveButton={true}
+        />
+      </div>
+    </div>
+  );
+
   return (
     <div className="recipe-generator">
       <div className="filters-section">
         <h2>
           <FaUtensils /> Recipe Filters
         </h2>
+
+        <button
+          className="generate-button"
+          onClick={generateRecipes}
+          disabled={isLoading}
+        >
+          {isLoading ? <FaSpinner className="spinner" /> : <FaSearch />}
+          Generate Recipes
+        </button>
         
         <div className="filter-group">
           <label>Servings</label>
@@ -154,34 +352,50 @@ const RecipeGenerator = () => {
           </label>
         </div>
 
-        <div className="filter-group">
-          <label>Cuisines</label>
-          <div className="bubble-select">
-            {AVAILABLE_CUISINES.map(cuisine => (
-              <button
-                key={cuisine}
-                className={`bubble ${filters.cuisines.includes(cuisine) ? 'active' : ''}`}
-                onClick={() => handleBubbleSelect('cuisines', cuisine)}
-              >
-                {cuisine}
-              </button>
-            ))}
+        <div className="filter-group collapsible">
+          <div 
+            className="collapsible-header"
+            onClick={() => setIsCuisinesExpanded(!isCuisinesExpanded)}
+          >
+            <label>Cuisines</label>
+            {isCuisinesExpanded ? <FaChevronUp /> : <FaChevronDown />}
           </div>
+          {isCuisinesExpanded && (
+            <div className="bubble-select">
+              {AVAILABLE_CUISINES.map(cuisine => (
+                <button
+                  key={cuisine}
+                  className={`bubble ${filters.cuisines.includes(cuisine) ? 'active' : ''}`}
+                  onClick={() => handleBubbleSelect('cuisines', cuisine)}
+                >
+                  {cuisine}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
-        <div className="filter-group">
-          <label>Taste Preferences</label>
-          <div className="bubble-select">
-            {AVAILABLE_TASTES.map(taste => (
-              <button
-                key={taste}
-                className={`bubble ${filters.tastes.includes(taste) ? 'active' : ''}`}
-                onClick={() => handleBubbleSelect('tastes', taste)}
-              >
-                {taste}
-              </button>
-            ))}
+        <div className="filter-group collapsible">
+          <div 
+            className="collapsible-header"
+            onClick={() => setIsTastesExpanded(!isTastesExpanded)}
+          >
+            <label>Taste Preferences</label>
+            {isTastesExpanded ? <FaChevronUp /> : <FaChevronDown />}
           </div>
+          {isTastesExpanded && (
+            <div className="bubble-select">
+              {AVAILABLE_TASTES.map(taste => (
+                <button
+                  key={taste}
+                  className={`bubble ${filters.tastes.includes(taste) ? 'active' : ''}`}
+                  onClick={() => handleBubbleSelect('tastes', taste)}
+                >
+                  {taste}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="filter-group">
@@ -225,15 +439,6 @@ const RecipeGenerator = () => {
             ))}
           </select>
         </div>
-
-        <button
-          className="generate-button"
-          onClick={generateRecipes}
-          disabled={isLoading}
-        >
-          {isLoading ? <FaSpinner className="spinner" /> : <FaSearch />}
-          Generate Recipes
-        </button>
       </div>
 
       <div className="recipes-section">
@@ -243,38 +448,44 @@ const RecipeGenerator = () => {
             <p>Generating recipes...</p>
           </div>
         ) : recipes.length > 0 ? (
-          <div className="recipe-grid">
-            {recipes.map(recipe => (
-              <div key={recipe.recipe_id} className="recipe-preview">
-                <h3>{recipe.name}</h3>
-                <p className="description">{recipe.description}</p>
-                <div className="stats">
-                  <span>
-                    <FaUtensils /> {recipe.stats.calories} cal
-                  </span>
-                  <span>
-                    <FaClock /> {recipe.stats.totalTime} min
-                  </span>
-                  <span>
-                    <FaUsers /> {recipe.stats.servings} servings
-                  </span>
+          <>
+            {renderIngredientsList()}
+            <div className="recipe-grid">
+              {recipes.map(recipe => (
+                <div key={recipe.recipe_id} className="recipe-preview">
+                  <h3>{recipe.name}</h3>
+                  <p className="description">{recipe.description}</p>
+                  <div className="stats">
+                    <span>
+                      <FaUtensils /> {recipe.stats.calories} cal
+                    </span>
+                    <span>
+                      <FaClock /> {recipe.stats.totalTime} min
+                    </span>
+                    <span>
+                      <FaUsers /> {recipe.stats.servings} servings
+                    </span>
+                  </div>
+                  <div className="tags">
+                    {recipe.tags.map(tag => (
+                      <span key={tag} className="tag">{tag}</span>
+                    ))}
+                  </div>
+                  <a href={recipe.link} className="view-recipe">
+                    View Recipe
+                  </a>
                 </div>
-                <div className="tags">
-                  {recipe.tags.map(tag => (
-                    <span key={tag} className="tag">{tag}</span>
-                  ))}
-                </div>
-                <a href={recipe.link} className="view-recipe">
-                  View Recipe
-                </a>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </>
         ) : (
-          <div className="empty-state">
-            <FaUtensils />
-            <p>Set your filters and click "Generate Recipes" to get started!</p>
-          </div>
+          <>
+            {renderIngredientsList()}
+            <div className="empty-state">
+              <FaUtensils />
+              <p>Set your filters and click "Generate Recipes" to get started!</p>
+            </div>
+          </>
         )}
       </div>
     </div>
