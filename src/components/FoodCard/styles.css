@@ -233,3 +233,31 @@
   font-size: 12px;
   border-radius: 0 0 8px 8px;
 }
+
+/* Specific styles for food cards in meal slots */
+.meal-content .food-card {
+  min-height: 70px;
+  max-width: 420px;
+  padding: 8px;
+  border-radius: 6px;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  border-width: 1px;
+}
+
+.meal-content .food-card .food-icon {
+  font-size: 16px;
+  margin: 0;
+}
+
+.meal-content .food-card .food-name {
+  font-size: 14px;
+  margin: 0;
+}
+
+.meal-content .food-card .food-description,
+.meal-content .food-card .food-rating,
+.meal-content .food-card .status-tag {
+  display: none;
+}

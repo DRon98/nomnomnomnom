@@ -113,10 +113,10 @@
 .filters-container {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 16px;
-  background: #f8f9fa;
-  border-radius: 8px;
+  align-items: center;
+  gap: 32px;
+  padding: 24px;
+  background: white;
 }
 
 .filters-container h1 {
@@ -124,22 +124,28 @@
   font-size: 1.75rem;
   font-weight: 600;
   color: #000;
-  text-align: center;
 }
 
 .filter-section {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   width: 100%;
 }
 
 .filter-section h4 {
   margin: 0;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 500;
   color: #000;
-  white-space: nowrap;
+}
+
+.filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
 }
 
 .filter-button {
@@ -152,7 +158,6 @@
   color: #000;
   transition: all 0.2s ease;
   white-space: nowrap;
-  min-width: fit-content;
 }
 
 .filter-button:hover {
@@ -250,6 +255,69 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
+}
+
+/* Drag and drop card styles */
+.drag-drop-card {
+  background: #fff;
+  border: 1px dashed #ddd;
+  border-radius: 8px;
+  padding: 8px;
+  min-height: 40px;
+  min-width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.drag-drop-card:hover {
+  border-color: #2c2020;
+  background: #f8f9fa;
+}
+
+.drag-drop-card.dragging {
+  opacity: 0.5;
+}
+
+.drag-drop-card.has-item {
+  border-style: solid;
+  background: #fff;
+  padding: 6px 12px;
+  min-height: 30px;
+  justify-content: flex-start;
+  gap: 6px;
+}
+
+.drag-drop-card .food-icon {
+  font-size: 1rem;
+}
+
+.drag-drop-card .food-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+  margin: 0;
+}
+
+.drag-drop-card .remove-button {
+  margin-left: auto;
+  padding: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  font-size: 1rem;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.drag-drop-card .remove-button:hover {
+  opacity: 1;
 }
 
 .loading {

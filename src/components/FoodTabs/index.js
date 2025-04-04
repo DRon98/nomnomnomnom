@@ -188,52 +188,54 @@ const FoodTabs = () => {
             
             {(activeTab === 'recommended' ? recommendedFoods : foodsToAvoid).length > 0 && (
               <div className="filters-container">
-                <h1>Food Inventory</h1>
-                <div className="filter-section">
+                  
+                  <div className="filter-options">
                   <h4>Status:</h4>
-                  <button
-                    className={`filter-button ${activeFilters.has(FILTER_OPTIONS.ALL) ? 'active' : ''}`}
-                    onClick={() => toggleFilter(FILTER_OPTIONS.ALL)}
-                    data-status="all"
-                  >
-                    All
-                  </button>
-                  <button
-                    className={`filter-button ${activeFilters.has(FILTER_OPTIONS.PANTRY) ? 'active' : ''}`}
-                    onClick={() => toggleFilter(FILTER_OPTIONS.PANTRY)}
-                    data-status="pantry"
-                  >
-                    In Pantry
-                  </button>
-                  <button
-                    className={`filter-button ${activeFilters.has(FILTER_OPTIONS.SHOPPING_LIST) ? 'active' : ''}`}
-                    onClick={() => toggleFilter(FILTER_OPTIONS.SHOPPING_LIST)}
-                    data-status="shopping_list"
-                  >
-                    In Shopping List
-                  </button>
-                  <button
-                    className={`filter-button ${activeFilters.has(FILTER_OPTIONS.NEED_TO_PURCHASE) ? 'active' : ''}`}
-                    onClick={() => toggleFilter(FILTER_OPTIONS.NEED_TO_PURCHASE)}
-                    data-status="need_to_purchase"
-                  >
-                    Need to Purchase
-                  </button>
-                </div>
-                <div className="filter-section">
-                  <h4>Type:</h4>
-                  {Object.values(FOOD_CATEGORIES).map(category => (
                     <button
-                      key={category}
-                      className={`filter-button ${activeFilters.has(category) ? 'active' : ''}`}
-                      onClick={() => toggleFilter(category)}
-                      data-category={category}
+                      className={`filter-button ${activeFilters.has(FILTER_OPTIONS.ALL) ? 'active' : ''}`}
+                      onClick={() => toggleFilter(FILTER_OPTIONS.ALL)}
+                      data-status="all"
                     >
-                      {category.charAt(0).toUpperCase() + category.slice(1)}
+                      All
                     </button>
-                  ))}
+                    <button
+                      className={`filter-button ${activeFilters.has(FILTER_OPTIONS.PANTRY) ? 'active' : ''}`}
+                      onClick={() => toggleFilter(FILTER_OPTIONS.PANTRY)}
+                      data-status="pantry"
+                    >
+                      In Pantry
+                    </button>
+                    <button
+                      className={`filter-button ${activeFilters.has(FILTER_OPTIONS.SHOPPING_LIST) ? 'active' : ''}`}
+                      onClick={() => toggleFilter(FILTER_OPTIONS.SHOPPING_LIST)}
+                      data-status="shopping_list"
+                    >
+                      In Shopping List
+                    </button>
+                    <button
+                      className={`filter-button ${activeFilters.has(FILTER_OPTIONS.NEED_TO_PURCHASE) ? 'active' : ''}`}
+                      onClick={() => toggleFilter(FILTER_OPTIONS.NEED_TO_PURCHASE)}
+                      data-status="need_to_purchase"
+                    >
+                      Need to Purchase
+                    </button>
+                  </div>
+                  
+                  <div className="filter-options">
+                  <h4>Type:</h4>
+                    {Object.values(FOOD_CATEGORIES).map(category => (
+                      <button
+                        key={category}
+                        className={`filter-button ${activeFilters.has(category) ? 'active' : ''}`}
+                        onClick={() => toggleFilter(category)}
+                        data-category={category}
+                      >
+                        {category.charAt(0).toUpperCase() + category.slice(1)}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+           
             )}
           </div>
 
