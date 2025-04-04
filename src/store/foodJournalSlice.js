@@ -162,6 +162,65 @@ const foodJournalSlice = createSlice({
       state.consumedFoods = state.consumedFoods.filter(
         entry => !(entry.foodId === foodId && entry.date === date)
       );
+    },
+
+    // New quick journal entry reducer
+    addQuickJournalEntry: (state, action) => {
+      const {
+        date,
+        recommendedFoodConsumption,
+        foodsEaten = [],
+        foodsNotEaten = [],
+        otherFoods = [],
+        followedMealTimes,
+        followedTip,
+        entryType
+      } = action.payload;
+
+      // Add to dailyEntries with quick journal type
+      state.dailyEntries.push({
+        date,
+        recommendedFoodConsumption,
+        foodsEaten,
+        foodsNotEaten,
+        otherFoods,
+        followedMealTimes,
+        followedTip,
+        entryType,
+        timestamp: Date.now()
+      });
+
+      // Update streak
+      const today = new Date().toISOString().split('T')[0];
+      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+      
+      if (!state.lastEntryDate) {
+        state.streakCount = 1;
+      } else if (state.lastEntryDate === yesterday) {
+        state.streakCount += 1;
+      } else if (state.lastEntryDate !== today) {
+        state.streakCount = 1;
+      }
+      
+      state.lastEntryDate = today;
+
+      // Add consumed foods to legacy state
+      [...foodsEaten, ...otherFoods].forEach(food => {
+        const existingConsumption = state.consumedFoods.find(
+          entry => entry.foodId === food.id && entry.date === date
+        );
+        
+        if (existingConsumption) {
+          existingConsumption.servings += 1;
+        } else {
+          state.consumedFoods.push({
+            foodId: food.id,
+            food: { ...food },
+            servings: 1,
+            date
+          });
+        }
+      });
     }
   }
 });
@@ -176,7 +235,8 @@ export const {
   addDailyEntry,
   addWeeklySummary,
   updateDailyEntry,
-  removeDailyEntry
+  removeDailyEntry,
+  addQuickJournalEntry
 } = foodJournalSlice.actions;
 
 export default foodJournalSlice.reducer;
