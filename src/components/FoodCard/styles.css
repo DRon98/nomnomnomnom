@@ -236,14 +236,15 @@
 
 /* Specific styles for food cards in meal slots */
 .meal-content .food-card {
-  min-height: 70px;
-  max-width: 420px;
-  padding: 8px;
+  min-height: unset;
+  padding: 8px 12px;
   border-radius: 6px;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 3px;
+  gap: 8px;
   border-width: 1px;
+  position: relative;
+  background: white;
 }
 
 .meal-content .food-card .food-icon {
@@ -260,4 +261,121 @@
 .meal-content .food-card .food-rating,
 .meal-content .food-card .status-tag {
   display: none;
+}
+
+/* Recipe base card styles */
+.meal-content .food-card.recipe-base {
+  background-color: #f8f9fa;
+  border: 1px dashed #ced4da;
+  padding: 8px;
+  min-height: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.meal-content .food-card.recipe-base.drop-target {
+  background-color: #f0f7ff;
+  border-color: #3498db;
+}
+
+.meal-content .food-card.recipe-base .recipe-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.meal-content .food-card.recipe-base .food-icon {
+  font-size: 16px;
+  margin: 0;
+}
+
+.meal-content .food-card.recipe-base .food-name {
+  font-size: 14px;
+  margin: 0;
+  font-weight: 500;
+  flex: 1;
+}
+
+.meal-content .food-card.recipe-base .recipe-ingredients {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding-top: 4px;
+  border-top: 1px solid #e9ecef;
+  min-height: 28px;
+}
+
+.meal-content .food-card.recipe-base .recipe-ingredient {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 2px 4px;
+  border-radius: 4px;
+  border: 1px solid #e9ecef;
+  font-size: 12px;
+}
+
+.meal-content .food-card.recipe-base .recipe-ingredient .food-icon {
+  font-size: 14px;
+}
+
+.meal-content .food-card.recipe-base .recipe-ingredient .remove-button {
+  margin-left: 2px;
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0 2px;
+  opacity: 0.6;
+  display: flex;
+  align-items: center;
+}
+
+.meal-content .food-card.recipe-base .recipe-ingredient .remove-button:hover {
+  opacity: 1;
+  color: #dc3545;
+}
+
+.meal-content .food-card .make-recipe-button {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  color: #6c757d;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.meal-content .food-card:hover .make-recipe-button {
+  opacity: 0.7;
+}
+
+.meal-content .food-card .make-recipe-button:hover {
+  opacity: 1;
+  color: #3498db;
+}
+
+.meal-content .food-card.recipe-base .generate-recipe-link {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  background: none;
+  border: none;
+  color: #3498db;
+  font-size: 12px;
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.meal-content .food-card.recipe-base:hover .generate-recipe-link {
+  opacity: 1;
+  background-color: #ebf5fb;
 }
