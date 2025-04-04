@@ -5,7 +5,7 @@ const FoodCard = memo(({
   food,
   onSelect,
   onRemove,
-  isSelected = True,
+  isSelected = false,
   className = '',
 }) => {
   const handleClick = () => {
