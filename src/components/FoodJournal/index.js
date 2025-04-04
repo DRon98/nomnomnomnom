@@ -214,32 +214,7 @@ const FoodJournal = () => {
             </div>
             
             <div className="items-list">
-              {/* <h4>Consumed Foods</h4>
-              {foodsForSelectedDate.length > 0 ? (
-                foodsForSelectedDate.map(item => (
-                  <JournalItem
-                    key={`${item.foodId}-${item.date}`}
-                    item={item}
-                    onUpdateServings={handleUpdateServings}
-                    onRemove={(foodId, date) => dispatch(removeFoodConsumption({ foodId, date }))}
-                  />
-                ))
-              ) : (
-                <div className="empty-message">No foods recorded for this day</div>
-              )}
               
-              <h4 className="add-foods-header">Add Recommended Foods</h4>
-              {unconsumedRecommendedFoods.length > 0 ? (
-                <div className="recommended-foods-list">
-                  {unconsumedRecommendedFoods.map(food => (
-                    <div key={food.id} className="recommended-food-item" onClick={() => handleAddFood(food)}>
-                      <span className="food-icon">{food.icon}</span>
-                      <span className="food-name">{food.name}</span>
-                      <span className="add-icon">+</span>
-                    </div>
-                  ))}
-                </div>
-              ) : ( */}
                 
 
             </div>
