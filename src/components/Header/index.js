@@ -63,6 +63,9 @@ const Header = () => {
               <Link to="/settings" className="dropdown-item">
                 <FaCog /> Account Settings
               </Link>
+              <Link to="/lifestyle-survey" className="dropdown-item">
+                <FaLifeRing /> Lifestyle Survey
+              </Link>
               <div className="dropdown-divider"></div>
               <Link to="/upgrade" className="dropdown-item">
                 <FaStar /> Upgrade Plan

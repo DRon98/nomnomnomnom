@@ -7,6 +7,7 @@ import foodsReducer from './foodsSlice';
 import surveyReducer from './surveySlice';
 import foodLogReducer from './foodLogSlice';
 import kitchenAppliancesReducer from './kitchenAppliancesSlice';
+import lifestyleReducer from './lifestyleSlice';
 
 const store = configureStore({
   reducer: {
@@ -17,7 +18,8 @@ const store = configureStore({
     foods: foodsReducer,
     survey: surveyReducer,
     foodLog: foodLogReducer,
-    kitchenAppliances: kitchenAppliancesReducer
+    kitchenAppliances: kitchenAppliancesReducer,
+    lifestyle: lifestyleReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -1,0 +1,95 @@
+.survey-container {
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.survey-title {
+  text-align: center;
+  font-size: 32px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.progress-bubbles {
+  display: flex;
+  justify-content: center;
+  margin: 20px auto;
+  gap: 12px;
+}
+
+.progress-bubble {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  border: 1px solid #ccc;
+}
+
+.progress-bubble.active {
+  background-color: #0097e6;
+  border-color: #0088cc;
+}
+
+.survey-content {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  margin-bottom: 20px;
+}
+
+.category-title {
+  font-size: 24px;
+  color: #0097e6;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.subcategory-bubbles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.subcategory-bubble {
+  padding: 12px 20px;
+  font-size: 16px;
+  background-color: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.subcategory-bubble.selected {
+  background-color: #0097e6;
+  color: white;
+  border-color: #0088cc;
+}
+
+.subcategory-bubble:hover {
+  background-color: #e0e0e0;
+}
+
+.navigation-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.next-button {
+  padding: 12px 30px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  background-color: #0097e6;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.next-button:hover {
+  background-color: #0088cc;
+} 

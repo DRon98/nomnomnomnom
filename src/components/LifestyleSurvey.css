@@ -1,0 +1,72 @@
+.lifestyle-survey {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.category-section {
+  margin-bottom: 30px;
+}
+
+.subcategory-bubbles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.subcategory-bubble {
+  position: relative;
+  padding: 10px 15px;
+  font-size: 14px;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.subcategory-bubble.selected {
+  background-color: #3498db;
+  color: white;
+}
+
+.subcategory-bubble:hover {
+  background-color: #e0e0e0;
+}
+
+.subcategory-bubble:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #fff;
+  color: #333;
+  padding: 5px 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.submit-button {
+  margin-top: 20px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+  max-width: 300px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.submit-button:hover {
+  background-color: #45a049;
+} 
