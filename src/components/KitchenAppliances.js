@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { FaBlender, FaUtensils, FaFire, FaCoffee } from 'react-icons/fa';
+import { toggleAppliance, toggleCategory } from '../store/kitchenAppliancesSlice';
 import './KitchenAppliances.css';
 
 const APPLIANCE_CATEGORIES = {
@@ -59,36 +61,36 @@ const APPLIANCE_CATEGORIES = {
 };
 
 const KitchenAppliances = () => {
-  const [selectedAppliances, setSelectedAppliances] = useState(new Set());
+  const dispatch = useDispatch();
+  const selectedAppliances = useSelector(state => state.kitchenAppliances.selectedAppliances);
 
-  const toggleAppliance = (appliance) => {
-    setSelectedAppliances(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(appliance)) {
-        newSet.delete(appliance);
-      } else {
-        newSet.add(appliance);
-      }
-      return newSet;
+  const handleToggleAppliance = (appliance, category) => {
+    dispatch(toggleAppliance({ appliance: appliance.toLowerCase(), category }));
+  };
+
+  const handleToggleCategory = (category) => {
+    dispatch(toggleCategory({
+      category,
+      items: APPLIANCE_CATEGORIES[category].items.map(item => item.toLowerCase())
+    }));
+  };
+
+  const handleSubmit = () => {
+    console.log('Kitchen Appliances Survey Responses:', {
+      kitchenAppliances: selectedAppliances
     });
   };
 
-  const toggleCategory = (category) => {
-    setSelectedAppliances(prev => {
-      const newSet = new Set(prev);
-      const items = APPLIANCE_CATEGORIES[category].items;
-      const allSelected = items.every(item => prev.has(item));
-      
-      if (allSelected) {
-        // Remove all items in category
-        items.forEach(item => newSet.delete(item));
-      } else {
-        // Add all items in category
-        items.forEach(item => newSet.add(item));
-      }
-      return newSet;
-    });
+  const isApplianceSelected = (appliance, category) => {
+    return selectedAppliances[category].includes(appliance.toLowerCase());
   };
+
+  const isCategoryFullySelected = (category) => {
+    const items = APPLIANCE_CATEGORIES[category].items.map(item => item.toLowerCase());
+    return items.every(item => selectedAppliances[category].includes(item));
+  };
+
+  const hasSelectedAppliances = Object.values(selectedAppliances).some(category => category.length > 0);
 
   return (
     <div className="kitchen-appliances">
@@ -103,15 +105,11 @@ const KitchenAppliances = () => {
               </div>
               <button
                 className={`select-all-btn ${
-                  category.items.every(item => selectedAppliances.has(item))
-                    ? 'all-selected'
-                    : ''
+                  isCategoryFullySelected(key) ? 'all-selected' : ''
                 }`}
-                onClick={() => toggleCategory(key)}
+                onClick={() => handleToggleCategory(key)}
               >
-                {category.items.every(item => selectedAppliances.has(item))
-                  ? 'Remove All'
-                  : 'Select All'}
+                {isCategoryFullySelected(key) ? 'Remove All' : 'Select All'}
               </button>
             </div>
             <div className="appliance-bubbles">
@@ -119,9 +117,9 @@ const KitchenAppliances = () => {
                 <button
                   key={item}
                   className={`appliance-bubble ${
-                    selectedAppliances.has(item) ? 'selected' : ''
+                    isApplianceSelected(item, key) ? 'selected' : ''
                   }`}
-                  onClick={() => toggleAppliance(item)}
+                  onClick={() => handleToggleAppliance(item, key)}
                 >
                   {item}
                 </button>
@@ -130,6 +128,13 @@ const KitchenAppliances = () => {
           </div>
         ))}
       </div>
+      <button 
+        className="submit-button"
+        onClick={handleSubmit}
+        disabled={!hasSelectedAppliances}
+      >
+        Submit Kitchen Appliances
+      </button>
     </div>
   );
 };

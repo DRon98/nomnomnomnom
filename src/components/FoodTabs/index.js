@@ -7,12 +7,14 @@ import { FILTER_OPTIONS, FOOD_CATEGORIES } from '../../constants';
 import FoodCard from '../FoodCard';
 import './styles.css';
 
-const FoodTabs = () => {
+const FoodTabs = ({ view = 'day' }) => {
   const [activeTab, setActiveTab] = useState('recommended');
   const [isBatchMode, setIsBatchMode] = useState(false);
   const [selectedFoods, setSelectedFoods] = useState(new Set());
   const [activeFilters, setActiveFilters] = useState(new Set([FILTER_OPTIONS.ALL]));
   const dispatch = useDispatch();
+  
+  // Get states from Redux
   const currentStates = useSelector(state => state.user.currentStates);
   const desiredStates = useSelector(state => state.user.desiredStates);
   const recommendedFoods = useSelector(state => state.foods.recommendedFoods) || [];
@@ -20,6 +22,8 @@ const FoodTabs = () => {
   const loading = useSelector(state => state.foods.loading);
   const pantryItems = useSelector(state => state.inventory.pantry) || [];
   const shoppingListItems = useSelector(state => state.inventory.groceries) || [];
+  const foodPreferences = useSelector(state => state.survey.data);
+  const weekFeelings = useSelector(state => state.user.weekFeelings) || [];
 
   // Select all items when entering batch mode
   useEffect(() => {
@@ -33,6 +37,63 @@ const FoodTabs = () => {
 
   const handleGenerateRecommendations = async () => {
     if (currentStates.length === 0 || desiredStates.length === 0) return;
+
+    // Get current date and day
+    const now = new Date();
+    const currentDay = now.toLocaleDateString('en-US', { weekday: 'long' });
+    
+    if (view === 'day') {
+      // Log day view data
+      console.log('Day View Data:', {
+        pantryManager: {
+          items: pantryItems.map(item => ({
+            foodId: item.foodId,
+            name: item.food.name,
+            amount: item.amount,
+            unit: item.food.unit || 'unit',
+            category: item.food.category,
+            dateAdded: now.toISOString()
+          }))
+        },
+        foodPreferences: foodPreferences,
+        currentFeelings: currentStates,
+        desiredFeelings: desiredStates
+      });
+    } else {
+      // Log week view data with prioritized feelings per day
+      const feelingsByDay = weekFeelings.reduce((acc, { feeling, days }) => {
+        days.forEach(day => {
+          if (!acc[day]) {
+            acc[day] = {
+              prioritizedFeelings: []
+            };
+          }
+          acc[day].prioritizedFeelings.push(feeling);
+        });
+        return acc;
+      }, {});
+
+      console.log('Week View Data:', {
+        pantryManager: {
+          items: pantryItems.map(item => ({
+            foodId: item.foodId,
+            name: item.food.name,
+            amount: item.amount,
+            unit: item.food.unit || 'unit',
+            category: item.food.category,
+            dateAdded: now.toISOString()
+          }))
+        },
+        foodPreferences: foodPreferences,
+        feelings: {
+          [currentDay]: {
+            currentFeelings: currentStates,
+            desiredFeelings: desiredStates
+          },
+          prioritizedFeelingsPerDay: feelingsByDay
+        }
+      });
+    }
 
     try {
       dispatch(setLoading(true));

@@ -122,6 +122,10 @@ const RecipeGenerator = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedIngredients, setSelectedIngredients] = useState([]);
 
+  // Move useSelector hooks to component level
+  const foodPreferences = useSelector(state => state.survey.data);
+  const kitchenAppliances = useSelector(state => state.kitchenAppliances.selectedAppliances);
+
   // Get real inventory state from Redux
   const pantryItems = useSelector(state => state.inventory.pantry) || [];
   const shoppingListItems = useSelector(state => state.inventory.groceries) || [];
@@ -164,6 +168,23 @@ const RecipeGenerator = () => {
 
   const generateRecipes = () => {
     setIsLoading(true);
+    
+    console.log('Recipe Filters Responses and Ingredients:', {
+      recipeFilters: {
+        prepTime: { min: 15, max: filters.cookingTime === 'any' ? 90 : parseInt(filters.cookingTime) },
+        cookTime: { min: 20, max: filters.cookingTime === 'any' ? 90 : parseInt(filters.cookingTime) },
+        difficulty: [filters.skillLevel],
+        mealTypes: [filters.mealType],
+        tags: [...filters.cuisines, ...filters.tastes]
+      },
+      ingredients: selectedIngredients.map(item => ({
+        name: item.food.name,
+        amount: item.amount || 1,
+        unit: item.food.unit || 'unit'
+      })),
+      foodPreferences,
+      kitchenAppliances
+    });
     
     // Simulate API call
     setTimeout(() => {

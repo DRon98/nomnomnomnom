@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import './RecipeBuilder.css';
 import { FaFire, FaClock, FaUtensils, FaListUl, FaChartBar, FaPlus, FaMinus, FaTrash, FaInfoCircle } from 'react-icons/fa';
 
@@ -8,8 +8,82 @@ const HEAT_STATES = {
   MEDIUM: 'medium',
   HIGH: 'high'
 };
+const INITIAL_RECIPE = 
+{
+  "title": "Chicken Tikka Masala",
+  "maxTime": 60,
+  "difficulty": "medium",
+  "tags": ["Indian"],
+  "steps": [
+    {
+      "id": 1,
+      "name": "Marinate Chicken",
+      "description": "Marinate chicken breast in yogurt and spice mixture",
+      "duration": 10,
+      "startTime": 0,
+      "intensity": "low",
+      "parallel": false,
+      "ingredients": ["1 1/2 pounds boneless, skinless chicken breast", "1 cup plain yogurt", "2 tablespoons lemon juice", "2 tablespoons ghee or vegetable oil", "2 teaspoons garam masala", "1 teaspoon ground cumin", "1/2 teaspoon ground coriander", "1/2 teaspoon cayenne pepper", "1/2 teaspoon salt"],
+      "prepSteps": [
+        "In a large bowl, whisk together yogurt, lemon juice, ghee or oil, garam masala, cumin, coriander, cayenne pepper, and salt",
+        "Add the chicken to the marinade and mix well to coat",
+        "Cover and refrigerate for at least 30 minutes or up to 2 hours"
+      ],
+      heatProfile: [{time: 0, level: HEAT_STATES.HIGH}, {time: 0.2, level: HEAT_STATES.MEDIUM}, {time: 0.8, level: HEAT_STATES.LOW}]
+    },
+    {
+      "id": 2,
+      "name": "Grill Chicken",
+      "description": "Grill the marinated chicken until cooked through",
+      "duration": 15,
+      "startTime": 10,
+      "intensity": "high",
+      "parallel": false,
+      "ingredients": [],
+      "prepSteps": [
+        "Preheat grill to medium-high heat",
+        "Remove the chicken from the marinade, letting any excess liquid drip off",
+        "Grill the chicken until cooked through, about 5-7 minutes per side"
+      ],
+      heatProfile: [{time: 0, level: HEAT_STATES.HIGH}, {time: 0.2, level: HEAT_STATES.MEDIUM}, {time: 0.8, level: HEAT_STATES.LOW}]
+    },
+    {
+      "id": 3,
+      "name": "Make Masala Sauce",
+      "description": "Make the masala sauce with onions, garlic, ginger, and tomatoes",
+      "duration": 20,
+      "startTime": 25,
+      "intensity": "medium",
+      "parallel": true,
+      "ingredients": ["2 large onions", "2 cloves garlic", "1-inch piece of ginger", "2 large tomatoes", "1 can diced tomatoes", "1 cup chicken broth", "1/2 cup heavy cream", "2 tablespoons tomato paste", "2 teaspoons garam masala", "1 teaspoon ground cumin", "1/2 teaspoon salt"],
+      "prepSteps": [
+        "Heat oil in a large saucepan over medium heat",
+        "Add the onions and cook, stirring occasionally, until they are lightly browned, about 8 minutes",
+        "Add the garlic and ginger and cook, stirring constantly, for 1 minute",
+        "Add the tomatoes, chicken broth, heavy cream, tomato paste, garam masala, cumin, and salt",
+        "Stir to combine, then bring the mixture to a simmer"
+      ],
+      heatProfile: [{time: 0, level: HEAT_STATES.HIGH}, {time: 0.2, level: HEAT_STATES.MEDIUM}, {time: 0.8, level: HEAT_STATES.LOW}]
+    },
+    {
+      "id": 4,
+      "name": "Assemble and Serve",
+      "description": "Assemble the chicken tikka masala and serve over basmati rice",
+      "duration": 5,
+      "startTime": 45,
+      "intensity": "low",
+      "parallel": false,
+      "ingredients": ["Cooked basmati rice", "Chopped cilantro"],
+      "prepSteps": [
+        "Stir the cooked chicken into the masala sauce",
+        "Serve the chicken tikka masala over basmati rice, garnished with cilantro"
+      ],
+      heatProfile: [{time: 0, level: HEAT_STATES.HIGH}, {time: 0.2, level: HEAT_STATES.MEDIUM}, {time: 0.8, level: HEAT_STATES.LOW}]
+    }
+  ]
+}
 
-const INITIAL_RECIPE = {
+const INITIAFL_RECIPE = {
   title: 'Homemade Ramen with Chashu Pork',
   maxTime: 180,
   difficulty: 'medium',

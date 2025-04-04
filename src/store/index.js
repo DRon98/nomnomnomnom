@@ -6,6 +6,7 @@ import inventoryReducer from './inventorySlice';
 import foodsReducer from './foodsSlice';
 import surveyReducer from './surveySlice';
 import foodLogReducer from './foodLogSlice';
+import kitchenAppliancesReducer from './kitchenAppliancesSlice';
 
 const store = configureStore({
   reducer: {
@@ -15,7 +16,8 @@ const store = configureStore({
     inventory: inventoryReducer,
     foods: foodsReducer,
     survey: surveyReducer,
-    foodLog: foodLogReducer
+    foodLog: foodLogReducer,
+    kitchenAppliances: kitchenAppliancesReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -112,6 +112,22 @@ const surveySlice = createSlice({
     // Mark survey as completed
     completeSurvey: (state) => {
       state.isCompleted = true;
+      console.log('Food Preferences Survey Responses:', {
+        dietaryPreferences: state.dietaryRestrictions,
+        allergies: state.data[SURVEY_QUESTIONS.ALLERGIES],
+        cookingSkills: state.data[SURVEY_QUESTIONS.COOKING_SKILLS],
+        timeAvailability: state.data[SURVEY_QUESTIONS.TIME_AVAILABILITY],
+        foodPreferences: {
+          proteins: { love: state.foodPreferences.proteins, neutral: [], hate: [] },
+          vegetables: { love: state.foodPreferences.vegetables, neutral: [], hate: [] },
+          fruits: { love: state.foodPreferences.fruits, neutral: [], hate: [] },
+          grains: { love: state.foodPreferences.grains, neutral: [], hate: [] },
+          dairy: { love: state.foodPreferences.dairy, neutral: [], hate: [] },
+          fats: { love: state.foodPreferences.fats, neutral: [], hate: [] }
+        },
+        cookingMethods: state.cookingMethods,
+        spiceLevel: state.spiceLevel
+      });
     },
     
     // Reset survey

@@ -42,6 +42,19 @@ const PantryManager = () => {
     if (!item || !item.food) return false;
     const matchesSearch = !searchTerm || (item.food.name && item.food.name.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesCategory = !selectedCategories.length || (item.food.category && selectedCategories.includes(item.food.category));
+    
+    if (matchesSearch && matchesCategory) {
+      console.log('Pantry Manager:', {
+        pantry: pantryItems.map(item => ({
+          foodId: item.foodId,
+          name: item.food.name,
+          amount: item.amount,
+          unit: item.food.unit || 'unit',
+          category: item.food.category,
+          addedDate: new Date().toISOString().split('T')[0]
+        }))
+      });
+    }
     return matchesSearch && matchesCategory;
   });
 

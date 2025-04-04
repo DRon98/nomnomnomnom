@@ -262,7 +262,19 @@ const GroceryBuilder = () => {
 
   const handleAddItem = (foodId) => {
     // In a real app, this would add the item to the user's shopping list
-    alert(`Added ${generatedList.find(i => i.foodId === foodId).food.name} to shopping list`);
+    const item = generatedList.find(i => i.foodId === foodId);
+    if (item) {
+      console.log('Shopping List:', {
+        shoppingList: generatedList.map(item => ({
+          foodId: item.foodId,
+          name: item.food.name,
+          amount: item.amount || 1,
+          unit: item.food.unit || 'unit',
+          category: item.food.category
+        }))
+      });
+    }
+    alert(`Added ${item.food.name} to shopping list`);
   };
 
   const handleSaveAndOrder = () => {
