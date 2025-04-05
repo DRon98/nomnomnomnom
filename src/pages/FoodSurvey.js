@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import './FoodSurvey.css';
 import { useDispatch, useSelector } from 'react-redux';
+// import {
+//   toggleDietaryRestriction,
+//   setOtherRestriction,
+//   setSpiceLevel,
+//   togglePreference,
+//   setAdditionalPreferences,
+//   toggleCookingMethodsView
+// } from '../store/foodPreferencesSlice';
 import {
   toggleDietaryRestriction,
   setOtherRestriction,
@@ -9,7 +17,6 @@ import {
   setAdditionalPreferences,
   toggleCookingMethodsView
 } from '../store/foodPreferencesSlice';
-
 // Food icons for categories
 const FOOD_CATEGORIES = [
   {
