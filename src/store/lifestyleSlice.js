@@ -15,6 +15,7 @@ const lifestyleSlice = createSlice({
   initialState,
   reducers: {
     toggleResponse: (state, action) => {
+      console.log(action.payload);
       const { category, subcategory } = action.payload;
       const categoryResponses = state.responses[category];
       const index = categoryResponses.indexOf(subcategory);

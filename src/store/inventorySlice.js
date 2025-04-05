@@ -37,17 +37,43 @@ const inventorySlice = createSlice({
     },
     addToGroceries: (state, action) => {
       const { food, amount = 1 } = action.payload;
-      const existingItem = state.groceries.find(item => item.foodId === food.id);
-      if (existingItem) {
-        existingItem.amount += amount;
-      } else {
-        state.groceries.push({
-          foodId: food.id,
-          food: {
-            ...food
-          },
-          amount
+      
+      // If the food has base ingredients, add them instead
+      if (food.base_ingredients_for_grocery_list && food.base_ingredients_for_grocery_list.length > 0) {
+        food.base_ingredients_for_grocery_list.forEach(ingredient => {
+          const existingItem = state.groceries.find(item => 
+            item.food.name.toLowerCase() === ingredient.toLowerCase()
+          );
+          
+          if (existingItem) {
+            existingItem.amount += amount;
+          } else {
+            state.groceries.push({
+              foodId: `${food.id}_${ingredient}`,
+              food: {
+                id: `${food.id}_${ingredient}`,
+                name: ingredient,
+                category: food.category || 'other',
+                unit: 'unit'
+              },
+              amount
+            });
+          }
         });
+      } else {
+        // Fallback to adding the food itself if no base ingredients
+        const existingItem = state.groceries.find(item => item.foodId === food.id);
+        if (existingItem) {
+          existingItem.amount += amount;
+        } else {
+          state.groceries.push({
+            foodId: food.id,
+            food: {
+              ...food
+            },
+            amount
+          });
+        }
       }
     },
     removeFromGroceries: (state, action) => {

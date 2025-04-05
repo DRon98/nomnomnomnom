@@ -1,5 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './FoodSurvey.css';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  toggleDietaryRestriction,
+  setOtherRestriction,
+  setSpiceLevel,
+  togglePreference,
+  setAdditionalPreferences,
+  toggleCookingMethodsView
+} from '../store/foodPreferencesSlice';
 
 // Food icons for categories
 const FOOD_CATEGORIES = [
@@ -153,75 +162,40 @@ const SPICE_EXAMPLES = [
 const FoodSurvey = () => {
   // Define all possible steps
   const TOTAL_STEPS = 8;
-
-  // State for current step
+  const dispatch = useDispatch();
+  
+  // Fix the selector to use the correct state path
+  const responses = useSelector(state => state.foodPreferences.responses);
+  
+  // Keep currentStep as local state since it's UI-specific
   const [currentStep, setCurrentStep] = useState(1);
   
-  // State for survey data
-  const [surveyData, setSurveyData] = useState({
-    dietaryRestrictions: [],
-    otherRestriction: '',
-    spiceLevel: 0,
-    cuisinePreferences: {},
-    foodPreferences: {},
-    cookingMethodPreferences: {},
-    additionalPreferences: '',
-    showingCookingMethods: false
-  });
-  
-  // Update survey data
-  const updateSurveyData = (field, value) => {
-    setSurveyData(prevData => ({
-      ...prevData,
-      [field]: value
-    }));
-  };
-  
-  // Handle dietary restriction selection
+  // Update handlers to use Redux actions
   const handleRestrictionToggle = (restriction) => {
-    setSurveyData(prevData => {
-      const restrictions = [...prevData.dietaryRestrictions];
-      if (restrictions.includes(restriction)) {
-        return {
-          ...prevData,
-          dietaryRestrictions: restrictions.filter(r => r !== restriction)
-        };
-      } else {
-        return {
-          ...prevData,
-          dietaryRestrictions: [...restrictions, restriction]
-        };
-      }
-    });
+    dispatch(toggleDietaryRestriction(restriction));
   };
   
-  // Handle spice level selection
+  const handleOtherRestrictionChange = (value) => {
+    dispatch(setOtherRestriction(value));
+  };
+  
   const handleSpiceLevelChange = (level) => {
-    updateSurveyData('spiceLevel', level);
+    dispatch(setSpiceLevel(level));
   };
   
-  // Handle food preference toggle
   const handlePreferenceToggle = (itemId, prefsKey) => {
-    setSurveyData(prevData => {
-      const preferences = { ...prevData[prefsKey] };
-      const currentPref = preferences[itemId] || 'neutral';
-      
-      if (currentPref === 'neutral') {
-        preferences[itemId] = 'loved';
-      } else if (currentPref === 'loved') {
-        preferences[itemId] = 'hated';
-      } else {
-        preferences[itemId] = 'neutral';
-      }
-      
-      return {
-        ...prevData,
-        [prefsKey]: preferences
-      };
-    });
+    dispatch(togglePreference({ itemId, prefsKey }));
   };
   
-  // Navigation functions
+  const handleAdditionalPreferencesChange = (value) => {
+    dispatch(setAdditionalPreferences(value));
+  };
+  
+  const toggleCookingMethodsView = (show) => {
+    dispatch(toggleCookingMethodsView(show));
+  };
+  
+  // Navigation functions remain the same
   const goToNextStep = () => {
     if (currentStep < TOTAL_STEPS) {
       setCurrentStep(currentStep + 1);
@@ -234,20 +208,13 @@ const FoodSurvey = () => {
     }
   };
   
-  // Handle step navigation from progress dots
   const handleDotClick = (step) => {
     setCurrentStep(step);
   };
   
-  // Submit data when survey is complete
   const handleSubmit = () => {
-    // Here you would typically send this data to your backend
-    console.log('Survey data submitted:', surveyData);
-    
-    // For demo purposes, just show an alert
+    console.log('Survey data submitted:', responses);
     alert('Survey submitted successfully! Thank you for your preferences.');
-    
-    // Reset form or redirect - demo just resets to step 1
     setCurrentStep(1);
   };
 
@@ -258,7 +225,7 @@ const FoodSurvey = () => {
         {items.map(item => (
           <div 
             key={item.id}
-            className={`food-item ${surveyData[prefsKey][item.id] || 'neutral'}`}
+            className={`food-item ${responses[prefsKey][item.id] || 'neutral'}`}
             onClick={() => handlePreferenceToggle(item.id, prefsKey)}
           >
             <div className="food-icon">{item.icon}</div>
@@ -275,11 +242,6 @@ const FoodSurvey = () => {
       return FOOD_CATEGORIES[currentStep - 4];
     }
     return null;
-  };
-  
-  // Toggle between food items and cooking methods
-  const toggleCookingMethodsView = (show) => {
-    updateSurveyData('showingCookingMethods', show);
   };
   
   return (
@@ -309,7 +271,7 @@ const FoodSurvey = () => {
               {DIETARY_RESTRICTIONS.map(restriction => (
                 <div 
                   key={restriction}
-                  className={`restriction-bubble ${surveyData.dietaryRestrictions.includes(restriction) ? 'active' : ''}`}
+                  className={`restriction-bubble ${responses.dietaryRestrictions.includes(restriction) ? 'active' : ''}`}
                   onClick={() => handleRestrictionToggle(restriction)}
                 >
                   {restriction}
@@ -321,17 +283,17 @@ const FoodSurvey = () => {
               <label>
                 <input 
                   type="checkbox" 
-                  checked={surveyData.dietaryRestrictions.includes('Other')}
+                  checked={responses.dietaryRestrictions.includes('Other')}
                   onChange={() => handleRestrictionToggle('Other')}
                 />
                 Other:
                 <input 
                   type="text"
                   className="other-input"
-                  value={surveyData.otherRestriction}
-                  onChange={(e) => updateSurveyData('otherRestriction', e.target.value)}
+                  value={responses.otherRestriction}
+                  onChange={(e) => handleOtherRestrictionChange(e.target.value)}
                   placeholder="Please specify..."
-                  disabled={!surveyData.dietaryRestrictions.includes('Other')}
+                  disabled={!responses.dietaryRestrictions.includes('Other')}
                 />
               </label>
             </div>
@@ -357,7 +319,7 @@ const FoodSurvey = () => {
                 {[0, 1, 2, 3, 4].map(level => (
                   <button 
                     key={level}
-                    className={`spice-level ${surveyData.spiceLevel === level ? 'active' : ''}`}
+                    className={`spice-level ${responses.spiceLevel === level ? 'active' : ''}`}
                     onClick={() => handleSpiceLevelChange(level)}
                   >
                     {level === 0 ? '🍚' : level === 1 ? '🌶️' : level === 2 ? '🌶️🌶️' : level === 3 ? '🌶️🌶️🌶️' : '🔥'}
@@ -365,7 +327,7 @@ const FoodSurvey = () => {
                 ))}
                 <div 
                   className="spice-indicator" 
-                  style={{ left: `${surveyData.spiceLevel * 25 + 10}%` }}
+                  style={{ left: `${responses.spiceLevel * 25 + 10}%` }}
                 ></div>
               </div>
               
@@ -403,7 +365,7 @@ const FoodSurvey = () => {
               {CUISINES.map(cuisine => (
                 <div 
                   key={cuisine.id}
-                  className={`food-item ${surveyData.cuisinePreferences[cuisine.id] || 'neutral'}`}
+                  className={`food-item ${responses.cuisinePreferences[cuisine.id] || 'neutral'}`}
                   onClick={() => handlePreferenceToggle(cuisine.id, 'cuisinePreferences')}
                 >
                   <div className="food-icon">{cuisine.icon}</div>
@@ -437,20 +399,20 @@ const FoodSurvey = () => {
             
             <div className="section-tabs">
               <button 
-                className={`section-tab ${!surveyData.showingCookingMethods ? 'active' : ''}`}
+                className={`section-tab ${!responses.showingCookingMethods ? 'active' : ''}`}
                 onClick={() => toggleCookingMethodsView(false)}
               >
                 Food Items
               </button>
               <button 
-                className={`section-tab ${surveyData.showingCookingMethods ? 'active' : ''}`}
+                className={`section-tab ${responses.showingCookingMethods ? 'active' : ''}`}
                 onClick={() => toggleCookingMethodsView(true)}
               >
                 Cooking Methods
               </button>
             </div>
             
-            {!surveyData.showingCookingMethods ? (
+            {!responses.showingCookingMethods ? (
               <div className="food-category">
                 <h3>Food Items</h3>
                 {renderPreferenceItems(FOOD_CATEGORIES[currentStep - 4].items, 'foodPreferences')}
@@ -471,8 +433,8 @@ const FoodSurvey = () => {
             <p>Please share any other food preferences or notes that would help us plan better meals for you:</p>
             
             <textarea
-              value={surveyData.additionalPreferences}
-              onChange={(e) => updateSurveyData('additionalPreferences', e.target.value)}
+              value={responses.additionalPreferences}
+              onChange={(e) => handleAdditionalPreferencesChange(e.target.value)}
               placeholder="E.g., I prefer meals that can be prepared in under 30 minutes, I'm trying to reduce my sugar intake, etc."
             ></textarea>
           </div>
@@ -502,3 +464,82 @@ const FoodSurvey = () => {
 };
 
 export default FoodSurvey; 
+
+
+// import React, { useState } from 'react';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { toggleResponse } from '../store/lifestyleSlice';
+// import './LifestyleSurvey.css';
+// import BaseSurvey from './BaseSurvey';
+
+// const LIFESTYLE_CATEGORIES = {
+//   activeCompetitive: {
+//     title: 'Active & Competitive Lifestyles',
+//     subcategories: {
+//       HighIntensity: 'High-Intensity Competitive Sports: Team or individual sports with intense physical demands and competition, like soccer or boxing.',
+//       Endurance: 'Endurance Sports: Activities focused on stamina and long-distance effort, such as running or triathlon.',
+//       WinterSports: 'Winter Sports/Activities: Seasonal sports or recreation in cold environments, like skiing or ice hockey.'
+//     }
+//   },
+//   fitnessSkill: {
+//     title: 'Fitness & Skill Development',
+//     subcategories: {
+//       StrengthTraining: 'Individual Strength Training: Exercises to build muscle and power, like weightlifting or powerlifting.',
+//       Cardio: 'Individual Cardio: Solo activities to boost heart health and endurance, such as running or cycling.',
+//       SkillPerformance: 'Skill-Based Performance Activities: Tasks requiring coordination and artistry, like dance or gymnastics.'
+//     }
+//   },
+//   outdoorRelaxation: {
+//     title: 'Outdoor & Relaxation Pursuits',
+//     subcategories: {
+//       OutdoorActivities: 'Outdoor Activities: Nature-based recreation or adventure, such as hiking or kayaking.',
+//       Relaxation: 'Relaxation-Based Activities: Calming practices for recovery or stress relief, like foam rolling or fishing.',
+//       Mindfulness: 'Mindfulness: Focused mental exercises for clarity and peace, such as meditation or yoga.'
+//     }
+//   },
+//   socialProfessional: {
+//     title: 'Social & Professional Engagement',
+//     subcategories: {
+//       RomanticSocializing: 'Romantic Socializing: Activities to bond with a partner, like date nights or shared hobbies.',
+//       Networking: 'Networking & Professional Socializing: Career-focused interactions, such as conferences or happy hours.',
+//       CommunicationWork: 'Communication-Based Work: Jobs or tasks relying on interpersonal exchange, like public speaking or teaching.',
+//       Gaming: 'Gaming: Interactive play with others, often online, such as multiplayer video games.'
+//     }
+//   },
+//   dailyCognitive: {
+//     title: 'Daily Life & Cognitive Work',
+//     subcategories: {
+//       ParentalDuties: 'Parental Duties: Caregiving responsibilities for kids, like parenting or stroller walking.',
+//       EverydayTasks: 'Everyday Tasks: Routine chores or duties, such as cooking or cleaning.',
+//       StrategicThinking: 'Strategic Thinking: Planning and decision-making tasks, like coaching or operations work.',
+//       AnalyticalWork: 'Analytical and Problem-Based Work: Intellectual efforts to solve complex issues, such as coding or research.',
+//       CommunicationWork: 'Communication-Based Work: Repeated here if distinct in context, like managing teams or client calls.',
+//       Relaxation: 'Relaxation-Based Activities: Repeated here if tied to daily routine, like gardening for calm.'
+//     }
+//   }
+// };
+
+// const LifestyleSurvey = () => {
+//   const dispatch = useDispatch();
+//   const responses = useSelector(state => state.lifestyle.responses);
+
+//   const handleToggle = (category, subcategory) => {
+//     dispatch(toggleResponse({ category, subcategory }));
+//   };
+
+//   const handleSubmit = () => {
+//     console.log('Lifestyle Survey Responses:', responses);
+//   };
+
+//   return (
+//     <BaseSurvey
+//       title="Lifestyle Survey"
+//       categories={LIFESTYLE_CATEGORIES}
+//       responses={responses}
+//       onToggle={handleToggle}
+//       onSubmit={handleSubmit}
+//     />
+//   );
+// };
+
+// export default LifestyleSurvey; 

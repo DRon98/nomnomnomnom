@@ -22,11 +22,12 @@ const FoodTabs = ({ view = 'day' }) => {
   const loading = useSelector(state => state.foods.loading);
   const pantryItems = useSelector(state => state.inventory.pantry) || [];
   const shoppingListItems = useSelector(state => state.inventory.groceries) || [];
-  const foodPreferences = useSelector(state => state.survey.data);
+  const foodPreferences = useSelector(state => state.foodPreferences);
   const weekFeelings = useSelector(state => state.user.weekFeelings) || [];
   
   // Get food and lifestyle survey data
-  const surveyData = useSelector(state => state.survey);
+  const surveyData = useSelector(state => state.foodPreferences);
+  console.log(surveyData);
   const lifestyleData = useSelector(state => state.lifestyle);
 
   // Select all items when entering batch mode
@@ -51,14 +52,14 @@ const FoodTabs = ({ view = 'day' }) => {
     if (view === 'day') {
       // Create survey data object
       const foodSurveyData = {
-        dietaryRestrictions: Object.keys(surveyData.dietaryRestrictions).filter(key => surveyData.dietaryRestrictions[key]),
-        otherRestriction: '',
-        spiceLevel: surveyData.spiceLevel === 'low' ? 1 : surveyData.spiceLevel === 'medium' ? 3 : 5,
-        cuisinePreferences: {},
-        foodPreferences: surveyData.foodPreferences,
-        cookingMethodPreferences: surveyData.cookingMethods,
-        additionalPreferences: '',
-        showingCookingMethods: false
+        dietaryRestrictions: Object.keys(surveyData.dietaryRestrictions || {}).filter(key => surveyData.dietaryRestrictions[key]),
+        otherRestriction: surveyData.otherRestriction || '',
+        spiceLevel: surveyData.spiceLevel || 'medium',
+        cuisinePreferences: surveyData.cuisinePreferences || {},
+        foodPreferences: surveyData.foodPreferences || {},
+        cookingMethodPreferences: surveyData.cookingMethodPreferences || {},
+        additionalPreferences: surveyData.additionalPreferences || '',
+        showingCookingMethods: surveyData.showingCookingMethods || false
       };
       
       // Create user data for AI recommendations
@@ -73,12 +74,21 @@ const FoodTabs = ({ view = 'day' }) => {
             dateAdded: now.toISOString()
           }))
         },
-        foodPreferences: foodPreferences,
         currentFeelings: currentStates,
         desiredFeelings: desiredStates,
-        surveyData: foodSurveyData,
-        lifestyleData: lifestyleData.responses
+        surveyData: foodSurveyData.responses,
+        lifestyleData: lifestyleData.responses,
+        // Include the raw survey data as well to ensure all preferences are passed
+        foodPreferences: surveyData.responses
       };
+
+      // {
+      //   ...surveyData,
+      //   cuisinePreferences: surveyData.cuisinePreferences || {},
+      //   foodPreferences: surveyData.foodPreferences || {},
+      //   dietaryRestrictions: surveyData.dietaryRestrictions || {},
+      //   spiceLevel: surveyData.spiceLevel || 'medium'
+      // }
       
       // Log day view data
       console.log('Day View Data:', userData);

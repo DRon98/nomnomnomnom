@@ -11,6 +11,7 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
   const shoppingListItems = useSelector(state => state.inventory.groceries) || [];
   const [isRecipeBase, setIsRecipeBase] = useState(false);
   const [ingredients, setIngredients] = useState([]);
+  const [showIngredients, setShowIngredients] = useState(false);
   
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'FOOD',
@@ -67,6 +68,7 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
     if (isSelected) className += ' selected';
     if (isRecipeBase) className += ' recipe-base';
     if (isOver) className += ' drop-target';
+    if (showIngredients) className += ' show-ingredients';
     
     return className;
   };
@@ -115,109 +117,71 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
   const status = getItemStatus();
 
   return (
-    <div ref={refCombiner} className={getCardClass()}>
-      {isRecipeBase ? (
+    <div ref={refCombiner} className={getCardClass()} onClick={handleClick}>
+      <div className="food-icon">{food.emoji || food.icon}</div>
+      <h3 className="food-name">{food.name}</h3>
+      
+      {!inMealPlan && !isBatchMode && (
         <>
-          <div className="recipe-header">
-            <div className="food-icon">{food.icon}</div>
-            <h3 className="food-name">{food.name}</h3>
-            {onRemove && (
+          <p className="food-description">{food.description}</p>
+          
+          {food.base_ingredients_for_grocery_list && food.base_ingredients_for_grocery_list.length > 0 && (
+            <div className="ingredients-section">
               <button 
-                className="food-remove-button"
+                className="toggle-ingredients-button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onRemove(food.id);
+                  setShowIngredients(!showIngredients);
                 }}
-                aria-label={`Remove ${food.name}`}
               >
-                ×
+                {showIngredients ? 'Hide Ingredients' : 'Show Ingredients'} 
+                {showIngredients ? '▼' : '▶'}
               </button>
-            )}
-          </div>
-          <div className="recipe-ingredients">
-            {ingredients.map(ingredient => (
-              <div key={ingredient.id} className="recipe-ingredient">
-                <span className="food-icon">{ingredient.icon}</span>
-                <button
-                  className="remove-button"
-                  onClick={(e) => removeIngredient(ingredient.id, e)}
-                  title={`Remove ${ingredient.name}`}
-                >
-                  ×
-                </button>
-              </div>
-            ))}
-          </div>
-          {ingredients.length > 0 && (
-            <Link 
-              to={`/recipe-generator?base=${food.id}&ingredients=${ingredients.map(i => i.id).join(',')}`}
-              className="generate-recipe-link"
-              onClick={(e) => e.stopPropagation()}
-            >
-              Generate Recipe →
-            </Link>
-          )}
-        </>
-      ) : (
-        <>
-          <div className="food-icon">{food.icon}</div>
-          <h3 className="food-name">{food.name}</h3>
-          
-          {inMealPlan && (
-            <>
-              <button 
-                className="make-recipe-button"
-                onClick={handleMakeRecipe}
-                title="Make this a recipe base"
-              >
-                🍳
-              </button>
-              {onRemove && (
-                <button 
-                  className="food-remove-button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onRemove(food.id);
-                  }}
-                  aria-label={`Remove ${food.name}`}
-                >
-                  ×
-                </button>
+              
+              {showIngredients && (
+                <div className="ingredients-list">
+                  <h4>Base Ingredients:</h4>
+                  <ul>
+                    {food.base_ingredients_for_grocery_list.map((ingredient, index) => (
+                      <li key={index}>{ingredient}</li>
+                    ))}
+                  </ul>
+                </div>
               )}
-            </>
+            </div>
           )}
 
-          {!inMealPlan && !isBatchMode && (
-            <>
-              <p className="food-description">{food.description}</p>
-              <div className="food-rating">
-                Rating: {getRatingEmoji(food.rating)}
-              </div>
-              <div className="food-actions">
-                <button
-                  className="food-action-button pantry"
-                  onClick={() => dispatch(addToPantry({ food: { ...food } }))}
-                  title="Add to Pantry"
-                >
-                  + 🗄️
-                  {pantryItems.some(item => item.food.id === food.id) && 
-                    <span className="food-action-checkmark">✓</span>}
-                </button>
-                <button
-                  className="food-action-button grocery"
-                  onClick={() => dispatch(addToGroceries({ food: { ...food } }))}
-                  title="Add to Groceries"
-                >
-                  + 🛒
-                  {shoppingListItems.some(item => item.food.id === food.id) && 
-                    <span className="food-action-checkmark">✓</span>}
-                </button>
-              </div>
-            </>
-          )}
+          <div className="food-rating">
+            Rating: {getRatingEmoji(food.rating)}
+          </div>
+          
+          <div className="food-actions">
+            <button
+              className="food-action-button pantry"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleAddToPantry();
+              }}
+              title="Add to Pantry"
+            >
+              Add to Pantry
+            </button>
+            <button
+              className="food-action-button groceries"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleAddToGroceries();
+              }}
+              title={food.base_ingredients_for_grocery_list ? 'Add ingredients to Shopping List' : 'Add to Shopping List'}
+            >
+              {food.base_ingredients_for_grocery_list ? 'Add Ingredients' : 'Add to List'}
+            </button>
+          </div>
+          
+          <div className={status.className}>{status.text}</div>
         </>
       )}
-      
+
       {isBatchMode && (
         <div className="food-checkbox">
           <input

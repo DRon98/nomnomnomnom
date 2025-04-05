@@ -121,11 +121,11 @@ const RecipeGenerator = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedIngredients, setSelectedIngredients] = useState([]);
-
+  
   // Move useSelector hooks to component level
-  const foodPreferences = useSelector(state => state.survey.data);
+  const foodPreferences = useSelector(state => state.foodPreferences);
   const kitchenAppliances = useSelector(state => state.kitchenAppliances.selectedAppliances);
-
+ // const surveyData = useSelector(state => state.foodPreferences);
   // Get real inventory state from Redux
   const pantryItems = useSelector(state => state.inventory.pantry) || [];
   const shoppingListItems = useSelector(state => state.inventory.groceries) || [];
