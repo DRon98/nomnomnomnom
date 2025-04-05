@@ -1,10 +1,12 @@
 import { DUMMY_FOODS } from './constants';
-import { getAIRecommendations } from './aiRecommendations';
+import { generateAIRecommendations } from './aiRecommendations';
 
-export const generateRecommendations = async (currentStates, desiredStates, useAI = false) => {
-  if (useAI) {
+export const generateRecommendations = async (currentStates, desiredStates, userData = null) => {
+  // By default, use Groq AI recommendations for day view
+  if (userData) {
     try {
-      return await getAIRecommendations(currentStates, desiredStates);
+      // Use our Groq AI integration
+      return await generateAIRecommendations(userData);
     } catch (error) {
       console.error('Failed to get AI recommendations, falling back to default:', error);
       // Fall back to default recommendations if AI fails
@@ -24,7 +26,10 @@ export const generateRecommendations = async (currentStates, desiredStates, useA
 
   return {
     recommended: recommendedFoods,
-    avoid: foodsToAvoid
+    avoid: foodsToAvoid,
+    // Include empty survey data for consistency when using dummy foods
+    surveyData: userData ? userData.surveyData : {},
+    lifestyleData: userData ? userData.lifestyleData : {}
   };
 };
 

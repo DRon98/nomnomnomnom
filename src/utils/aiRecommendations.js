@@ -1,127 +1,114 @@
-// import OpenAI from 'openai';
+import { Groq } from 'groq-sdk';
 
-// // Check for API key
-// const OPENAI_API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
+/**
+ * Generates food recommendations using the Groq API
+ * @param {Object} userPreferences - Contains all user preferences data
+ * @returns {Promise<{recommended: Array, avoid: Array}>} - Arrays of recommended foods and foods to avoid
+ */
+export const generateAIRecommendations = async (userPreferences) => {
+  try {
+    console.log(process.env.GROQ_API_KEY);
+    const groq = new Groq({
+      apiKey: 'g',
+   
+    });
+    
+    // Create a prompt for Groq based on user preferences
+    const prompt = `
+      You are a nutrition expert AI assistant. Based on the following user data, generate food recommendations.
+      The user has these preferences and needs:
+      
+      Current feelings: ${userPreferences.currentFeelings.join(', ')}
+      Desired feelings: ${userPreferences.desiredFeelings.join(', ')}
+      
+      Dietary restrictions: ${userPreferences.surveyData?.dietaryRestrictions?.join(', ') || 'None'}
+      
+      Food preferences: ${JSON.stringify(userPreferences.foodPreferences)}
+      
+      Pantry items: ${userPreferences.pantryManager?.items?.map(item => item.name).join(', ') || 'None'}
+      
+      Lifestyle data: ${JSON.stringify(userPreferences.lifestyleData)}
+      
+      Please generate two JSON arrays:
+      1. An array of recommended foods that would help the user move from their current feelings to their desired feelings, considering their dietary restrictions and preferences
+      2. An array of foods they should avoid based on the same criteria
+      
+      Each food item in both arrays should follow this structure:
+      {
+        "id": "unique_id", // A unique identifier for the food
+        "name": "Food Name", // The name of the food
+        "description": "Brief description of benefits or why to avoid", 
+        "category": "category_name", // One of: protein, vegetable, fruit, grain, dairy, fat
+        "nutrients": ["nutrient1", "nutrient2"], // Key nutrients
+        "benefits": ["benefit1", "benefit2"] // Health benefits or reasons to avoid
+      }
+      
+      The response should be a single JSON object with the following structure:
+      {
+        "recommended": [...array of recommended food objects],
+        "avoid": [...array of foods to avoid objects]
+      }
+      
+      Provide 10 items for the recommended list and 5 items for the avoid list.
+      Return ONLY the JSON, no extra text.
+    `;
 
-// if (!OPENAI_API_KEY || OPENAI_API_KEY === 'your_openai_api_key_here') {
-//   console.warn(
-//     'OpenAI API key is not configured. Please add your API key to the .env file:\n' +
-//     '1. Create or edit .env file in the project root\n' +
-//     '2. Add the line: REACT_APP_OPENAI_API_KEY=your_actual_api_key\n' +
-//     '3. Restart your development server'
-//   );
-// }
+    // Call Groq API
+    const response = await groq.chat.completions.create({
+      model: "llama3-8b-8192",
+      messages: [
+        { role: 'system', content: 'You are a nutrition expert that provides food recommendations.' },
+        { role: 'user', content: prompt }
+      ],
+      temperature: 1,
+      max_tokens: 4000
+    });
 
-// // Initialize OpenAI client
-// const openai = new OpenAI({
-//   apiKey: OPENAI_API_KEY
-// });
+    // Get the response content
+    const aiResponse = response.choices[0].message.content;
+    let parsedResponse;
+    
+    try {
+      // Attempt to parse directly if the AI returned just JSON
+      parsedResponse = JSON.parse(aiResponse);
+    } catch (e) {
+      // If parsing fails, try to extract JSON from the text response
+      const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        parsedResponse = JSON.parse(jsonMatch[0]);
+      } else {
+        throw new Error('Failed to parse AI response');
+      }
+    }
 
-// // Helper function to structure the states into a meaningful prompt
-// const constructPrompt = (currentStates, desiredStates) => {
-//   const currentStatesList = currentStates.join(', ');
-//   const desiredStatesList = desiredStates.join(', ');
+    // Ensure the response has the expected structure
+    const recommended = Array.isArray(parsedResponse.recommended) 
+      ? parsedResponse.recommended 
+      : [];
+    
+    const avoid = Array.isArray(parsedResponse.avoid)
+      ? parsedResponse.avoid
+      : [];
 
-//   return `As a nutrition expert, recommend foods based on the following:
+    // Add default emoji for each food item
+    const processedRecommended = recommended.map(food => ({
+      ...food,
+      emoji: '🍽️' // Default emoji
+    }));
 
-// Current states: ${currentStatesList}
-// Desired states: ${desiredStatesList}
+    const processedAvoid = avoid.map(food => ({
+      ...food,
+      emoji: '⛔' // Default emoji for foods to avoid
+    }));
 
-// Consider the transition from the current emotional and physical states to the desired states.
-// Provide recommendations in the following JSON format:
-// {
-//   "recommended": [
-//     {
-//       "name": "Food name",
-//       "reason": "Why this food helps with the transition",
-//       "benefits": ["benefit1", "benefit2"]
-//     }
-//   ],
-//   "avoid": [
-//     {
-//       "name": "Food name",
-//       "reason": "Why this food might hinder the transition"
-//     }
-//   ]
-// }`;
-// };
-
-// // Function to get AI-powered food recommendations
-// export const getAIRecommendations = async (currentStates, desiredStates) => {
-//   if (!OPENAI_API_KEY || OPENAI_API_KEY === 'your_openai_api_key_here') {
-//     throw new Error(
-//       'OpenAI API key not configured. Please check your .env file and add a valid API key.'
-//     );
-//   }
-
-//   try {
-//     const prompt = constructPrompt(currentStates, desiredStates);
-
-//     const completion = await openai.chat.completions.create({
-//       model: "gpt-4", // or gpt-3.5-turbo depending on needs
-//       messages: [
-//         {
-//           role: "system",
-//           content: "You are a knowledgeable nutritionist who understands how different foods affect physical and emotional states."
-//         },
-//         {
-//           role: "user",
-//           content: prompt
-//         }
-//       ],
-//       temperature: 0.7,
-//       max_tokens: 1000,
-//       response_format: { type: "json_object" }
-//     });
-
-//     // Parse the JSON response
-//     const recommendations = JSON.parse(completion.choices[0].message.content);
-
-//     // Transform the AI recommendations into the app's food card format
-//     return transformAIRecommendations(recommendations);
-//   } catch (error) {
-//     console.error('Error getting AI recommendations:', error);
-//     throw error;
-//   }
-// };
-
-// // Helper function to transform AI response into app's food format
-// const transformAIRecommendations = (aiRecommendations) => {
-//   const recommended = aiRecommendations.recommended.map((item, index) => ({
-//     id: `ai_rec_${index}`,
-//     name: item.name,
-//     icon: getFoodEmoji(item.name), // You'd need to implement this
-//     description: item.reason,
-//     rating: 'Nomnomnomnom',
-//     recommendation: 'high'
-//   }));
-
-//   const avoid = aiRecommendations.avoid.map((item, index) => ({
-//     id: `ai_avoid_${index}`,
-//     name: item.name,
-//     icon: getFoodEmoji(item.name), // You'd need to implement this
-//     description: item.reason,
-//     rating: 'Nono',
-//     recommendation: 'avoid'
-//   }));
-
-//   return {
-//     recommended,
-//     avoid
-//   };
-// };
-
-// // Helper function to get emoji for food (simplified example)
-// const getFoodEmoji = (foodName) => {
-//   const emojiMap = {
-//     'banana': '🍌',
-//     'apple': '🍎',
-//     'fish': '🐟',
-//     'salad': '🥗',
-//     'water': '💧',
-//     // Add more mappings as needed
-//   };
-
-//   // Default emoji if no match found
-//   return emojiMap[foodName.toLowerCase()] || '🍽️';
-// }; 
+    return {
+      recommended: processedRecommended,
+      avoid: processedAvoid,
+      surveyData: userPreferences.surveyData,
+      lifestyleData: userPreferences.lifestyleData
+    };
+  } catch (error) {
+    console.error('Error generating AI recommendations:', error);
+    throw error;
+  }
+};

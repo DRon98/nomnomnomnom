@@ -46,6 +46,8 @@ const FoodTabs = ({ view = 'day' }) => {
     const now = new Date();
     const currentDay = now.toLocaleDateString('en-US', { weekday: 'long' });
     
+    let userData = null;
+    
     if (view === 'day') {
       // Create survey data object
       const foodSurveyData = {
@@ -59,8 +61,8 @@ const FoodTabs = ({ view = 'day' }) => {
         showingCookingMethods: false
       };
       
-      // Log day view data
-      console.log('Day View Data:', {
+      // Create user data for AI recommendations
+      userData = {
         pantryManager: {
           items: pantryItems.map(item => ({
             foodId: item.foodId,
@@ -76,7 +78,10 @@ const FoodTabs = ({ view = 'day' }) => {
         desiredFeelings: desiredStates,
         surveyData: foodSurveyData,
         lifestyleData: lifestyleData.responses
-      });
+      };
+      
+      // Log day view data
+      console.log('Day View Data:', userData);
     } else {
       // Log week view data with prioritized feelings per day
       const feelingsByDay = weekFeelings.reduce((acc, { feeling, days }) => {
@@ -103,6 +108,7 @@ const FoodTabs = ({ view = 'day' }) => {
         showingCookingMethods: false
       };
 
+      // Week view data does not use Groq for now
       console.log('Week View Data:', {
         pantryManager: {
           items: pantryItems.map(item => ({
@@ -129,9 +135,17 @@ const FoodTabs = ({ view = 'day' }) => {
 
     try {
       dispatch(setLoading(true));
-      const { recommended, avoid } = await generateRecommendations(currentStates, desiredStates);
+      const { recommended, avoid, surveyData, lifestyleData } = await generateRecommendations(currentStates, desiredStates, userData);
       dispatch(setRecommendedFoods(recommended));
       dispatch(setFoodsToAvoid(avoid));
+      
+      // Log the complete recommendation data including survey data
+      console.log('Generated Recommendations with Survey Data:', {
+        recommended,
+        avoid,
+        surveyData,
+        lifestyleData
+      });
     } catch (error) {
       console.error('Failed to generate recommendations:', error);
     } finally {
