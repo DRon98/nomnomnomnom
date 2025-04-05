@@ -24,6 +24,10 @@ const FoodTabs = ({ view = 'day' }) => {
   const shoppingListItems = useSelector(state => state.inventory.groceries) || [];
   const foodPreferences = useSelector(state => state.survey.data);
   const weekFeelings = useSelector(state => state.user.weekFeelings) || [];
+  
+  // Get food and lifestyle survey data
+  const surveyData = useSelector(state => state.survey);
+  const lifestyleData = useSelector(state => state.lifestyle);
 
   // Select all items when entering batch mode
   useEffect(() => {
@@ -43,6 +47,18 @@ const FoodTabs = ({ view = 'day' }) => {
     const currentDay = now.toLocaleDateString('en-US', { weekday: 'long' });
     
     if (view === 'day') {
+      // Create survey data object
+      const foodSurveyData = {
+        dietaryRestrictions: Object.keys(surveyData.dietaryRestrictions).filter(key => surveyData.dietaryRestrictions[key]),
+        otherRestriction: '',
+        spiceLevel: surveyData.spiceLevel === 'low' ? 1 : surveyData.spiceLevel === 'medium' ? 3 : 5,
+        cuisinePreferences: {},
+        foodPreferences: surveyData.foodPreferences,
+        cookingMethodPreferences: surveyData.cookingMethods,
+        additionalPreferences: '',
+        showingCookingMethods: false
+      };
+      
       // Log day view data
       console.log('Day View Data:', {
         pantryManager: {
@@ -57,7 +73,9 @@ const FoodTabs = ({ view = 'day' }) => {
         },
         foodPreferences: foodPreferences,
         currentFeelings: currentStates,
-        desiredFeelings: desiredStates
+        desiredFeelings: desiredStates,
+        surveyData: foodSurveyData,
+        lifestyleData: lifestyleData.responses
       });
     } else {
       // Log week view data with prioritized feelings per day
@@ -72,6 +90,18 @@ const FoodTabs = ({ view = 'day' }) => {
         });
         return acc;
       }, {});
+
+      // Create survey data object for week view
+      const foodSurveyData = {
+        dietaryRestrictions: Object.keys(surveyData.dietaryRestrictions).filter(key => surveyData.dietaryRestrictions[key]),
+        otherRestriction: '',
+        spiceLevel: surveyData.spiceLevel === 'low' ? 1 : surveyData.spiceLevel === 'medium' ? 3 : 5,
+        cuisinePreferences: {},
+        foodPreferences: surveyData.foodPreferences,
+        cookingMethodPreferences: surveyData.cookingMethods,
+        additionalPreferences: '',
+        showingCookingMethods: false
+      };
 
       console.log('Week View Data:', {
         pantryManager: {
@@ -91,7 +121,9 @@ const FoodTabs = ({ view = 'day' }) => {
             desiredFeelings: desiredStates
           },
           prioritizedFeelingsPerDay: feelingsByDay
-        }
+        },
+        surveyData: foodSurveyData,
+        lifestyleData: lifestyleData.responses
       });
     }
 
