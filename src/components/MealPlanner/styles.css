@@ -4,12 +4,49 @@
   height: 90%;
 }
 
+.planner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 .planner-title {
   font-family: 'Comic Neue', cursive;
   font-size: 24px;
   font-weight: bold;
-  margin-bottom: 20px;
   color: #333;
+  margin: 0;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 8px;
+  background-color: #f0f0f0;
+  padding: 4px;
+  border-radius: 8px;
+}
+
+.toggle-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: none;
+  color: #666;
+}
+
+.toggle-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.toggle-button.active {
+  background-color: white;
+  color: #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .meal-slots {
@@ -98,7 +135,7 @@
 .planner-actions {
   display: flex;
   gap: 10px;
-  margin-top: auto;
+  margin-bottom: 20px;
 }
 
 .planner-actions button {
@@ -108,4 +145,109 @@
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Week view styles */
+.week-days {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.day-section {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.day-header {
+  padding: 15px;
+  background-color: #f8f9fa;
+  cursor: pointer;
+  user-select: none;
+}
+
+.day-title-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.expand-icon {
+  font-size: 12px;
+  color: #666;
+}
+
+.day-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.day-meals {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.week-meal-slot {
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.copy-options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.copy-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 5px;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+}
+
+.copy-day-button {
+  background-color: white;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.copy-day-button:hover {
+  background-color: #e9ecef;
+}
+
+.copy-day-button.selected {
+  background-color: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+.copy-confirm-button {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  align-self: flex-end;
+  transition: all 0.2s ease;
+}
+
+.copy-confirm-button:hover {
+  background-color: #219a52;
 }
