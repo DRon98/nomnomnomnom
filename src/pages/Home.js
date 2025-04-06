@@ -1,12 +1,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import StateSelector from '../components/StateSelector';
-
+import FoodTabs from '../components/FoodTabs';
 import MealPlanner from '../components/MealPlanner';
 import WeekPlanner from '../components/WeekPlanner';
 import WeekMealPlanner from '../components/WeekMealPlanner';
 import ViewToggle from '../components/ViewToggle';
 import { CURRENT_STATES, DESIRED_STATES } from '../utils/constants';
+import './Home.css';
 
 function Home() {
   const dietaryRestrictions = useSelector(state => state.user.dietaryRestrictions);
@@ -30,8 +31,9 @@ function Home() {
               options={DESIRED_STATES}
               question="How do you want to feel today?"
             />
+            <FoodTabs view="day" />
             <div className="dietary-restrictions">
-              Dietary restrictions applied: {'{'}{
+              Dietary restrictions applied: {
                 Object.entries(dietaryRestrictions)
                   .filter(([_, value]) => value)
                   .map(([key]) => key)
@@ -40,7 +42,6 @@ function Home() {
               {' '}
               (Edit in Profile)
             </div>
-
           </div>
           <div className="right-section">
             <MealPlanner />
@@ -51,8 +52,9 @@ function Home() {
         <div className="week-view">
           <div className="left-section">
             <WeekPlanner />
+            <FoodTabs view="week" />
             <div className="dietary-restrictions">
-              Dietary restrictions applied: {'{'}{
+              Dietary restrictions applied: {
                 Object.entries(dietaryRestrictions)
                   .filter(([_, value]) => value)
                   .map(([key]) => key)
@@ -61,7 +63,6 @@ function Home() {
               {' '}
               (Edit in Profile)
             </div>
-
           </div>
           <div className="right-section">
             <WeekMealPlanner />

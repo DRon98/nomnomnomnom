@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setRecommendedFoods, setFoodsToAvoid, setLoading } from '../../store/foodsSlice';
 import { addToGroceries } from '../../store/inventorySlice';
-import { generateRecommendations } from '../../utils/foodGenerator';
+import { generateRecommendationsFromAPI } from '../../utils/api';
 import { FILTER_OPTIONS, FOOD_CATEGORIES } from '../../constants';
 import FoodCard from '../FoodCard';
 import './styles.css';
@@ -50,16 +50,17 @@ const FoodTabs = ({ view = 'day' }) => {
     let userData = null;
     
     if (view === 'day') {
-      // Create survey data object
+      // Create survey data object with default values
       const foodSurveyData = {
-        dietaryRestrictions: Object.keys(surveyData.dietaryRestrictions || {}).filter(key => surveyData.dietaryRestrictions[key]),
-        otherRestriction: surveyData.otherRestriction || '',
-        spiceLevel: surveyData.spiceLevel || 'medium',
-        cuisinePreferences: surveyData.cuisinePreferences || {},
-        foodPreferences: surveyData.foodPreferences || {},
-        cookingMethodPreferences: surveyData.cookingMethodPreferences || {},
-        additionalPreferences: surveyData.additionalPreferences || '',
-        showingCookingMethods: surveyData.showingCookingMethods || false
+        dietaryRestrictions: surveyData?.dietaryRestrictions ? 
+          Object.keys(surveyData.dietaryRestrictions).filter(key => surveyData.dietaryRestrictions[key]) : [],
+        otherRestriction: surveyData?.otherRestriction || '',
+        spiceLevel: surveyData?.spiceLevel || 'medium',
+        cuisinePreferences: surveyData?.cuisinePreferences || {},
+        foodPreferences: surveyData?.foodPreferences || {},
+        cookingMethodPreferences: surveyData?.cookingMethodPreferences || {},
+        additionalPreferences: surveyData?.additionalPreferences || '',
+        showingCookingMethods: surveyData?.showingCookingMethods || false
       };
       
       // Create user data for AI recommendations
@@ -76,24 +77,14 @@ const FoodTabs = ({ view = 'day' }) => {
         },
         currentFeelings: currentStates,
         desiredFeelings: desiredStates,
-        surveyData: foodSurveyData.responses,
-        lifestyleData: lifestyleData.responses,
-        // Include the raw survey data as well to ensure all preferences are passed
-        foodPreferences: surveyData.responses
+        surveyData: foodSurveyData,
+        lifestyleData: lifestyleData?.responses || {},
+        foodPreferences: surveyData?.responses || {}
       };
 
-      // {
-      //   ...surveyData,
-      //   cuisinePreferences: surveyData.cuisinePreferences || {},
-      //   foodPreferences: surveyData.foodPreferences || {},
-      //   dietaryRestrictions: surveyData.dietaryRestrictions || {},
-      //   spiceLevel: surveyData.spiceLevel || 'medium'
-      // }
-      
-      // Log day view data
       console.log('Day View Data:', userData);
     } else {
-      // Log week view data with prioritized feelings per day
+      // Week view data
       const feelingsByDay = weekFeelings.reduce((acc, { feeling, days }) => {
         days.forEach(day => {
           if (!acc[day]) {
@@ -106,20 +97,20 @@ const FoodTabs = ({ view = 'day' }) => {
         return acc;
       }, {});
 
-      // Create survey data object for week view
+      // Create survey data object for week view with null checks
       const foodSurveyData = {
-        dietaryRestrictions: Object.keys(surveyData.dietaryRestrictions).filter(key => surveyData.dietaryRestrictions[key]),
+        dietaryRestrictions: surveyData?.dietaryRestrictions ? 
+          Object.keys(surveyData.dietaryRestrictions).filter(key => surveyData.dietaryRestrictions[key]) : [],
         otherRestriction: '',
-        spiceLevel: surveyData.spiceLevel === 'low' ? 1 : surveyData.spiceLevel === 'medium' ? 3 : 5,
+        spiceLevel: surveyData?.spiceLevel === 'low' ? 1 : surveyData?.spiceLevel === 'medium' ? 3 : 5,
         cuisinePreferences: {},
-        foodPreferences: surveyData.foodPreferences,
-        cookingMethodPreferences: surveyData.cookingMethods,
+        foodPreferences: surveyData?.foodPreferences || {},
+        cookingMethodPreferences: surveyData?.cookingMethods || {},
         additionalPreferences: '',
         showingCookingMethods: false
       };
 
-      // Week view data does not use Groq for now
-      console.log('Week View Data:', {
+      userData = {
         pantryManager: {
           items: pantryItems.map(item => ({
             foodId: item.foodId,
@@ -130,7 +121,7 @@ const FoodTabs = ({ view = 'day' }) => {
             dateAdded: now.toISOString()
           }))
         },
-        foodPreferences: foodPreferences,
+        foodPreferences: foodPreferences || {},
         feelings: {
           [currentDay]: {
             currentFeelings: currentStates,
@@ -139,22 +130,24 @@ const FoodTabs = ({ view = 'day' }) => {
           prioritizedFeelingsPerDay: feelingsByDay
         },
         surveyData: foodSurveyData,
-        lifestyleData: lifestyleData.responses
-      });
+        lifestyleData: lifestyleData?.responses || {}
+      };
+
+      console.log('Week View Data:', userData);
     }
 
     try {
       dispatch(setLoading(true));
-      const { recommended, avoid, surveyData, lifestyleData } = await generateRecommendations(currentStates, desiredStates, userData);
+      const { recommended, avoid, surveyData: returnedSurveyData, lifestyleData: returnedLifestyleData } = 
+        await generateRecommendationsFromAPI(userData);
       dispatch(setRecommendedFoods(recommended));
       dispatch(setFoodsToAvoid(avoid));
       
-      // Log the complete recommendation data including survey data
       console.log('Generated Recommendations with Survey Data:', {
         recommended,
         avoid,
-        surveyData,
-        lifestyleData
+        surveyData: returnedSurveyData,
+        lifestyleData: returnedLifestyleData
       });
     } catch (error) {
       console.error('Failed to generate recommendations:', error);
