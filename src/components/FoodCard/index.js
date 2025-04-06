@@ -156,7 +156,7 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
           </div>
           
           <div className="food-actions">
-            <button
+            {/* <button
               className="food-action-button pantry"
               onClick={(e) => {
                 e.stopPropagation();
@@ -165,7 +165,7 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
               title="Add to Pantry"
             >
               Add to Pantry
-            </button>
+            </button> */}
             <button
               className="food-action-button groceries"
               onClick={(e) => {
@@ -180,6 +180,25 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
           
           <div className={status.className}>{status.text}</div>
         </>
+      )}
+
+      {inMealPlan && food.base_ingredients_for_grocery_list && food.base_ingredients_for_grocery_list.length > 0 && (
+        <Link 
+          to={`/recipe-generator?ingredients=${encodeURIComponent(food.base_ingredients_for_grocery_list.join(','))}`}
+          className="view-recipe-link"
+          onClick={(e) => e.stopPropagation()}
+        >
+          View Recipe
+        </Link>
+      )}
+
+      {onRemove && (
+        <button className="remove-button" onClick={(e) => {
+          e.stopPropagation();
+          onRemove();
+        }}>
+          ×
+        </button>
       )}
 
       {isBatchMode && (

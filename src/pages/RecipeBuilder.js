@@ -1,13 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import './RecipeBuilder.css';
-import { FaFire, FaClock, FaUtensils, FaListUl, FaChartBar, FaPlus, FaMinus, FaTrash, FaInfoCircle } from 'react-icons/fa';
+import { FaFire, FaClock, FaUtensils, FaListUl, FaChartBar, FaPlus, FaMinus, FaTrash, FaInfoCircle, FaSpinner } from 'react-icons/fa';
+import { generateRecipeBuilderFromAPI } from '../utils/api';
 
-const HEAT_STATES = {
-  OFF: 'off',
-  LOW: 'low',
-  MEDIUM: 'medium',
-  HIGH: 'high'
-};
 const INITIAL_RECIPE = 
 {
   "title": "Chicken Tikka Masala",
@@ -28,8 +24,7 @@ const INITIAL_RECIPE =
         "In a large bowl, whisk together yogurt, lemon juice, ghee or oil, garam masala, cumin, coriander, cayenne pepper, and salt",
         "Add the chicken to the marinade and mix well to coat",
         "Cover and refrigerate for at least 30 minutes or up to 2 hours"
-      ],
-      heatProfile: [{time: 0, level: HEAT_STATES.HIGH}, {time: 0.2, level: HEAT_STATES.MEDIUM}, {time: 0.8, level: HEAT_STATES.LOW}]
+      ]
     },
     {
       "id": 2,
@@ -44,8 +39,7 @@ const INITIAL_RECIPE =
         "Preheat grill to medium-high heat",
         "Remove the chicken from the marinade, letting any excess liquid drip off",
         "Grill the chicken until cooked through, about 5-7 minutes per side"
-      ],
-      heatProfile: [{time: 0, level: HEAT_STATES.HIGH}, {time: 0.2, level: HEAT_STATES.MEDIUM}, {time: 0.8, level: HEAT_STATES.LOW}]
+      ]
     },
     {
       "id": 3,
@@ -62,8 +56,7 @@ const INITIAL_RECIPE =
         "Add the garlic and ginger and cook, stirring constantly, for 1 minute",
         "Add the tomatoes, chicken broth, heavy cream, tomato paste, garam masala, cumin, and salt",
         "Stir to combine, then bring the mixture to a simmer"
-      ],
-      heatProfile: [{time: 0, level: HEAT_STATES.HIGH}, {time: 0.2, level: HEAT_STATES.MEDIUM}, {time: 0.8, level: HEAT_STATES.LOW}]
+      ]
     },
     {
       "id": 4,
@@ -77,11 +70,10 @@ const INITIAL_RECIPE =
       "prepSteps": [
         "Stir the cooked chicken into the masala sauce",
         "Serve the chicken tikka masala over basmati rice, garnished with cilantro"
-      ],
-      heatProfile: [{time: 0, level: HEAT_STATES.HIGH}, {time: 0.2, level: HEAT_STATES.MEDIUM}, {time: 0.8, level: HEAT_STATES.LOW}]
+      ]
     }
   ]
-}
+};
 
 const INITIAFL_RECIPE = {
   title: 'Homemade Ramen with Chashu Pork',
@@ -103,8 +95,7 @@ const INITIAFL_RECIPE = {
         'Season generously with salt and pepper',
         'Roll the pork belly tightly',
         'Tie with kitchen twine at 1-inch intervals'
-      ],
-      heatProfile: [{time: 0, level: HEAT_STATES.HIGH}, {time: 0.2, level: HEAT_STATES.MEDIUM}, {time: 0.8, level: HEAT_STATES.LOW}]
+      ]
     },
     {
       id: 2,
@@ -120,8 +111,7 @@ const INITIAFL_RECIPE = {
         'Add aromatics (green onions, garlic, ginger)',
         'Bring to a boil, then reduce to simmer',
         'Add pork and cook for 2 hours, turning occasionally'
-      ],
-      heatProfile: [{time: 0, level: HEAT_STATES.HIGH}, {time: 0.2, level: HEAT_STATES.MEDIUM}, {time: 0.8, level: HEAT_STATES.LOW}]
+      ]
     },
     {
       id: 3,
@@ -137,8 +127,7 @@ const INITIAFL_RECIPE = {
         'Carefully add eggs and cook for 6.5 minutes',
         'Ice bath immediately',
         'Peel and marinate in strained chashu liquid'
-      ],
-      heatProfile: [{time: 0, level: HEAT_STATES.HIGH}, {time: 0.2, level: HEAT_STATES.MEDIUM}, {time: 0.8, level: HEAT_STATES.LOW}]
+      ]
     },
     {
       id: 4,
@@ -154,8 +143,7 @@ const INITIAFL_RECIPE = {
         'Drain and season corn',
         'Drain and rinse bamboo shoots',
         'Cut nori sheets into strips'
-      ],
-      heatProfile: [{time: 0, level: HEAT_STATES.HIGH}, {time: 0.2, level: HEAT_STATES.MEDIUM}, {time: 0.8, level: HEAT_STATES.LOW}]
+      ]
     },
     {
       id: 5,
@@ -171,8 +159,7 @@ const INITIAFL_RECIPE = {
         'Add all ingredients to pot',
         'Bring to boil, then simmer',
         'Strain and season broth'
-      ],
-      heatProfile: [{time: 0, level: HEAT_STATES.HIGH}, {time: 0.2, level: HEAT_STATES.MEDIUM}, {time: 0.8, level: HEAT_STATES.LOW}]
+      ]
     },
     {
       id: 6,
@@ -188,28 +175,87 @@ const INITIAFL_RECIPE = {
         'Warm serving bowls',
         'Layer: noodles, broth, sliced chashu',
         'Add toppings and oils'
-      ],
-      heatProfile: [{time: 0, level: HEAT_STATES.HIGH}, {time: 0.2, level: HEAT_STATES.MEDIUM}, {time: 0.8, level: HEAT_STATES.LOW}]
+      ]
     }
   ]
 };
 
 const RecipeBuilder = () => {
-  const [recipe, setRecipe] = useState(INITIAL_RECIPE);
+  const [recipe, setRecipe] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedStep, setSelectedStep] = useState(null);
   const [activeTab, setActiveTab] = useState('full');
-  const [steps, setSteps] = useState(INITIAL_RECIPE.steps);
-  const [maxTime, setMaxTime] = useState(INITIAL_RECIPE.maxTime);
-  const [difficulty, setDifficulty] = useState(INITIAL_RECIPE.difficulty);
-  const [tags, setTags] = useState(INITIAL_RECIPE.tags);
+  const [steps, setSteps] = useState([]);
+  const [maxTime, setMaxTime] = useState(0);
+  const [difficulty, setDifficulty] = useState('');
+  const [tags, setTags] = useState([]);
   const [newIngredient, setNewIngredient] = useState('');
   const [pantryItems, setPantryItems] = useState([
     'soy sauce', 'mirin', 'sake', 'eggs', 'green onions', 'garlic', 'ginger'
   ]);
   const [activeTastes, setActiveTastes] = useState([]);
   const [highlightedIngredients, setHighlightedIngredients] = useState([]);
+  const location = useLocation();
 
   const timelineRef = useRef(null);
+
+  useEffect(() => {
+    const fetchRecipeData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Get recipe ID from URL parameters
+        const params = new URLSearchParams(location.search);
+        const recipeId = params.get('recipe')
+        console.log(typeof recipeId);
+        
+        if (!recipeId) {
+          throw new Error('No recipe ID provided');
+        }
+
+        const recipeData = await generateRecipeBuilderFromAPI(JSON.parse(recipeId));
+        
+        // Update all the state with the recipe data
+        setRecipe(recipeData);
+        setSteps(recipeData.steps);
+        setMaxTime(recipeData.maxTime);
+        setDifficulty(recipeData.difficulty);
+        setTags(recipeData.tags);
+        
+      } catch (err) {
+        console.error('Error fetching recipe:', err);
+        setError('Failed to load recipe. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecipeData();
+  }, [location.search]);
+
+  if (loading) {
+    return (
+      <div className="recipe-builder-loading">
+        <FaSpinner className="loading-spinner" />
+        <p>Loading recipe...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="recipe-builder-error">
+        <p>{error}</p>
+        <button onClick={() => window.location.reload()}>Try Again</button>
+      </div>
+    );
+  }
+
+  if (!recipe) {
+    return null;
+  }
 
   const handleStepClick = (step) => {
     setSelectedStep(step);
@@ -245,18 +291,6 @@ const RecipeBuilder = () => {
       left,
       width
     };
-  };
-
-  const getHeatLevel = (step, progress) => {
-    if (!step.heatProfile) return null;
-    
-    const profile = step.heatProfile;
-    for (let i = profile.length - 1; i >= 0; i--) {
-      if (progress >= profile[i].time) {
-        return profile[i].level;
-      }
-    }
-    return profile[0].level;
   };
 
   const renderGridLines = () => {
@@ -342,7 +376,6 @@ const RecipeBuilder = () => {
           {renderGridLines()}
           {steps.map(step => {
             const progress = step.startTime / (step.startTime + step.duration);
-            const heatLevel = getHeatLevel(step, progress);
             
             return (
               <div
@@ -370,9 +403,6 @@ const RecipeBuilder = () => {
                   <div className="intensity-indicator">
                     <FaFire />
                   </div>
-                )}
-                {heatLevel && (
-                  <div className={`heat-indicator heat-${heatLevel}`} />
                 )}
               </div>
             );
