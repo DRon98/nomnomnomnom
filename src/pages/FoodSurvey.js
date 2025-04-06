@@ -191,7 +191,7 @@ const FoodSurvey = () => {
     dispatch(setAdditionalPreferences(value));
   };
   
-  const toggleCookingMethodsView = (show) => {
+  const handleCookingMethodsViewToggle = (show) => {
     dispatch(toggleCookingMethodsView(show));
   };
   
@@ -400,13 +400,13 @@ const FoodSurvey = () => {
             <div className="section-tabs">
               <button 
                 className={`section-tab ${!responses.showingCookingMethods ? 'active' : ''}`}
-                onClick={() => toggleCookingMethodsView(false)}
+                onClick={() => handleCookingMethodsViewToggle(false)}
               >
                 Food Items
               </button>
               <button 
                 className={`section-tab ${responses.showingCookingMethods ? 'active' : ''}`}
-                onClick={() => toggleCookingMethodsView(true)}
+                onClick={() => handleCookingMethodsViewToggle(true)}
               >
                 Cooking Methods
               </button>

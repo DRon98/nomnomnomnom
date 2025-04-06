@@ -818,33 +818,6 @@
   }
 }
 
-.heat-indicator {
-  position: absolute;
-  right: -8px;
-  top: 0;
-  bottom: 0;
-  width: 8px;
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
-  transition: background-color 0.3s ease;
-}
-
-.heat-low {
-  background: linear-gradient(to bottom, #FDD835 0%, #FDD835 33%, transparent 33%);
-}
-
-.heat-medium {
-  background: linear-gradient(to bottom, #FB8C00 0%, #FB8C00 66%, transparent 66%);
-}
-
-.heat-high {
-  background: linear-gradient(to bottom, #D32F2F 0%, #D32F2F 100%);
-}
-
-.heat-off {
-  background: linear-gradient(to bottom, #424242 0%, #424242 20%, transparent 20%);
-}
-
 /* Nutrition Facts Styling */
 .nutrition-info {
   max-width: 400px;
@@ -936,4 +909,57 @@
   line-height: 1.2;
   font-weight: normal;
   border-top: 6px solid #000;
+}
+
+/* Remove heat indicator styles */
+.heat-indicator,
+.heat-low,
+.heat-medium,
+.heat-high,
+.heat-off {
+  display: none;
+}
+
+/* Loading and Error States */
+.recipe-builder-loading,
+.recipe-builder-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  text-align: center;
+  padding: 20px;
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+  font-size: 2rem;
+  color: #3498db;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.recipe-builder-error {
+  color: #e74c3c;
+}
+
+.recipe-builder-error button {
+  margin-top: 1rem;
+  padding: 8px 16px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.recipe-builder-error button:hover {
+  background-color: #c0392b;
+  transform: translateY(-1px);
 }

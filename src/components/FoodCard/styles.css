@@ -262,3 +262,20 @@
 .food-action-button:hover {
   filter: brightness(0.95);
 }
+
+.view-recipe-link {
+  display: inline-block;
+  padding: 4px 8px;
+  margin-top: 8px;
+  background-color: #3498db;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.view-recipe-link:hover {
+  background-color: #2980b9;
+  transform: translateY(-1px);
+}

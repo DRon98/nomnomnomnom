@@ -1,7 +1,9 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useLocation, Link } from 'react-router-dom';
 import { FaClock, FaUtensils, FaSearch, FaSpinner, FaChevronDown, FaChevronUp, FaChevronLeft, FaChevronRight, FaPlus } from 'react-icons/fa';
 import { FaUsers } from 'react-icons/fa';
+import { generateRecipePreviewsFromAPI } from '../utils/api';
 import './RecipeGenerator.css';
 
 const DEFAULT_FILTERS = {
@@ -113,6 +115,7 @@ const ScrollableIngredientList = ({ items, onSelect, selectedIds, emptyMessage, 
 };
 
 const RecipeGenerator = () => {
+  const location = useLocation();
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [recipes, setRecipes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -121,14 +124,50 @@ const RecipeGenerator = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedIngredients, setSelectedIngredients] = useState([]);
+  const [error, setError] = useState(null);
   
   // Move useSelector hooks to component level
   const foodPreferences = useSelector(state => state.foodPreferences);
   const kitchenAppliances = useSelector(state => state.kitchenAppliances.selectedAppliances);
- // const surveyData = useSelector(state => state.foodPreferences);
-  // Get real inventory state from Redux
   const pantryItems = useSelector(state => state.inventory.pantry) || [];
   const shoppingListItems = useSelector(state => state.inventory.groceries) || [];
+
+  // Handle ingredients from URL query parameters
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(location.search);
+      const ingredientsParam = params.get('ingredients');
+      if (ingredientsParam) {
+        const ingredients = decodeURIComponent(ingredientsParam).split(',').filter(Boolean);
+        if (ingredients.length > 0) {
+          const ingredientObjects = ingredients.map(name => ({
+            foodId: name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+            food: {
+              name: name.trim(),
+              icon: '🍳',  // Default icon for now
+              unit: 'unit'
+            }
+          }));
+          setSelectedIngredients(prevIngredients => {
+            // Merge with existing ingredients, avoiding duplicates
+            const existingIds = new Set(prevIngredients.map(i => i.foodId));
+            const newIngredients = ingredientObjects.filter(i => !existingIds.has(i.foodId));
+            return [...prevIngredients, ...newIngredients];
+          });
+        }
+      }
+    } catch (err) {
+      console.error('Error parsing URL parameters:', err);
+      setError('Failed to load ingredients from URL. Please try adding them manually.');
+    }
+  }, [location.search]);
+
+  // Clear error when ingredients change
+  useEffect(() => {
+    if (error && selectedIngredients.length > 0) {
+      setError(null);
+    }
+  }, [selectedIngredients, error]);
 
   // Filter dummy ingredients based on search query
   const filteredIngredients = DUMMY_INGREDIENTS.filter(item =>
@@ -166,10 +205,10 @@ const RecipeGenerator = () => {
     }));
   }, []);
 
-  const generateRecipes = () => {
+  const generateRecipes = async () => {
     setIsLoading(true);
     
-    console.log('Recipe Filters Responses and Ingredients:', {
+    const recipeData = {
       recipeFilters: {
         prepTime: { min: 15, max: filters.cookingTime === 'any' ? 90 : parseInt(filters.cookingTime) },
         cookTime: { min: 20, max: filters.cookingTime === 'any' ? 90 : parseInt(filters.cookingTime) },
@@ -183,77 +222,36 @@ const RecipeGenerator = () => {
         unit: item.food.unit || 'unit'
       })),
       foodPreferences,
-      kitchenAppliances
-    });
-    
-    // Simulate API call
-    setTimeout(() => {
-      const mockRecipes = [
-        {
-          recipe_id: '1',
-          name: 'Japanese-Style Pork Belly Donburi',
-          description: 'A delicious rice bowl topped with tender pork belly, soft-boiled egg, and green onions.',
-          stats: {
-            calories: 650,
-            totalTime: 45,
-            servings: 4
-          },
-          tags: ['Japanese', 'Pork', 'Rice', 'Dinner'],
-          link: '/recipe-builder?recipe=1'
-        },
-        {
-          recipe_id: '2',
-          name: 'Garlic Soy Pork Stir-Fry',
-          description: 'Quick and flavorful stir-fry with pork, garlic, and soy sauce.',
-          stats: {
-            calories: 580,
-            totalTime: 25,
-            servings: 4
-          },
-          tags: ['Asian', 'Pork', 'Quick', 'Dinner'],
-          link: '/recipe-builder?recipe=2'
-        },
-        {
-          recipe_id: '3',
-          name: 'Pasta alla Carbonara',
-          description: 'Classic Italian pasta dish with eggs, cheese, pancetta, and black pepper.',
-          stats: {
-            calories: 680,
-            totalTime: 30,
-            servings: 4
-          },
-          tags: ['Italian', 'Pasta', 'Dinner'],
-          link: '/recipe-builder?recipe=3'
-        },
-        {
-          recipe_id: '4',
-          name: 'Japanese-Style Pork and Egg Rice Bowl',
-          description: 'Simple and satisfying rice bowl with pork and soft-boiled egg.',
-          stats: {
-            calories: 620,
-            totalTime: 35,
-            servings: 4
-          },
-          tags: ['Japanese', 'Pork', 'Rice', 'Dinner'],
-          link: '/recipe-builder?recipe=4'
-        },
-        {
-          recipe_id: '5',
-          name: 'Garlic Ginger Pork Noodles',
-          description: 'Stir-fried noodles with pork, garlic, and ginger in a savory sauce.',
-          stats: {
-            calories: 590,
-            totalTime: 40,
-            servings: 4
-          },
-          tags: ['Asian', 'Pork', 'Noodles', 'Dinner'],
-          link: '/recipe-builder?recipe=5'
-        }
-      ];
-      
-      setRecipes(mockRecipes);
+      kitchenAppliances,
+      inventory: {
+        pantry: pantryItems.map(item => ({
+          foodId: item.foodId,
+          name: item.food.name,
+          amount: item.amount,
+          unit: item.food.unit || 'unit',
+          category: item.food.category
+        })),
+        shoppingList: shoppingListItems.map(item => ({
+          foodId: item.foodId,
+          name: item.food.name,
+          amount: item.amount,
+          unit: item.food.unit || 'unit',
+          category: item.food.category
+        }))
+      }
+    };
+
+    try {
+     // console.log('Recipe Filters Responses and Ingredients:', recipeData);
+      const response = await generateRecipePreviewsFromAPI(recipeData);
+      console.log('Recipe Previews Response:', response.recommended);
+      setRecipes(response.recommended);
+    } catch (error) {
+      console.error('Error generating recipes:', error);
+      setError('Failed to generate recipes. Please try again.');
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const renderIngredientsList = () => (
@@ -324,8 +322,58 @@ const RecipeGenerator = () => {
     </div>
   );
 
+  const renderRecipeCard = (recipe) => {
+    // Format the recipe data for the API call
+    const formattedRecipe = {
+      title: recipe.name,
+      description: recipe.description,
+      stats: {
+        totalTime: recipe.stats.totalTime
+      },
+      difficulty: recipe.difficulty || 'medium',
+      tags: recipe.tags || [],
+      ingredients: recipe.ingredients || [],
+      seasonings: recipe.seasonings || []
+    };
+
+    return (
+      <div key={recipe.recipe_id} className="recipe-card">
+        <h3>{recipe.name}</h3>
+        <p>{recipe.description}</p>
+        <div className="recipe-stats">
+          <div>
+            <FaClock /> {recipe.stats.totalTime} min
+          </div>
+          <div>
+            <FaUsers /> {recipe.stats.servings} servings
+          </div>
+          <div>
+            <FaUtensils /> {recipe.stats.calories} cal
+          </div>
+        </div>
+        <div className="recipe-tags">
+          {recipe.tags.map((tag, index) => (
+            <span key={index} className="tag">{tag}</span>
+          ))}
+        </div>
+        <Link 
+          to={`/recipe-builder?recipe=${encodeURIComponent(JSON.stringify(formattedRecipe))}`}
+          className="view-recipe-button"
+        >
+          View Recipe
+        </Link>
+      </div>
+    );
+  };
+
   return (
     <div className="recipe-generator">
+      {error && (
+        <div className="error-message">
+          {error}
+          <button onClick={() => setError(null)}>Dismiss</button>
+        </div>
+      )}
       <div className="filters-section">
         <h2>
           <FaUtensils /> Recipe Filters
@@ -464,41 +512,14 @@ const RecipeGenerator = () => {
 
       <div className="recipes-section">
         {isLoading ? (
-          <div className="loading">
-            <FaSpinner className="spinner" />
+          <div className="loading-state">
+            <FaSpinner className="loading-spinner" />
             <p>Generating recipes...</p>
           </div>
         ) : recipes.length > 0 ? (
-          <>
-            {renderIngredientsList()}
-            <div className="recipe-grid">
-              {recipes.map(recipe => (
-                <div key={recipe.recipe_id} className="recipe-preview">
-                  <h3>{recipe.name}</h3>
-                  <p className="description">{recipe.description}</p>
-                  <div className="stats">
-                    <span>
-                      <FaUtensils /> {recipe.stats.calories} cal
-                    </span>
-                    <span>
-                      <FaClock /> {recipe.stats.totalTime} min
-                    </span>
-                    <span>
-                      <FaUsers /> {recipe.stats.servings} servings
-                    </span>
-                  </div>
-                  <div className="tags">
-                    {recipe.tags.map(tag => (
-                      <span key={tag} className="tag">{tag}</span>
-                    ))}
-                  </div>
-                  <a href={recipe.link} className="view-recipe">
-                    View Recipe
-                  </a>
-                </div>
-              ))}
-            </div>
-          </>
+          <div className="recipe-grid">
+            {recipes.map(recipe => renderRecipeCard(recipe))}
+          </div>
         ) : (
           <>
             {renderIngredientsList()}

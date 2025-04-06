@@ -1,4 +1,4 @@
-import { generateRecommendationsFromAPI } from './api';
+import { generateRecommendationsFromAPI,generateRecipePreviewsFromAPI,generateRecipeBuilderFromAPI } from './api';
 
 /**
  * Generates food recommendations using the proxy API
@@ -18,6 +18,29 @@ export const generateAIRecommendations = async (userPreferences) => {
     };
   } catch (error) {
     console.error('Error generating AI recommendations:', error);
+    throw error;
+  }
+};
+
+export const generateRecipePreviews = async (recipeFilters) => {
+  try {
+
+    const { recipes } = await generateRecipePreviewsFromAPI(recipeFilters);
+    return recipes;
+  } 
+  catch (error) {
+    console.error('Error generating recipe previews:', error);
+    throw error;
+  }
+};
+
+export const generateRecipeBuilder = async (recipeData) => {
+  try {
+    const { recipe } = await generateRecipeBuilderFromAPI(recipeData);
+    return recipe;
+  }
+  catch (error) {
+    console.error('Error generating recipe builder:', error);
     throw error;
   }
 };
