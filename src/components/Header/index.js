@@ -19,7 +19,7 @@ const Header = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
+console.log('Header rendered');
   return (
     <header className="header">
       <div className="logo">
