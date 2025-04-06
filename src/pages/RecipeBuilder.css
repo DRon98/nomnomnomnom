@@ -30,32 +30,32 @@
 }
 
 .recipe-stats {
-  background-color: #f8f9fa;
-  padding: 15px;
-  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.recipe-stats-content {
+  flex: 1;
 }
 
 .recipe-stats-row {
   display: flex;
-  align-items: center;
   gap: 20px;
-  flex-wrap: wrap;
+  margin-bottom: 10px;
 }
 
-.stat-item {
+.recipe-stats-row > div {
   display: flex;
   align-items: center;
   gap: 8px;
   color: #666;
-  font-size: 1.1em;
 }
 
-.stat-item svg {
+.recipe-stats-row svg {
   color: #3498db;
-}
-
-.stat-item .capitalize {
-  text-transform: capitalize;
 }
 
 .recipe-tags {
@@ -65,11 +65,39 @@
 }
 
 .tag {
-  padding: 6px 12px;
-  background-color: #e8f4fd;
-  color: #3498db;
-  border-radius: 20px;
-  font-size: 0.9em;
+  background-color: #e3f2fd;
+  color: #1976d2;
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 0.85rem;
+}
+
+.star-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  color: #ccc;
+  font-size: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.star-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #ffd700;
+}
+
+.star-button.starred {
+  color: #ffd700;
+}
+
+.star-button.starred:hover {
+  color: #ffd700;
+  background-color: rgba(255, 215, 0, 0.1);
 }
 
 /* Recipe Filters */
@@ -484,6 +512,26 @@
   justify-content: space-between;
 }
 
+.ingredient-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ingredient-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.ingredient-amount {
+  font-size: 0.85rem;
+  color: #6c757d;
+  background-color: #f8f9fa;
+  padding: 2px 8px;
+  border-radius: 12px;
+  display: inline-block;
+}
+
 .ingredient-item button {
   background: none;
   border: none;
@@ -662,8 +710,8 @@
 
 /* Taste Adjustments */
 .taste-adjustments {
-  margin-top: 20px;
-  padding: 20px;
+  margin: 20px 0;
+  padding: 15px;
   background-color: #f8f9fa;
   border-radius: 8px;
 }
@@ -676,22 +724,22 @@
 .taste-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
+  margin-bottom: 15px;
 }
 
 .taste-tag {
-  padding: 8px 16px;
+  padding: 8px 15px;
   background-color: #e9ecef;
   border-radius: 20px;
-  font-size: 0.9em;
   cursor: pointer;
-  transition: all 0.2s;
-  user-select: none;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  color: #495057;
 }
 
 .taste-tag:hover {
   background-color: #dee2e6;
-  transform: translateY(-1px);
 }
 
 .taste-tag.active {
@@ -699,17 +747,25 @@
   color: white;
 }
 
-.ingredient-highlights {
+.taste-adjustment-details {
   margin-top: 15px;
   padding: 15px;
-  background-color: #fff;
-  border-radius: 6px;
+  background-color: white;
+  border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.ingredient-highlights h5 {
+.taste-adjustment-details h5 {
   margin: 0 0 10px 0;
-  color: #666;
+  color: #495057;
+  font-size: 1rem;
+}
+
+.adjustment-method {
+  margin: 0 0 15px 0;
+  color: #6c757d;
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
 .highlighted-ingredients {
@@ -719,11 +775,27 @@
 }
 
 .highlighted-ingredient {
-  padding: 6px 12px;
+  padding: 8px 12px;
   background-color: #e3f2fd;
-  border-radius: 4px;
-  font-size: 0.9em;
-  color: #3498db;
+  border-radius: 15px;
+  font-size: 0.85rem;
+  color: #1976d2;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+.highlighted-ingredient .ingredient-name {
+  font-weight: 500;
+}
+
+.highlighted-ingredient .ingredient-amount {
+  font-size: 0.75rem;
+  color: #1976d2;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 2px 6px;
+  border-radius: 10px;
 }
 
 /* Recipe Actions */
@@ -825,6 +897,7 @@
   padding: 10px 15px;
   font-family: 'Helvetica', 'Arial', sans-serif;
   box-sizing: border-box;
+  background: white;
 }
 
 .nutrition-info h4 {
