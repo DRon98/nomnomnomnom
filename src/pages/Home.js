@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import StateSelector from '../components/StateSelector';
-import FoodTabs from '../components/FoodTabs';
+
 import MealPlanner from '../components/MealPlanner';
 import WeekPlanner from '../components/WeekPlanner';
 import WeekMealPlanner from '../components/WeekMealPlanner';
@@ -40,7 +40,7 @@ function Home() {
               {' '}
               (Edit in Profile)
             </div>
-            <FoodTabs />
+
           </div>
           <div className="right-section">
             <MealPlanner />
@@ -61,7 +61,7 @@ function Home() {
               {' '}
               (Edit in Profile)
             </div>
-            <FoodTabs />
+
           </div>
           <div className="right-section">
             <WeekMealPlanner />

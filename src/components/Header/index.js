@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaUser, FaChartBar, FaLifeRing, FaCog, FaStar, FaMoon, FaSignOutAlt } from 'react-icons/fa';
 import InventoryDropdowns from '../InventoryDropdowns';
-import FoodJournal from '../FoodJournal';
+
 import './styles.css';
 
 const Header = () => {
@@ -29,7 +29,7 @@ const Header = () => {
       </div>
       <div className="header-actions">
         <InventoryDropdowns />
-        <FoodJournal />
+
         <Link to="/recipe-generator" className="recipe-button">
           🥘
         </Link>
