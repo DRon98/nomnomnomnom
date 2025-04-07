@@ -22,25 +22,25 @@ export const generateAIRecommendations = async (userPreferences) => {
   }
 };
 
-export const generateRecipePreviews = async (recipeFilters) => {
-  try {
+// export const generateRecipePreviews = async (recipeFilters) => {
+//   try {
 
-    const { recipes } = await generateRecipePreviewsFromAPI(recipeFilters);
-    return recipes;
-  } 
-  catch (error) {
-    console.error('Error generating recipe previews:', error);
-    throw error;
-  }
-};
+//     const { recipes } = await generateRecipePreviewsFromAPI(recipeFilters);
+//     return recipes;
+//   } 
+//   catch (error) {
+//     console.error('Error generating recipe previews:', error);
+//     throw error;
+//   }
+// };
 
-export const generateRecipeBuilder = async (recipeData) => {
-  try {
-    const { recipe } = await generateRecipeBuilderFromAPI(recipeData);
-    return recipe;
-  }
-  catch (error) {
-    console.error('Error generating recipe builder:', error);
-    throw error;
-  }
-};
+// export const generateRecipeBuilder = async (recipeData) => {
+//   try {
+//     const { recipe } = await generateRecipeBuilderFromAPI(recipeData);
+//     return recipe;
+//   }
+//   catch (error) {
+//     console.error('Error generating recipe builder:', error);
+//     throw error;
+//   }
+// };

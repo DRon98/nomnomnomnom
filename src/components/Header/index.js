@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FaUser, FaChartBar, FaLifeRing, FaCog, FaStar, FaMoon, FaSignOutAlt } from 'react-icons/fa';
+import { FaUser, FaChartBar, FaLifeRing, FaCog, FaStar, FaMoon, FaSignOutAlt, FaCalendarAlt } from 'react-icons/fa';
 import InventoryDropdowns from '../InventoryDropdowns';
 
 import './styles.css';
@@ -33,6 +33,11 @@ console.log('Header rendered');
         <Link to="/recipe-generator" className="recipe-button">
           🥘
         </Link>
+
+        <Link to="/weekly-calendar" className="calendar-button">
+          <FaCalendarAlt />
+        </Link>
+
         <div className="profile-dropdown" ref={dropdownRef}>
           <button 
             className={`profile-button ${isProfileOpen ? 'active' : ''}`}

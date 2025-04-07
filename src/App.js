@@ -9,6 +9,7 @@ import RecipeBuilder from './pages/RecipeBuilder';
 import RecipeGenerator from './pages/RecipeGenerator';
 import PantryManager from './pages/PantryManager';
 import KitchenAppliances from './components/KitchenAppliances';
+import WeeklyCalendar from './pages/WeeklyCalendar';
 
 import ErrorBoundary from './components/ErrorBoundary';
 import LifestyleSurvey from './components/LifestyleSurvey';
@@ -29,6 +30,7 @@ function App() {
             <Route path="pantry" element={<PantryManager />} />
             <Route path="kitchen-appliances" element={<KitchenAppliances />} />
             <Route path="lifestyle-survey" element={<LifestyleSurvey />} />
+            <Route path="weekly-calendar" element={<WeeklyCalendar />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

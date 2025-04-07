@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import './styles.css';
-import WeeklyCalendar from '../WeeklyCalendar';
 
 const TabsContainer = ({ children }) => {
   const [activeTab, setActiveTab] = useState(0);
@@ -27,8 +26,8 @@ const TabsContainer = ({ children }) => {
             {children}
           </div>
         ) : (
-          <div className={`tab-content ${activeTab === 'meal-history' ? 'active' : ''}`}>
-            <WeeklyCalendar />
+          <div className="meal-history">
+            <p className="placeholder-text">Meal history coming soon...</p>
           </div>
         )}
       </div>
