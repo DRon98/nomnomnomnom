@@ -9,7 +9,25 @@ const DEFAULT_MEAL_TIMES = {
   snacks: '15:00'
 };
 
-const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+// Helper function to get next 7 days' ISO date strings
+const getNext7DaysKeys = () => {
+  const days = {};
+  const today = new Date();
+  
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(today);
+    date.setDate(today.getDate() + i);
+    const key = date.toISOString().split('T')[0];
+    days[key] = {
+      breakfast: [],
+      lunch: [],
+      dinner: [],
+      snacks: []
+    };
+  }
+  
+  return days;
+};
 
 // Normalized state structure
 const initialState = {
@@ -28,15 +46,7 @@ const initialState = {
   },
   
   // Week view meal plan (references to meal IDs)
-  weekPlan: DAYS_OF_WEEK.reduce((acc, day) => {
-    acc[day] = {
-      breakfast: [],
-      lunch: [],
-      dinner: [],
-      snacks: []
-    };
-    return acc;
-  }, {}),
+  weekPlan: getNext7DaysKeys(),
   
   // Settings
   mealTimes: DEFAULT_MEAL_TIMES,
@@ -88,7 +98,15 @@ const mealPlanSlice = createSlice({
       
       // Add reference to the appropriate plan
       if (day) {
-        // Week plan
+        // Week plan - ensure the day exists
+        if (!state.weekPlan[day]) {
+          state.weekPlan[day] = {
+            breakfast: [],
+            lunch: [],
+            dinner: [],
+            snacks: []
+          };
+        }
         state.weekPlan[day][mealType].push(mealId);
       } else {
         // Day plan
@@ -103,7 +121,9 @@ const mealPlanSlice = createSlice({
       // Remove reference from the appropriate plan
       if (day) {
         // Week plan
-        state.weekPlan[day][mealType] = state.weekPlan[day][mealType].filter(id => id !== mealId);
+        if (state.weekPlan[day]) {
+          state.weekPlan[day][mealType] = state.weekPlan[day][mealType].filter(id => id !== mealId);
+        }
       } else {
         // Day plan
         state.dayPlan[mealType] = state.dayPlan[mealType].filter(id => id !== mealId);
@@ -120,15 +140,17 @@ const mealPlanSlice = createSlice({
       
       if (day) {
         // Clear specific day in week plan
-        Object.keys(state.weekPlan[day]).forEach(mealType => {
-          // Remove meal entities
-          state.weekPlan[day][mealType].forEach(mealId => {
-            delete state.meals.byId[mealId];
+        if (state.weekPlan[day]) {
+          Object.keys(state.weekPlan[day]).forEach(mealType => {
+            // Remove meal entities
+            state.weekPlan[day][mealType].forEach(mealId => {
+              delete state.meals.byId[mealId];
+            });
+            
+            // Clear references
+            state.weekPlan[day][mealType] = [];
           });
-          
-          // Clear references
-          state.weekPlan[day][mealType] = [];
-        });
+        }
       } else {
         // Clear day plan
         Object.keys(state.dayPlan).forEach(mealType => {
@@ -146,37 +168,20 @@ const mealPlanSlice = createSlice({
       state.meals.allIds = state.meals.allIds.filter(id => state.meals.byId[id]);
     },
     
-    // Clear the entire week plan
-    clearWeekPlan: (state) => {
-      // Remove meal entities
-      DAYS_OF_WEEK.forEach(day => {
-        Object.keys(state.weekPlan[day]).forEach(mealType => {
-          state.weekPlan[day][mealType].forEach(mealId => {
-            delete state.meals.byId[mealId];
-          });
-        });
-      });
-      
-      // Reset the entire week plan
-      DAYS_OF_WEEK.forEach(day => {
-        state.weekPlan[day] = {
-          breakfast: [],
-          lunch: [],
-          dinner: [],
-          snacks: []
-        };
-      });
-      
-      // Clean up allIds
-      state.meals.allIds = state.meals.allIds.filter(id => state.meals.byId[id]);
-    },
-    
-    // Generate a random meal plan
+    // Generate random plan
     generateRandomPlan: (state, action) => {
       const { breakfast, lunch, dinner, snacks, day } = action.payload;
       
-      // Clear existing plan first
+      // Clear existing meals first
       if (day) {
+        if (!state.weekPlan[day]) {
+          state.weekPlan[day] = {
+            breakfast: [],
+            lunch: [],
+            dinner: [],
+            snacks: []
+          };
+        }
         Object.keys(state.weekPlan[day]).forEach(mealType => {
           state.weekPlan[day][mealType].forEach(mealId => {
             delete state.meals.byId[mealId];
@@ -200,7 +205,7 @@ const mealPlanSlice = createSlice({
             id: mealId,
             type: mealType,
             foodId: food.id,
-            food: { ...food },  // Store the complete food data
+            food: { ...food },
             day: targetDay || null,
             createdAt: Date.now()
           };
@@ -211,6 +216,14 @@ const mealPlanSlice = createSlice({
           
           // Add reference to the appropriate plan
           if (targetDay) {
+            if (!state.weekPlan[targetDay]) {
+              state.weekPlan[targetDay] = {
+                breakfast: [],
+                lunch: [],
+                dinner: [],
+                snacks: []
+              };
+            }
             state.weekPlan[targetDay][mealType].push(mealId);
           } else {
             state.dayPlan[mealType].push(mealId);
@@ -248,33 +261,34 @@ export const selectDayPlanMeals = (state, mealType) =>
       const meal = state.mealPlan.meals.byId[id];
       return meal ? {
         ...meal.food,
-        mealId: meal.id  // Include the mealId for removal
+        mealId: meal.id
       } : null;
     })
     .filter(Boolean);
 
-export const selectWeekPlanMeals = (state, day, mealType) => 
-  state.mealPlan.weekPlan[day][mealType]
+export const selectWeekPlanMeals = (state, day, mealType) => {
+  if (!state.mealPlan.weekPlan[day]) {
+    return [];
+  }
+  return state.mealPlan.weekPlan[day][mealType]
     .map(id => {
       const meal = state.mealPlan.meals.byId[id];
       return meal ? {
         ...meal.food,
-        mealId: meal.id  // Include the mealId for removal
+        mealId: meal.id
       } : null;
     })
     .filter(Boolean);
+};
 
-export const selectMealTimes = state => state.mealPlan.mealTimes;
-
-export const { 
+export const {
   addMeal,
   addMeals,
-  addFoodToMeal, 
-  removeFoodFromMeal, 
-  clearMealPlan, 
-  clearWeekPlan,
-  generateRandomPlan, 
-  updateMealTime 
+  addFoodToMeal,
+  removeFoodFromMeal,
+  clearMealPlan,
+  generateRandomPlan,
+  updateMealTime
 } = mealPlanSlice.actions;
 
 export default mealPlanSlice.reducer;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearMealPlan, generateRandomPlan, addFoodToMeal } from '../../store/mealPlanSlice';
 import { generateMealPlan } from '../../utils/foodGenerator';
@@ -13,17 +13,37 @@ const MEAL_CONFIG = [
   { type: 'snacks', title: 'Snacks', icon: '🍎' }
 ];
 
-const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+// Function to generate dates for the next 7 days
+const getNextSevenDays = () => {
+  const days = [];
+  const today = new Date();
+  
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(today);
+    date.setDate(today.getDate() + i);
+    
+    const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' });
+    const monthDay = date.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' });
+    
+    days.push({
+      date,
+      display: `${dayOfWeek} ${monthDay}`,
+      key: date.toISOString().split('T')[0]
+    });
+  }
+  
+  return days;
+};
 
-const DaySection = ({ day, weekFeelings, onCopyToDay }) => {
-  const [isExpanded, setIsExpanded] = useState(day === 'Monday');
+const DaySection = ({ dayInfo, weekFeelings, onCopyToDay }) => {
+  const [isExpanded, setIsExpanded] = useState(dayInfo.key === getNextSevenDays()[0].key);
   const dispatch = useDispatch();
   const recommendedFoods = useSelector(state => state.foods.recommendedFoods);
   
-  const breakfastMeals = useSelector(state => selectWeekPlanMeals(state, day, 'breakfast'));
-  const lunchMeals = useSelector(state => selectWeekPlanMeals(state, day, 'lunch'));
-  const dinnerMeals = useSelector(state => selectWeekPlanMeals(state, day, 'dinner'));
-  const snacksMeals = useSelector(state => selectWeekPlanMeals(state, day, 'snacks'));
+  const breakfastMeals = useSelector(state => selectWeekPlanMeals(state, dayInfo.key, 'breakfast'));
+  const lunchMeals = useSelector(state => selectWeekPlanMeals(state, dayInfo.key, 'lunch'));
+  const dinnerMeals = useSelector(state => selectWeekPlanMeals(state, dayInfo.key, 'dinner'));
+  const snacksMeals = useSelector(state => selectWeekPlanMeals(state, dayInfo.key, 'snacks'));
   
   const mealsByType = {
     breakfast: breakfastMeals,
@@ -35,11 +55,11 @@ const DaySection = ({ day, weekFeelings, onCopyToDay }) => {
   const handleGeneratePlan = () => {
     if (recommendedFoods.length === 0) return;
     const plan = generateMealPlan(recommendedFoods);
-    dispatch(generateRandomPlan({ ...plan, day }));
+    dispatch(generateRandomPlan({ ...plan, day: dayInfo.key }));
   };
 
   const handleClearPlan = () => {
-    dispatch(clearMealPlan({ day }));
+    dispatch(clearMealPlan({ day: dayInfo.key }));
   };
 
   return (
@@ -50,7 +70,7 @@ const DaySection = ({ day, weekFeelings, onCopyToDay }) => {
       >
         <div className="day-title-container">
           <span className="expand-icon">{isExpanded ? '▼' : '▶'}</span>
-          <h3 className="day-title">{day}</h3>
+          <h3 className="day-title">{dayInfo.display}</h3>
         </div>
       </div>
       
@@ -74,13 +94,13 @@ const DaySection = ({ day, weekFeelings, onCopyToDay }) => {
           
           {MEAL_CONFIG.map(({ type, title, icon }) => (
             <MealSlot
-              key={`${day}-${type}`}
+              key={`${dayInfo.key}-${type}`}
               title={title}
               icon={icon}
               meal={type}
               foods={mealsByType[type]}
-              day={day}
-              onCopyToDay={() => onCopyToDay(day, type)}
+              day={dayInfo.key}
+              onCopyToDay={() => onCopyToDay(dayInfo.key, type)}
               className="week-meal-slot"
             />
           ))}
@@ -98,6 +118,9 @@ const MealPlanner = () => {
   
   const recommendedFoods = useSelector(state => state.foods.recommendedFoods);
   const weekFeelings = useSelector(state => state.user.weekFeelings);
+  
+  // Memoize the next seven days to prevent recalculation on every render
+  const nextSevenDays = useMemo(() => getNextSevenDays(), []);
   
   // Day view selectors
   const breakfastMeals = useSelector(state => selectDayPlanMeals(state, 'breakfast'));
@@ -213,15 +236,18 @@ const MealPlanner = () => {
           {copyingMeal && (
             <div className="copy-options-container">
               <div className="copy-options">
-                {DAYS_OF_WEEK.filter(d => d !== copyingMeal.sourceDay).map(targetDay => (
-                  <button 
-                    key={targetDay}
-                    className={`copy-day-button ${selectedDays.includes(targetDay) ? 'selected' : ''}`}
-                    onClick={() => handleDayToggle(targetDay)}
-                  >
-                    {targetDay}
-                  </button>
-                ))}
+                {nextSevenDays
+                  .filter(d => d.key !== copyingMeal.sourceDay)
+                  .map(dayInfo => (
+                    <button 
+                      key={dayInfo.key}
+                      className={`copy-day-button ${selectedDays.includes(dayInfo.key) ? 'selected' : ''}`}
+                      onClick={() => handleDayToggle(dayInfo.key)}
+                    >
+                      {dayInfo.display}
+                    </button>
+                  ))
+                }
               </div>
               {selectedDays.length > 0 && (
                 <button 
@@ -235,10 +261,10 @@ const MealPlanner = () => {
           )}
           
           <div className="week-days">
-            {DAYS_OF_WEEK.map(day => (
+            {nextSevenDays.map(dayInfo => (
               <DaySection 
-                key={day}
-                day={day}
+                key={dayInfo.key}
+                dayInfo={dayInfo}
                 weekFeelings={weekFeelings}
                 onCopyToDay={handleCopyToDay}
               />
