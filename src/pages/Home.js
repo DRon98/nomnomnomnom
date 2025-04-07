@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import StateSelector from '../components/StateSelector';
 import FoodTabs from '../components/FoodTabs';
 import MealPlanner from '../components/MealPlanner';
+import TabsContainer from '../components/TabsContainer';
 import './Home.css';
 import { CURRENT_STATES, DESIRED_STATES } from '../utils/constants';
 
@@ -13,16 +14,18 @@ function Home() {
     <div className="app-content">
       <div className="day-view">
         <div className="left-section">
-          <StateSelector
-            type="current"
-            options={CURRENT_STATES}
-            question="How do you feel today?"
-          />
-          <StateSelector
-            type="desired"
-            options={DESIRED_STATES}
-            question="How do you want to feel today?"
-          />
+          <TabsContainer>
+            <StateSelector
+              type="current"
+              options={CURRENT_STATES}
+              question="How do you feel today?"
+            />
+            <StateSelector
+              type="desired"
+              options={DESIRED_STATES}
+              question="How do you want to feel today?"
+            />
+          </TabsContainer>
           <FoodTabs view="day" />
           <div className="dietary-restrictions">
             Dietary restrictions applied: {

@@ -1,0 +1,58 @@
+.tabs-container {
+  width: 100%;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  min-height: 440px;
+}
+
+.tabs-header {
+  display: flex;
+  border-bottom: 1px solid #e0e0e0;
+  background: #f8f9fa;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 18px;
+  border: none;
+  background: none;
+  font-size: 16px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.tab-button.active {
+  color: #2196f3;
+  border-bottom: 2px solid #2196f3;
+  background-color: white;
+}
+
+.tab-content {
+  padding: 24px;
+}
+
+.state-selectors {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.meal-history {
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholder-text {
+  color: #666;
+  font-style: italic;
+} 

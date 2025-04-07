@@ -1,337 +1,203 @@
 .food-tabs {
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  height: 100%;
 }
 
 .tabs-header {
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
 }
 
 .tab-button {
-  flex: 1;
-  padding: 10px;
-  font-size: 15px;
-  font-weight: 500;
-  background-color: #f0f0f0;
+  padding: 0.5rem 1rem;
   border: none;
-  border-radius: 5px;
+  background: none;
+  color: var(--text-color);
   cursor: pointer;
-  transition: all 0.2s ease;
+  font-weight: 500;
+  position: relative;
 }
 
 .tab-button.active {
-  background-color: #3498db;
-  color: white;
+  color: var(--primary-color);
+}
+
+.tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--primary-color);
 }
 
 .action-bar {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 1rem;
+  padding: 0.5rem;
+  background-color: var(--background-color-light);
+  border-radius: 8px;
 }
 
-.action-buttons {
+.search-filter-container {
   display: flex;
+  gap: 1rem;
   align-items: center;
-  gap: 12px;
 }
 
-.generate-button {
+.search-bar {
   flex: 1;
-  padding: 10px 20px;
-  font-size: 15px;
-  font-weight: 500;
-  background-color: #3498db;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.generate-button:hover {
-  background-color: #2980b9;
-}
-
-.batch-buttons {
-  display: flex;
-  gap: 8px;
-}
-
-.batch-select-button {
-  padding: 6px 12px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  background-color: white;
-  border: 1px solid #dee2e6;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: 6px;
-  white-space: nowrap;
-  color: #666;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0.5rem;
 }
 
-.batch-select-button:hover {
-  background-color: #f0f0f0;
+.search-icon {
+  color: var(--text-color-light);
+  margin-right: 0.5rem;
 }
 
-.batch-select-button.active {
-  background-color: #e9ecef;
-  border-color: #3498db;
-  color: #3498db;
-}
-
-.batch-select-button .icon {
-  font-size: 14px;
-}
-
-.confirm-batch-button {
-  padding: 6px 12px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  background-color: #3498db;
-  color: white;
+.search-input {
+  flex: 1;
   border: none;
-  border-radius: 5px;
+  outline: none;
+  background: none;
+  font-size: 0.9rem;
+}
+
+.filter-toggle-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background-color: white;
+  color: var(--text-color);
   cursor: pointer;
+  font-weight: 500;
   transition: all 0.2s ease;
-  white-space: nowrap;
 }
 
-.confirm-batch-button:hover {
-  background-color: #2980b9;
+.filter-toggle-button:hover,
+.filter-toggle-button.active {
+  background-color: var(--background-color);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
 }
 
-.filters-container {
+.filters-dropdown {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 32px;
-  padding: 24px;
-  background: white;
-}
-
-.filters-container h1 {
-  margin: 0;
-  font-size: 1.75rem;
-  font-weight: 600;
-  color: #000;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .filter-section {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  width: 100%;
+  gap: 0.5rem;
 }
 
 .filter-section h4 {
   margin: 0;
-  font-size: 1rem;
-  font-weight: 500;
-  color: #000;
+  color: var(--text-color);
+  font-size: 0.9rem;
 }
 
-.filter-options {
+.filter-buttons {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .filter-button {
-  padding: 8px 20px;
-  border: 1px solid #ddd;
-  border-radius: 100px;
-  background: white;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: white;
+  color: var(--text-color);
   cursor: pointer;
-  font-size: 0.95rem;
-  color: #000;
+  font-size: 0.9rem;
   transition: all 0.2s ease;
-  white-space: nowrap;
 }
 
 .filter-button:hover {
-  background: #f0f0f0;
-  border-color: #ccc;
+  background-color: var(--background-color-light);
+  border-color: var(--primary-color);
 }
 
 .filter-button.active {
-  background: #007bff;
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
   color: white;
-  border-color: #0056b3;
 }
 
-/* Status filter colors */
-.filter-button[data-status="all"].active {
-  background: #6c757d;
-  border-color: #6c757d;
+.generate-button {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
-.filter-button[data-status="pantry"].active {
-  background: #28a745;
-  border-color: #28a745;
+.generate-button:hover:not(:disabled) {
+  background-color: var(--primary-color-dark);
 }
 
-.filter-button[data-status="shopping_list"].active {
-  background: #007bff;
-  border-color: #007bff;
-}
-
-.filter-button[data-status="need_to_purchase"].active {
-  background: #dc3545;
-  border-color: #dc3545;
-}
-
-/* Food type colors */
-.filter-button[data-category="protein"] {
-  border-color: #FF6B6B;
-}
-
-.filter-button[data-category="protein"].active {
-  background: #FF6B6B;
-  border-color: #FF6B6B;
-}
-
-.filter-button[data-category="vegetables"] {
-  border-color: #4ECB71;
-}
-
-.filter-button[data-category="vegetables"].active {
-  background: #4ECB71;
-  border-color: #4ECB71;
-}
-
-.filter-button[data-category="fruits"] {
-  border-color: #FFB84D;
-}
-
-.filter-button[data-category="fruits"].active {
-  background: #FFB84D;
-  border-color: #FFB84D;
-}
-
-.filter-button[data-category="grains"] {
-  border-color: #B5916F;
-}
-
-.filter-button[data-category="grains"].active {
-  background: #B5916F;
-  border-color: #B5916F;
-}
-
-.filter-button[data-category="dairy"] {
-  border-color: #72CCF4;
-}
-
-.filter-button[data-category="dairy"].active {
-  background: #72CCF4;
-  border-color: #72CCF4;
-}
-
-.filter-button[data-category="fats"] {
-  border-color: #B39DDB;
-}
-
-.filter-button[data-category="fats"].active {
-  background: #B39DDB;
-  border-color: #B39DDB;
+.generate-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .tab-content {
-  min-height: 300px;
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 0;
 }
 
 .food-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
 }
 
-/* Drag and drop card styles */
-.drag-drop-card {
-  background: #fff;
-  border: 1px dashed #ddd;
-  border-radius: 8px;
-  padding: 8px;
-  min-height: 40px;
-  min-width: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.9rem;
-  color: #666;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.drag-drop-card:hover {
-  border-color: #2c2020;
-  background: #f8f9fa;
-}
-
-.drag-drop-card.dragging {
-  opacity: 0.5;
-}
-
-.drag-drop-card.has-item {
-  border-style: solid;
-  background: #fff;
-  padding: 6px 12px;
-  min-height: 30px;
-  justify-content: flex-start;
-  gap: 6px;
-}
-
-.drag-drop-card .food-icon {
-  font-size: 1rem;
-}
-
-.drag-drop-card .food-name {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #333;
-  margin: 0;
-}
-
-.drag-drop-card .remove-button {
-  margin-left: auto;
-  padding: 4px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #666;
-  font-size: 1rem;
-  line-height: 1;
-  opacity: 0.7;
-  transition: opacity 0.2s ease;
-}
-
-.drag-drop-card .remove-button:hover {
-  opacity: 1;
-}
-
+.no-foods-message,
+.select-states-message,
 .loading {
   text-align: center;
-  padding: 40px;
-  color: #666;
-  font-size: 16px;
+  color: var(--text-color-light);
+  padding: 2rem;
+  font-size: 1.1rem;
 }
 
-.select-states-message {
-  text-align: center;
-  padding: 40px;
-  color: #666;
-  font-size: 16px;
-  background-color: #f8f8f8;
-  border-radius: 5px;
+@media (max-width: 768px) {
+  .search-filter-container {
+    flex-direction: column;
+  }
+
+  .filter-buttons {
+    justify-content: flex-start;
+  }
+
+  .food-grid {
+    grid-template-columns: 1fr;
+  }
 }

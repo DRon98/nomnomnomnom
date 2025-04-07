@@ -28,7 +28,6 @@ function App() {
             <Route path="recipe-generator" element={<RecipeGenerator />} />
             <Route path="pantry" element={<PantryManager />} />
             <Route path="kitchen-appliances" element={<KitchenAppliances />} />
-            
             <Route path="lifestyle-survey" element={<LifestyleSurvey />} />
             <Route path="*" element={<NotFound />} />
           </Route>
