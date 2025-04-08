@@ -13,7 +13,7 @@ export const DESIRED_STATES = [
   'Calm', 'Content', 'Joyful', 'Optimistic', 'Grateful', 'Loving', 'Peaceful', 'Focused',
   'Clear-headed', 'Alert', 'Creative', 'Motivated', 'Reflective', 'Resilient', 'Mindful',
   'Energized', 'Rested', 'Strong', 'Light', 'Balanced', 'Refreshed', 'Satiated', 'Vibrant',
-  'Flexible', 'Aroused', 'Pain-free', 'Hydrated', 'Blissful', 'Driven', 'Tranquil',
+  'Flexible', 'Sexually Aroused', 'Pain-free', 'Hydrated', 'Blissful', 'Driven', 'Tranquil',
   'Dynamic', 'Grounded'
 ];
 

@@ -18,12 +18,12 @@ function Home() {
             <StateSelector
               type="current"
               options={CURRENT_STATES}
-              question="How do you feel today?"
+              question="How do you feel?"
             />
             <StateSelector
               type="desired"
               options={DESIRED_STATES}
-              question="How do you want to feel today?"
+              question="How do you want to feel?"
             />
           </TabsContainer>
           <FoodTabs view="day" />

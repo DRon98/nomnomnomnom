@@ -2,7 +2,10 @@
   background-color: #f8f8f8;
   border-radius: 8px;
   padding: 12px;
-  height: 100%;
+  height: fit-content;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
 }
 
 .meal-header {
@@ -51,16 +54,20 @@
 }
 
 .meal-content {
+  flex: 1;
   min-height: 40px;
   padding: 8px;
   border-radius: 4px;
   background-color: white;
   border: 1px dashed #ddd;
+  display: flex;
+  flex-direction: column;
 }
 
 .meal-content.droppable {
   border: 1px dashed #ccc;
-  min-height: 150px;
+  min-height: 80px;
+  max-height: fit-content;
 }
 
 .meal-content.droppable.active {
@@ -70,8 +77,9 @@
 
 .meal-foods {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 8px;
+  padding-bottom: 4px;
 }
 
 .drag-placeholder {
@@ -81,6 +89,8 @@
   color: #999;
   font-size: 12px;
   font-style: italic;
+  height: 100%;
+  min-height: 60px;
 }
 
 .copy-meal-button {

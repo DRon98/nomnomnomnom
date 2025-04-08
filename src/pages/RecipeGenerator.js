@@ -213,8 +213,12 @@ const RecipeGenerator = () => {
         prepTime: { min: 15, max: filters.cookingTime === 'any' ? 90 : parseInt(filters.cookingTime) },
         cookTime: { min: 20, max: filters.cookingTime === 'any' ? 90 : parseInt(filters.cookingTime) },
         difficulty: [filters.skillLevel],
+        servings: filters.servings,
+        maxCalories: filters.maxCalories,
+        pantryOnly: filters.pantryOnly,
         mealTypes: [filters.mealType],
         tags: [...filters.cuisines, ...filters.tastes]
+
       },
       ingredients: selectedIngredients.map(item => ({
         name: item.food.name,
