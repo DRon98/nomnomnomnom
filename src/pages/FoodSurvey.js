@@ -168,7 +168,7 @@ const SPICE_EXAMPLES = [
 
 const FoodSurvey = () => {
   // Define all possible steps
-  const TOTAL_STEPS = 8;
+  const TOTAL_STEPS = 9;
   const dispatch = useDispatch();
   
   // Fix the selector to use the correct state path
@@ -176,6 +176,10 @@ const FoodSurvey = () => {
   
   // Keep currentStep as local state since it's UI-specific
   const [currentStep, setCurrentStep] = useState(1);
+  
+  // Add new state for meal prep preferences
+  const [maxServings, setMaxServings] = useState(1);
+  const [maxDaysAfterCooking, setMaxDaysAfterCooking] = useState(1);
   
   // Update handlers to use Redux actions
   const handleRestrictionToggle = (restriction) => {
@@ -245,8 +249,8 @@ const FoodSurvey = () => {
 
   // Get current category based on step
   const getCurrentCategory = () => {
-    if (currentStep >= 4 && currentStep <= 8) {
-      return FOOD_CATEGORIES[currentStep - 4];
+    if (currentStep >= 5 && currentStep <= 9) {
+      return FOOD_CATEGORIES[currentStep - 5];
     }
     return null;
   };
@@ -382,11 +386,47 @@ const FoodSurvey = () => {
             </div>
           </div>
         )}
-        
-        {/* Steps 4-8: Food Category Specific Questions */}
-        {currentStep >= 4 && currentStep <= 8 && (
+        {currentStep === 4 && (
           <div className="survey-step">
-            <h2>{FOOD_CATEGORIES[currentStep - 4].name} Preferences</h2>
+            <h2>Meal Prep Preferences</h2>
+            
+            <div className="meal-prep-section">
+              <div className="prep-question">
+                <h3>What is the maximum amount of servings per person that you would cook for a meal?</h3>
+                <div className="number-input-container">
+                  <input
+                    type="number"
+                    min="1"
+                    max="10"
+                    value={maxServings}
+                    onChange={(e) => setMaxServings(parseInt(e.target.value) || 1)}
+                    className="frequency-input"
+                  />
+                  <span>servings</span>
+                </div>
+              </div>
+
+              <div className="prep-question">
+                <h3>Maximum amount of days after cooking that you would eat that meal:</h3>
+                <div className="number-input-container">
+                  <input
+                    type="number"
+                    min="1"
+                    max="7"
+                    value={maxDaysAfterCooking}
+                    onChange={(e) => setMaxDaysAfterCooking(parseInt(e.target.value) || 1)}
+                    className="frequency-input"
+                  />
+                  <span>days</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {/* Steps 5-9: Food Category Specific Questions */}
+        {currentStep >= 5 && currentStep <= 9 && (
+          <div className="survey-step">
+            <h2>{FOOD_CATEGORIES[currentStep - 5].name} Preferences</h2>
             <p>Click on items once to mark as "Love", twice to mark as "Hate", and a third time to reset.</p>
             
             <div className="preference-legend">
@@ -422,12 +462,12 @@ const FoodSurvey = () => {
             {!responses.showingCookingMethods ? (
               <div className="food-category">
                 <h3>Food Items</h3>
-                {renderPreferenceItems(FOOD_CATEGORIES[currentStep - 4].items, 'foodPreferences')}
+                {renderPreferenceItems(FOOD_CATEGORIES[currentStep - 5].items, 'foodPreferences')}
               </div>
             ) : (
               <div className="food-category">
                 <h3>Cooking Methods</h3>
-                {renderPreferenceItems(FOOD_CATEGORIES[currentStep - 4].cookingMethods, 'cookingMethodPreferences')}
+                {renderPreferenceItems(FOOD_CATEGORIES[currentStep - 5].cookingMethods, 'cookingMethodPreferences')}
               </div>
             )}
           </div>
@@ -472,81 +512,3 @@ const FoodSurvey = () => {
 
 export default FoodSurvey; 
 
-
-// import React, { useState } from 'react';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { toggleResponse } from '../store/lifestyleSlice';
-// import './LifestyleSurvey.css';
-// import BaseSurvey from './BaseSurvey';
-
-// const LIFESTYLE_CATEGORIES = {
-//   activeCompetitive: {
-//     title: 'Active & Competitive Lifestyles',
-//     subcategories: {
-//       HighIntensity: 'High-Intensity Competitive Sports: Team or individual sports with intense physical demands and competition, like soccer or boxing.',
-//       Endurance: 'Endurance Sports: Activities focused on stamina and long-distance effort, such as running or triathlon.',
-//       WinterSports: 'Winter Sports/Activities: Seasonal sports or recreation in cold environments, like skiing or ice hockey.'
-//     }
-//   },
-//   fitnessSkill: {
-//     title: 'Fitness & Skill Development',
-//     subcategories: {
-//       StrengthTraining: 'Individual Strength Training: Exercises to build muscle and power, like weightlifting or powerlifting.',
-//       Cardio: 'Individual Cardio: Solo activities to boost heart health and endurance, such as running or cycling.',
-//       SkillPerformance: 'Skill-Based Performance Activities: Tasks requiring coordination and artistry, like dance or gymnastics.'
-//     }
-//   },
-//   outdoorRelaxation: {
-//     title: 'Outdoor & Relaxation Pursuits',
-//     subcategories: {
-//       OutdoorActivities: 'Outdoor Activities: Nature-based recreation or adventure, such as hiking or kayaking.',
-//       Relaxation: 'Relaxation-Based Activities: Calming practices for recovery or stress relief, like foam rolling or fishing.',
-//       Mindfulness: 'Mindfulness: Focused mental exercises for clarity and peace, such as meditation or yoga.'
-//     }
-//   },
-//   socialProfessional: {
-//     title: 'Social & Professional Engagement',
-//     subcategories: {
-//       RomanticSocializing: 'Romantic Socializing: Activities to bond with a partner, like date nights or shared hobbies.',
-//       Networking: 'Networking & Professional Socializing: Career-focused interactions, such as conferences or happy hours.',
-//       CommunicationWork: 'Communication-Based Work: Jobs or tasks relying on interpersonal exchange, like public speaking or teaching.',
-//       Gaming: 'Gaming: Interactive play with others, often online, such as multiplayer video games.'
-//     }
-//   },
-//   dailyCognitive: {
-//     title: 'Daily Life & Cognitive Work',
-//     subcategories: {
-//       ParentalDuties: 'Parental Duties: Caregiving responsibilities for kids, like parenting or stroller walking.',
-//       EverydayTasks: 'Everyday Tasks: Routine chores or duties, such as cooking or cleaning.',
-//       StrategicThinking: 'Strategic Thinking: Planning and decision-making tasks, like coaching or operations work.',
-//       AnalyticalWork: 'Analytical and Problem-Based Work: Intellectual efforts to solve complex issues, such as coding or research.',
-//       CommunicationWork: 'Communication-Based Work: Repeated here if distinct in context, like managing teams or client calls.',
-//       Relaxation: 'Relaxation-Based Activities: Repeated here if tied to daily routine, like gardening for calm.'
-//     }
-//   }
-// };
-
-// const LifestyleSurvey = () => {
-//   const dispatch = useDispatch();
-//   const responses = useSelector(state => state.lifestyle.responses);
-
-//   const handleToggle = (category, subcategory) => {
-//     dispatch(toggleResponse({ category, subcategory }));
-//   };
-
-//   const handleSubmit = () => {
-//     console.log('Lifestyle Survey Responses:', responses);
-//   };
-
-//   return (
-//     <BaseSurvey
-//       title="Lifestyle Survey"
-//       categories={LIFESTYLE_CATEGORIES}
-//       responses={responses}
-//       onToggle={handleToggle}
-//       onSubmit={handleSubmit}
-//     />
-//   );
-// };
-
-// export default LifestyleSurvey; 

@@ -24,10 +24,10 @@ export const DUMMY_FOODS = [
     icon: '🐟',
     description: 'Boosts energy with protein',
     rating: 'Nomnomnomnom',
-    recommendation: 'high',
+    recommendation: 'high', 
     category: FOOD_CATEGORIES.PROTEIN,
     calories: 180,
-    protein: 24,    // 96 calories from protein (24g × 4 cal/g)
+    protein: 24,    // 96 calories from protein (24g × 4 cal/g) We can estimate through 4/4/9  t
     carbs: 0,       // 0 calories from carbs
     fats: 9.3,      // 84 calories from fat (9.3g × 9 cal/g)
     servingSize: '100g',

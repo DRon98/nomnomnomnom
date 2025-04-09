@@ -89,9 +89,10 @@ const CookingGroceryScheduler = () => {
     <div className="day-selection-container">
       <h3>When do you plan on {activeTab === 'cooking' ? 'cooking' : 'buying groceries'}?</h3>
       <div className="days-grid">
-        {DAYS_OF_WEEK.map(({ name, color }) => (
-          <div key={name} className="day-selector">
+        <div className="day-bubbles-container">
+          {DAYS_OF_WEEK.map(({ name, color }) => (
             <button
+              key={name}
               className={`day-bubble ${schedule.selectedDays[name] ? 'selected' : ''}`}
               style={{ 
                 '--bubble-color': color,
@@ -102,24 +103,28 @@ const CookingGroceryScheduler = () => {
             >
               {name}
             </button>
-            {schedule.selectedDays[name] && (
-              <div className="time-selection">
-                <p>When?</p>
-                <div className="time-bubbles">
-                  {TIME_OF_DAY.map(time => (
-                    <button
-                      key={time}
-                      className={`time-bubble ${schedule.timeOfDay[name]?.includes(time) ? 'selected' : ''}`}
-                      onClick={() => handleTimeSelection(schedule, setSchedule, name, time)}
-                    >
-                      {time}
-                    </button>
-                  ))}
-                </div>
+          ))}
+        </div>
+        
+        {Object.entries(schedule.selectedDays)
+          .filter(([_, isSelected]) => isSelected)
+          .map(([day]) => (
+            <div key={day} className="time-selection">
+              <p>{day} - When?</p>
+              <div className="time-bubbles">
+                {TIME_OF_DAY.map(time => (
+                  <button
+                    key={time}
+                    className={`time-bubble ${schedule.timeOfDay[day]?.includes(time) ? 'selected' : ''}`}
+                    onClick={() => handleTimeSelection(schedule, setSchedule, day, time)}
+                  >
+                    {time}
+                  </button>
+                ))}
               </div>
-            )}
-          </div>
-        ))}
+            </div>
+          ))
+        }
       </div>
     </div>
   );

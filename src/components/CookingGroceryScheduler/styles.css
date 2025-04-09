@@ -124,20 +124,27 @@ h3 {
 }
 
 .days-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .day-selector {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+}
+
+.day-bubbles-container {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .day-bubble {
-  width: 100%;
-  padding: 6px;
+  flex: 0 1 auto;
+  min-width: 80px;
+  padding: 6px 8px;
   border: 1.5px solid var(--bubble-color);
   border-radius: 4px;
   background: none;
@@ -146,6 +153,7 @@ h3 {
   cursor: pointer;
   transition: all 0.2s ease;
   color: #333;
+  text-align: center;
 }
 
 .day-bubble:hover {
@@ -162,6 +170,7 @@ h3 {
   padding: 8px;
   border-radius: 4px;
   margin-top: 2px;
+  width: 100%;
 }
 
 .time-selection p {
@@ -197,8 +206,13 @@ h3 {
 }
 
 @media (max-width: 768px) {
-  .days-grid {
-    grid-template-columns: 1fr;
+  .day-bubbles-container {
+    flex-wrap: wrap;
+  }
+  
+  .day-bubble {
+    flex: 1 1 calc(33.33% - 8px);
+    min-width: 60px;
   }
   
   .method-selection {

@@ -112,7 +112,7 @@ const DaySection = ({ dayInfo, weekFeelings, onCopyToDay }) => {
 
 const MealPlanner = () => {
   const dispatch = useDispatch();
-  const [view, setView] = useState('day');
+  const [view, setView] = useState('week');
   const [selectedDays, setSelectedDays] = useState([]);
   const [copyingMeal, setCopyingMeal] = useState(null);
   
@@ -184,21 +184,8 @@ const MealPlanner = () => {
   return (
     <div className="meal-planner">
       <div className="planner-header">
-        <h2 className="planner-title">Plan Your {view === 'day' ? 'Day' : 'Week'}</h2>
-        <div className="view-toggle">
-          <button 
-            className={`toggle-button ${view === 'day' ? 'active' : ''}`}
-            onClick={() => setView('day')}
-          >
-            Today
-          </button>
-          <button 
-            className={`toggle-button ${view === 'week' ? 'active' : ''}`}
-            onClick={() => setView('week')}
-          >
-            Next 7 Days
-          </button>
-        </div>
+        <h2 className="planner-title">Plan Your Week</h2>
+       
       </div>
 
       {view === 'day' ? (
