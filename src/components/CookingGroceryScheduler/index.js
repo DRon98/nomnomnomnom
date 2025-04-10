@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectWeeklySchedule } from '../../store/calendarSlice';
+import { saveScheduleData } from '../../store/scheduleDataSlice';
 import './styles.css';
 
 const DAYS_OF_WEEK = [
@@ -192,7 +193,8 @@ const CookingGroceryScheduler = () => {
 
   const handleSubmitSchedules = () => {
     const scheduleData = formatScheduleData();
-    console.log('Schedule Data:', JSON.stringify(scheduleData, null, 2));
+    console.log('Schedule Data:', scheduleData);
+    dispatch(saveScheduleData(scheduleData));
   };
 
   return (

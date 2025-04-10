@@ -8,6 +8,7 @@ import kitchenAppliancesReducer from './kitchenAppliancesSlice';
 import lifestyleReducer from './lifestyleSlice';
 import foodPreferencesReducer from './foodPreferencesSlice';
 import calendarReducer from './calendarSlice';
+import scheduleDataReducer from './scheduleDataSlice';
 
 const store = configureStore({
   reducer: {
@@ -19,7 +20,8 @@ const store = configureStore({
     kitchenAppliances: kitchenAppliancesReducer,
     lifestyle: lifestyleReducer,
     foodPreferences: foodPreferencesReducer,
-    calendar: calendarReducer
+    calendar: calendarReducer,
+    scheduleData: scheduleDataReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

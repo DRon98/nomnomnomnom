@@ -62,6 +62,7 @@ const DaySection = ({ day, weekFeelings, onCopyToDay }) => {
     if (recommendedFoods.length === 0) return;
     
     const plan = generateMealPlan(recommendedFoods);
+    console.log(plan);
     dispatch(generateRandomPlan({ ...plan, day }));
   };
 

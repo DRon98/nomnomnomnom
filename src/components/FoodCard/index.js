@@ -199,7 +199,7 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
           className="view-recipe-link"
           onClick={(e) => e.stopPropagation()}
         >
-          View Recipe
+          Build Recipe
         </Link>
       )}
 

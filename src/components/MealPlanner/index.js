@@ -4,6 +4,8 @@ import { clearMealPlan, generateRandomPlan, addFoodToMeal } from '../../store/me
 import { generateMealPlan } from '../../utils/foodGenerator';
 import MealSlot from '../MealSlot';
 import { selectDayPlanMeals, selectWeekPlanMeals } from '../../store/mealPlanSlice';
+import { selectScheduleData } from '../../store/scheduleDataSlice';
+import { generateMealPlanFromAPI } from '../../utils/api';
 import './styles.css';
 
 const MEAL_CONFIG = [
@@ -144,6 +146,7 @@ const MealPlanner = () => {
   
   const recommendedFoods = useSelector(state => state.foods.recommendedFoods);
   const weekFeelings = useSelector(state => state.user.weekFeelings);
+  const scheduleData = useSelector(selectScheduleData);
   
   const foodsToCopy = useSelector(state => 
     copyingMeal 
@@ -168,14 +171,33 @@ const MealPlanner = () => {
     }
   };
 
-  const handleConfirmGenerate = () => {
+  const handleConfirmGenerate = async () => {
     if (selectedFoods.length === 0) return;
     
-    // Generate and dispatch plans for each day using only selected foods
-    nextSevenDays.forEach(dayInfo => {
-      const plan = generateMealPlan(selectedFoods);
-      dispatch(generateRandomPlan({ ...plan, day: dayInfo.key }));
-    });
+    // Combine schedule data and selected foods into one JSON
+    const combinedData = {
+      ...scheduleData,
+      selected_foods: selectedFoods.map(food => ({
+        base_ingredients_for_grocery_list: food.base_ingredients_for_grocery_list,
+        id: food.id,
+        name: food.name,
+        category: food.category || 'uncategorized'
+      }))
+    };
+
+    try {
+      // Call the API and wait for the response
+      const generatedPlan = await generateMealPlanFromAPI(combinedData);
+      console.log('API Generated Meal Plan:', generatedPlan);
+      
+      // Generate and dispatch plans for each day using only selected foods
+      nextSevenDays.forEach(dayInfo => {
+        const plan = generateMealPlan(selectedFoods);
+        dispatch(generateRandomPlan({ ...plan, day: dayInfo.key }));
+      });
+    } catch (error) {
+      console.error('Error generating meal plan:', error);
+    }
 
     setIsSelectingFoods(false);
     setSelectedFoods([]);

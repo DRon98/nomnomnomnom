@@ -73,4 +73,24 @@ export const generateRecipeBuilderFromAPI = async (recipeData) => {
   }
 }; 
 
+export const generateMealPlanFromAPI = async (mealPlanData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/groq/meal-plan`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(mealPlanData)
+    });
+
+    if (!response.ok) {
+      throw new Error(`API request failed with status ${response.status}`);
+    } 
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error calling meal plan API:', error);
+    throw error;
+  } 
+};  
 //recipe-builder
