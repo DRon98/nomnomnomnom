@@ -6,16 +6,16 @@
 
 .planner-header {
   display: flex;
-  flex-direction: column;
-  gap: 15px;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
+  padding: 10px 0;
 }
 
 .planner-title {
-  font-family: 'Comic Neue', cursive;
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-color);
   margin: 0;
 }
 
@@ -135,16 +135,42 @@
 .planner-actions {
   display: flex;
   gap: 10px;
-  margin-bottom: 20px;
 }
 
-.planner-actions button {
-  flex: 1;
+.primary-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
 }
 
-button:disabled {
-  opacity: 0.5;
+.primary-button:hover {
+  background-color: var(--primary-color-dark);
+}
+
+.primary-button:disabled {
+  background-color: var(--disabled-color);
   cursor: not-allowed;
+}
+
+.secondary-button {
+  background-color: transparent;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.secondary-button:hover {
+  background-color: var(--hover-color);
+  border-color: var(--text-color);
 }
 
 /* Week view styles */
@@ -250,4 +276,95 @@ button:disabled {
 
 .copy-confirm-button:hover {
   background-color: #219a52;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 24px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content h3 {
+  margin: 0 0 20px 0;
+  font-size: 1.5rem;
+  color: var(--text-color);
+}
+
+.food-selection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.food-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.food-item:hover {
+  background-color: var(--hover-color);
+  border-color: var(--primary-color);
+}
+
+.food-item.selected {
+  background-color: var(--primary-color-light);
+  border-color: var(--primary-color);
+}
+
+.food-icon {
+  font-size: 1.2rem;
+  margin-right: 12px;
+}
+
+.food-name {
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+.selection-indicator {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--primary-color-light);
+  color: var(--primary-color);
+  font-size: 0.9rem;
+}
+
+.food-item.selected .selection-indicator {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
 }

@@ -9,7 +9,11 @@ const initialState = {
         foodPreferences: {},
         cookingMethodPreferences: {},
         additionalPreferences: '',
-        showingCookingMethods: false
+        showingCookingMethods: false,
+        mealPrepPreferences: {
+          maxServingsPerPerson: 3,
+          maxDaysToEat: 3
+        }
       }
 };
 
@@ -57,6 +61,13 @@ const foodPreferencesSlice = createSlice({
       state.responses.showingCookingMethods = action.payload;
     },
 
+    setMealPrepPreferences: (state, action) => {
+      state.responses.mealPrepPreferences = {
+        ...state.responses.mealPrepPreferences,
+        ...action.payload
+      };
+    },
+
     setResponses: (state, action) => {
       state.responses = action.payload;
     },
@@ -70,7 +81,11 @@ const foodPreferencesSlice = createSlice({
         foodPreferences: {},
         cookingMethodPreferences: {},
         additionalPreferences: '',
-        showingCookingMethods: false
+        showingCookingMethods: false,
+        mealPrepPreferences: {
+          maxServingsPerPerson: 3,
+          maxDaysToEat: 3
+        }
       };
     }
   }
@@ -83,6 +98,7 @@ export const {
   togglePreference,
   setAdditionalPreferences,
   toggleCookingMethodsView,
+  setMealPrepPreferences,
   setResponses,
   clearResponses
 } = foodPreferencesSlice.actions;

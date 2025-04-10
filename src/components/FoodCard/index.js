@@ -82,8 +82,22 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
     return { text: 'Need to Purchase', className: 'status-tag need-purchase' };
   };
 
-  const handleAddToPantry = () => {
-    dispatch(addToPantry({ food: { ...food } }));
+  const handleAddToPantry = (e) => {
+    e.stopPropagation();
+    if (food.base_ingredients_for_grocery_list && food.base_ingredients_for_grocery_list.length > 0) {
+      food.base_ingredients_for_grocery_list.forEach(ingredient => {
+        dispatch(addToPantry({
+          food: {
+            id: `${food.id}_${ingredient}`,
+            name: ingredient,
+            category: food.category || 'other',
+            unit: 'unit'
+          }
+        }));
+      });
+    } else {
+      dispatch(addToPantry({ food: { ...food } }));
+    }
   };
 
   const handleAddToGroceries = () => {
@@ -156,25 +170,22 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
           </div>
           
           <div className="food-actions">
-            {/* <button
+            <button
               className="food-action-button pantry"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleAddToPantry();
-              }}
-              title="Add to Pantry"
+              onClick={handleAddToPantry}
+              title={food.base_ingredients_for_grocery_list ? 'Add' : 'Add to Pantry'}
             >
-              Add to Pantry
-            </button> */}
+              🏠 {food.base_ingredients_for_grocery_list ? 'Add ' : 'Add to Pantry'}
+            </button>
             <button
               className="food-action-button groceries"
               onClick={(e) => {
                 e.stopPropagation();
                 handleAddToGroceries();
               }}
-              title={food.base_ingredients_for_grocery_list ? 'Add ingredients to Shopping List' : 'Add to Shopping List'}
+              title={food.base_ingredients_for_grocery_list ? 'Shopping List' : 'Add to Shopping List'}
             >
-              {food.base_ingredients_for_grocery_list ? 'Add Ingredients' : 'Add to List'}
+              🛒 {food.base_ingredients_for_grocery_list ? 'Add' : 'Add to List'}
             </button>
           </div>
           

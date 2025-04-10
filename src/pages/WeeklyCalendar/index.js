@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react';
 import { FaPlus, FaTimes, FaSave } from 'react-icons/fa';
 import CategoryBubbles from './CategoryBubbles';
 import './styles.css';
+import { useDispatch } from 'react-redux';
+import { saveWeeklySchedule } from '../../store/calendarSlice';
 
 // Map category names to JSON keys
 const CATEGORY_TO_KEY_MAP = {
@@ -34,6 +36,8 @@ const WeeklyCalendar = () => {
     const hour = (i + 6) % 24; // Start from 6 AM and wrap around
     return `${String(hour).padStart(2, '0')}:00`;
   });
+
+  const dispatch = useDispatch();
 
   const handleAddEvent = (e) => {
     e.preventDefault();
@@ -207,8 +211,8 @@ const WeeklyCalendar = () => {
 
   const handleSave = () => {
     const formattedData = formatEventsForSave();
-   // console.log(JSON.stringify(formattedData, null, 2));
-    console.log(formattedData);
+    dispatch(saveWeeklySchedule(formattedData));
+    console.log('Saved to Redux:', formattedData);
   };
 
   const handleResizeStart = (event, type, e) => {

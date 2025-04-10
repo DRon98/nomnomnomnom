@@ -7,6 +7,7 @@ import surveyReducer from './surveySlice';
 import kitchenAppliancesReducer from './kitchenAppliancesSlice';
 import lifestyleReducer from './lifestyleSlice';
 import foodPreferencesReducer from './foodPreferencesSlice';
+import calendarReducer from './calendarSlice';
 
 const store = configureStore({
   reducer: {
@@ -17,7 +18,8 @@ const store = configureStore({
     survey: surveyReducer,
     kitchenAppliances: kitchenAppliancesReducer,
     lifestyle: lifestyleReducer,
-    foodPreferences: foodPreferencesReducer
+    foodPreferences: foodPreferencesReducer,
+    calendar: calendarReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

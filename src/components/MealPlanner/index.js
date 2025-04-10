@@ -35,6 +35,43 @@ const getNextSevenDays = () => {
   return days;
 };
 
+const FoodSelectionModal = ({ recommendedFoods, selectedFoods, onSelect, onConfirm, onCancel }) => {
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <h3>Select Foods for Your Meal Plan</h3>
+        <div className="food-selection-grid">
+          {recommendedFoods.map(food => (
+            <div 
+              key={food.id}
+              className={`food-item ${selectedFoods.includes(food) ? 'selected' : ''}`}
+              onClick={() => onSelect(food)}
+            >
+              <span className="food-icon">{food.icon || '🍽️'}</span>
+              <span className="food-name">{food.name}</span>
+              <span className="selection-indicator">
+                {selectedFoods.includes(food) ? '✓' : '+'}
+              </span>
+            </div>
+          ))}
+        </div>
+        <div className="modal-actions">
+          <button className="secondary-button" onClick={onCancel}>
+            Cancel
+          </button>
+          <button 
+            className="primary-button" 
+            onClick={onConfirm}
+            disabled={selectedFoods.length === 0}
+          >
+            Confirm ({selectedFoods.length} selected)
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const DaySection = ({ dayInfo, weekFeelings, onCopyToDay }) => {
   const [isExpanded, setIsExpanded] = useState(dayInfo.key === getNextSevenDays()[0].key);
   const dispatch = useDispatch();
@@ -50,12 +87,6 @@ const DaySection = ({ dayInfo, weekFeelings, onCopyToDay }) => {
     lunch: lunchMeals,
     dinner: dinnerMeals,
     snacks: snacksMeals
-  };
-
-  const handleGeneratePlan = () => {
-    if (recommendedFoods.length === 0) return;
-    const plan = generateMealPlan(recommendedFoods);
-    dispatch(generateRandomPlan({ ...plan, day: dayInfo.key }));
   };
 
   const handleClearPlan = () => {
@@ -77,13 +108,6 @@ const DaySection = ({ dayInfo, weekFeelings, onCopyToDay }) => {
       {isExpanded && (
         <div className="day-meals">
           <div className="planner-actions">
-            <button
-              className="primary-button"
-              onClick={handleGeneratePlan}
-              disabled={recommendedFoods.length === 0}
-            >
-              Generate Plan
-            </button>
             <button
               className="secondary-button"
               onClick={handleClearPlan}
@@ -115,37 +139,51 @@ const MealPlanner = () => {
   const [view, setView] = useState('week');
   const [selectedDays, setSelectedDays] = useState([]);
   const [copyingMeal, setCopyingMeal] = useState(null);
+  const [isSelectingFoods, setIsSelectingFoods] = useState(false);
+  const [selectedFoods, setSelectedFoods] = useState([]);
   
   const recommendedFoods = useSelector(state => state.foods.recommendedFoods);
   const weekFeelings = useSelector(state => state.user.weekFeelings);
   
-  // Memoize the next seven days to prevent recalculation on every render
-  const nextSevenDays = useMemo(() => getNextSevenDays(), []);
-  
-  // Day view selectors
-  const breakfastMeals = useSelector(state => selectDayPlanMeals(state, 'breakfast'));
-  const lunchMeals = useSelector(state => selectDayPlanMeals(state, 'lunch'));
-  const dinnerMeals = useSelector(state => selectDayPlanMeals(state, 'dinner'));
-  const snacksMeals = useSelector(state => selectDayPlanMeals(state, 'snacks'));
-  
-  const mealsByType = {
-    breakfast: breakfastMeals,
-    lunch: lunchMeals,
-    dinner: dinnerMeals,
-    snacks: snacksMeals
-  };
-
-  // Get foods for copying at the top level
   const foodsToCopy = useSelector(state => 
     copyingMeal 
       ? selectWeekPlanMeals(state, copyingMeal.sourceDay, copyingMeal.meal)
       : []
   );
+  
+  const nextSevenDays = useMemo(() => getNextSevenDays(), []);
 
-  const handleGeneratePlan = () => {
-    if (recommendedFoods.length === 0) return;
-    const plan = generateMealPlan(recommendedFoods);
-    dispatch(generateRandomPlan(plan));
+  const handleFoodSelect = (food) => {
+    setSelectedFoods(prev => 
+      prev.includes(food)
+        ? prev.filter(f => f.id !== food.id)
+        : [...prev, food]
+    );
+  };
+
+  const handleGenerateWeeklyPlan = () => {
+    if (!isSelectingFoods) {
+      setIsSelectingFoods(true);
+      return;
+    }
+  };
+
+  const handleConfirmGenerate = () => {
+    if (selectedFoods.length === 0) return;
+    
+    // Generate and dispatch plans for each day using only selected foods
+    nextSevenDays.forEach(dayInfo => {
+      const plan = generateMealPlan(selectedFoods);
+      dispatch(generateRandomPlan({ ...plan, day: dayInfo.key }));
+    });
+
+    setIsSelectingFoods(false);
+    setSelectedFoods([]);
+  };
+
+  const handleCancelGenerate = () => {
+    setIsSelectingFoods(false);
+    setSelectedFoods([]);
   };
 
   const handleClearPlan = () => {
@@ -185,80 +223,70 @@ const MealPlanner = () => {
     <div className="meal-planner">
       <div className="planner-header">
         <h2 className="planner-title">Plan Your Week</h2>
-       
+        <div className="planner-actions">
+          <button
+            className="primary-button"
+            onClick={handleGenerateWeeklyPlan}
+            disabled={recommendedFoods.length === 0}
+          >
+            {isSelectingFoods ? 'Confirm Selection' : 'Generate Plan'}
+          </button>
+          <button
+            className="secondary-button"
+            onClick={handleClearPlan}
+          >
+            Clear All
+          </button>
+        </div>
       </div>
 
-      {view === 'day' ? (
-        <>
-          <div className="planner-actions">
-            <button
-              className="primary-button"
-              onClick={handleGeneratePlan}
-              disabled={recommendedFoods.length === 0}
-            >
-              Generate Plan
-            </button>
-            <button
-              className="secondary-button"
-              onClick={handleClearPlan}
-            >
-              Clear Plan
-            </button>
-          </div>
-          
-          <div className="meal-slots">
-            {MEAL_CONFIG.map(({ type, title, icon }) => (
-              <MealSlot
-                key={type}
-                title={title}
-                icon={icon}
-                meal={type}
-                foods={mealsByType[type]}
-              />
-            ))}
-          </div>
-        </>
-      ) : (
-        <>
-          {copyingMeal && (
-            <div className="copy-options-container">
-              <div className="copy-options">
-                {nextSevenDays
-                  .filter(d => d.key !== copyingMeal.sourceDay)
-                  .map(dayInfo => (
-                    <button 
-                      key={dayInfo.key}
-                      className={`copy-day-button ${selectedDays.includes(dayInfo.key) ? 'selected' : ''}`}
-                      onClick={() => handleDayToggle(dayInfo.key)}
-                    >
-                      {dayInfo.display}
-                    </button>
-                  ))
-                }
-              </div>
-              {selectedDays.length > 0 && (
-                <button 
-                  className="copy-confirm-button"
-                  onClick={handleCopy}
-                >
-                  Copy to {selectedDays.length} day{selectedDays.length > 1 ? 's' : ''}
-                </button>
-              )}
-            </div>
-          )}
-          
-          <div className="week-days">
-            {nextSevenDays.map(dayInfo => (
-              <DaySection 
-                key={dayInfo.key}
-                dayInfo={dayInfo}
-                weekFeelings={weekFeelings}
-                onCopyToDay={handleCopyToDay}
-              />
-            ))}
-          </div>
-        </>
+      {isSelectingFoods && (
+        <FoodSelectionModal
+          recommendedFoods={recommendedFoods}
+          selectedFoods={selectedFoods}
+          onSelect={handleFoodSelect}
+          onConfirm={handleConfirmGenerate}
+          onCancel={handleCancelGenerate}
+        />
       )}
+
+      {copyingMeal && (
+        <div className="copy-options-container">
+          <div className="copy-options">
+            {nextSevenDays
+              .filter(d => d.key !== copyingMeal.sourceDay)
+              .map(dayInfo => (
+                <button 
+                  key={dayInfo.key}
+                  className={`copy-day-button ${selectedDays.includes(dayInfo.key) ? 'selected' : ''}`}
+                  onClick={() => handleDayToggle(dayInfo.key)}
+                >
+                  {dayInfo.display}
+                </button>
+              ))
+            }
+          </div>
+          {selectedDays.length > 0 && (
+            <button 
+              className="copy-confirm-button"
+              onClick={handleCopy}
+            >
+              Copy to {selectedDays.length} day{selectedDays.length > 1 ? 's' : ''}
+            </button>
+          )}
+        </div>
+      )}
+      
+      <div className="week-days">
+        {nextSevenDays.map(dayInfo => (
+          <DaySection 
+            key={dayInfo.key}
+            dayInfo={dayInfo}
+            weekFeelings={weekFeelings}
+            onCopyToDay={handleCopyToDay}
+          />
+        ))}
+      </div>
     </div>
   );
 };

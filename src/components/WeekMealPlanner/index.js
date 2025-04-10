@@ -175,7 +175,7 @@ const WeekMealPlanner = () => {
   return (
     <div className="week-meal-planner">
       <h2 className="planner-title">Plan Your Week</h2>
-      
+    
       {copyingMeal && (
         <div className="copy-options-container">
           <div className="copy-options">

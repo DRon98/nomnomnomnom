@@ -269,6 +269,7 @@ const RecipeGenerator = () => {
           emptyMessage="No items in pantry"
           showRemoveButton={false}
         />
+        {selectedIngredients.map(item => console.log(item))}
       </div>
       <div className="ingredients-section">
         <h3>Shopping List</h3>

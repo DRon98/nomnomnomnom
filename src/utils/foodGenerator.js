@@ -33,17 +33,47 @@ export const generateRecommendations = async (currentStates, desiredStates, user
   };
 };
 
-export const generateMealPlan = (recommendedFoods) => {
-  const shuffledFoods = [...recommendedFoods].sort(() => 0.5 - Math.random());
+export const generateMealPlan = (selectedFoods) => {
+  if (selectedFoods.length === 0) return {
+    breakfast: [],
+    lunch: [],
+    dinner: [],
+    snacks: []
+  };
+
+  // Helper function to get random number between min and max (inclusive)
+  const getRandomInt = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
+  // Helper function to get random foods for a meal slot
+  const getRandomFoodsForMeal = () => {
+    // Limit the number of foods based on how many unique foods are available
+    const maxPossibleFoods = Math.min(3, selectedFoods.length);
+    const numFoods = getRandomInt(1, maxPossibleFoods);
+    
+    // Create a copy of selectedFoods to track available foods
+    const availableFoods = [...selectedFoods];
+    const mealFoods = [];
+    
+    for (let i = 0; i < numFoods; i++) {
+      // Get a random food from the remaining available foods
+      const randomIndex = Math.floor(Math.random() * availableFoods.length);
+      const selectedFood = availableFoods[randomIndex];
+      
+      // Add the food to meal and remove it from available foods
+      mealFoods.push({ ...selectedFood });
+      availableFoods.splice(randomIndex, 1);
+    }
+    
+    return mealFoods;
+  };
   
-  const preparedFoods = shuffledFoods.map(food => ({
-    ...food
-  }));
-  
+  // Generate random foods for each meal type
   return {
-    breakfast: preparedFoods.slice(0, 2),
-    lunch: preparedFoods.slice(2, 4),
-    dinner: preparedFoods.slice(4, 6),
-    snacks: preparedFoods.slice(6, 8)
+    breakfast: getRandomFoodsForMeal(),
+    lunch: getRandomFoodsForMeal(),
+    dinner: getRandomFoodsForMeal(),
+    snacks: getRandomFoodsForMeal()
   };
 };

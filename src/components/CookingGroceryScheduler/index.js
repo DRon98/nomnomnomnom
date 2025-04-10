@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectWeeklySchedule } from '../../store/calendarSlice';
 import './styles.css';
 
 const DAYS_OF_WEEK = [
@@ -19,6 +20,9 @@ const GROCERY_METHODS = ['Online', 'In Person', 'Combination'];
 const CookingGroceryScheduler = () => {
   const [activeTab, setActiveTab] = useState('cooking');
   const dispatch = useDispatch();
+  const weeklySchedule = useSelector(selectWeeklySchedule);
+  const foodPreferences = useSelector(state => state.foodPreferences.responses);
+  const pantryItems = useSelector(state => state.inventory.pantry);
 
   // Cooking Schedule State
   const [cookingSchedule, setCookingSchedule] = useState({
@@ -28,6 +32,7 @@ const CookingGroceryScheduler = () => {
       'Lunch/Dinner': 0,
       Snacks: 0
     },
+    eatingOutFrequency: 0,
     selectedDays: {},
     timeOfDay: {}
   });
@@ -56,6 +61,14 @@ const CookingGroceryScheduler = () => {
         ...prev.mealFrequencies,
         [mealType]: newValue
       }
+    }));
+  };
+
+  const handleEatingOutFrequencyChange = (e) => {
+    const value = parseInt(e.target.value) || 0;
+    setCookingSchedule(prev => ({
+      ...prev,
+      eatingOutFrequency: value
     }));
   };
 
@@ -129,6 +142,59 @@ const CookingGroceryScheduler = () => {
     </div>
   );
 
+  const formatScheduleData = () => {
+    // Format cooking schedule data
+    const cookingDays = Object.entries(cookingSchedule.selectedDays)
+      .filter(([_, isSelected]) => isSelected)
+      .map(([day]) => ({
+        day,
+        times: cookingSchedule.timeOfDay[day] || []
+      }));
+
+    // Format grocery schedule data
+    const groceryDays = Object.entries(grocerySchedule.selectedDays)
+      .filter(([_, isSelected]) => isSelected)
+      .map(([day]) => ({
+        day,
+        times: grocerySchedule.timeOfDay[day] || []
+      }));
+
+    return {
+      cooking_schedule: {
+        frequency: cookingSchedule.totalFrequency,
+        which_meals: {
+          breakfast: cookingSchedule.mealFrequencies['Breakfast'],
+          lunch: cookingSchedule.mealFrequencies['Lunch/Dinner'],
+          snacks: cookingSchedule.mealFrequencies['Snacks']
+        },
+        eating_out_frequency: cookingSchedule.eatingOutFrequency,
+        cooking_days: cookingDays,
+        meal_prep_preferences: {
+          max_servings_per_person: foodPreferences.mealPrepPreferences.maxServingsPerPerson,
+          max_days_to_eat: foodPreferences.mealPrepPreferences.maxDaysToEat
+        }
+      },
+      grocery_schedule: {
+        frequency: grocerySchedule.totalFrequency,
+        grocery_buying_method: grocerySchedule.method || 'In person',
+        grocery_days: groceryDays
+      },
+      weekly_calendar: weeklySchedule || {},
+      pantry_inventory: pantryItems.map(item => ({
+        food_id: item.foodId,
+        name: item.food.name,
+        category: item.food.category,
+        amount: item.amount,
+        unit: item.food.unit
+      }))
+    };
+  };
+
+  const handleSubmitSchedules = () => {
+    const scheduleData = formatScheduleData();
+    console.log('Schedule Data:', JSON.stringify(scheduleData, null, 2));
+  };
+
   return (
     <div className="cooking-grocery-scheduler">
       <div className="scheduler-tabs">
@@ -182,6 +248,17 @@ const CookingGroceryScheduler = () => {
               </p>
             </div>
 
+            <div className="eating-out-section">
+              <h3>How many times do you plan on eating out this week?</h3>
+              <input
+                type="number"
+                min="0"
+                value={cookingSchedule.eatingOutFrequency}
+                onChange={handleEatingOutFrequencyChange}
+                className="frequency-input"
+              />
+            </div>
+
             {renderDayTimeSelection(cookingSchedule, setCookingSchedule)}
           </div>
         ) : (
@@ -221,6 +298,15 @@ const CookingGroceryScheduler = () => {
             {renderDayTimeSelection(grocerySchedule, setGrocerySchedule)}
           </div>
         )}
+      </div>
+
+      <div className="submit-section">
+        <button
+          className="submit-button"
+          onClick={handleSubmitSchedules}
+        >
+          Submit Schedules
+        </button>
       </div>
     </div>
   );
