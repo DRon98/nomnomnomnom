@@ -37,7 +37,7 @@ const getNextSevenDays = () => {
   return days;
 };
 
-const FoodSelectionModal = ({ recommendedFoods, selectedFoods, onSelect, onConfirm, onCancel }) => {
+const FoodSelectionModal = ({ recommendedFoods, selectedFoods, onSelect, onConfirm, onCancel, isLoading }) => {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
@@ -64,7 +64,7 @@ const FoodSelectionModal = ({ recommendedFoods, selectedFoods, onSelect, onConfi
           <button 
             className="primary-button" 
             onClick={onConfirm}
-            disabled={selectedFoods.length === 0}
+            disabled={selectedFoods.length === 0 || isLoading}
           >
             Confirm ({selectedFoods.length} selected)
           </button>
@@ -143,6 +143,7 @@ const MealPlanner = () => {
   const [copyingMeal, setCopyingMeal] = useState(null);
   const [isSelectingFoods, setIsSelectingFoods] = useState(false);
   const [selectedFoods, setSelectedFoods] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   
   const recommendedFoods = useSelector(state => state.foods.recommendedFoods);
   const weekFeelings = useSelector(state => state.user.weekFeelings);
@@ -174,6 +175,8 @@ const MealPlanner = () => {
   const handleConfirmGenerate = async () => {
     if (selectedFoods.length === 0) return;
     
+    setIsLoading(true);
+    
     // Combine schedule data and selected foods into one JSON
     const combinedData = {
       ...scheduleData,
@@ -190,17 +193,54 @@ const MealPlanner = () => {
       const generatedPlan = await generateMealPlanFromAPI(combinedData);
       console.log('API Generated Meal Plan:', generatedPlan);
       
-      // Generate and dispatch plans for each day using only selected foods
-      nextSevenDays.forEach(dayInfo => {
-        const plan = generateMealPlan(selectedFoods);
-        dispatch(generateRandomPlan({ ...plan, day: dayInfo.key }));
+      // Map the API response to our next seven days
+      nextSevenDays.forEach((dayInfo, index) => {
+        // Find the corresponding day in the API response
+        const apiDay = generatedPlan.mealPlan[index];
+        if (!apiDay) return;
+
+        // Format meals for this day
+        const dayPlan = {
+          breakfast: apiDay.breakfast.map(meal => ({
+            id: meal.id,
+            name: meal.name,
+            category: meal.category,
+            icon: meal.emoji,
+            base_ingredients_for_grocery_list: meal.base_ingredients_for_grocery_list
+          })),
+          lunch: apiDay.lunch.map(meal => ({
+            id: meal.id,
+            name: meal.name,
+            category: meal.category,
+            icon: meal.emoji,
+            base_ingredients_for_grocery_list: meal.base_ingredients_for_grocery_list
+          })),
+          dinner: apiDay.dinner.map(meal => ({
+            id: meal.id,
+            name: meal.name,
+            category: meal.category,
+            icon: meal.emoji,
+            base_ingredients_for_grocery_list: meal.base_ingredients_for_grocery_list
+          })),
+          snacks: apiDay.snacks.map(meal => ({
+            id: meal.id,
+            name: meal.name,
+            category: meal.category,
+            icon: meal.emoji,
+            base_ingredients_for_grocery_list: meal.base_ingredients_for_grocery_list
+          }))
+        };
+
+        // Dispatch the plan for this day
+        dispatch(generateRandomPlan({ ...dayPlan, day: dayInfo.key }));
       });
     } catch (error) {
       console.error('Error generating meal plan:', error);
+    } finally {
+      setIsLoading(false);
+      setIsSelectingFoods(false);
+      setSelectedFoods([]);
     }
-
-    setIsSelectingFoods(false);
-    setSelectedFoods([]);
   };
 
   const handleCancelGenerate = () => {
@@ -249,13 +289,14 @@ const MealPlanner = () => {
           <button
             className="primary-button"
             onClick={handleGenerateWeeklyPlan}
-            disabled={recommendedFoods.length === 0}
+            disabled={recommendedFoods.length === 0 || isLoading}
           >
             {isSelectingFoods ? 'Confirm Selection' : 'Generate Plan'}
           </button>
           <button
             className="secondary-button"
             onClick={handleClearPlan}
+            disabled={isLoading}
           >
             Clear All
           </button>
@@ -269,7 +310,17 @@ const MealPlanner = () => {
           onSelect={handleFoodSelect}
           onConfirm={handleConfirmGenerate}
           onCancel={handleCancelGenerate}
+          isLoading={isLoading}
         />
+      )}
+
+      {isLoading && (
+        <div className="loading-overlay">
+          <div className="loading-spinner">
+            <div className="spinner"></div>
+            <p>Generating your meal plan...</p>
+          </div>
+        </div>
       )}
 
       {copyingMeal && (
