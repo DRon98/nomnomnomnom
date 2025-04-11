@@ -10,6 +10,11 @@ import RecipeGenerator from './pages/RecipeGenerator';
 import PantryManager from './pages/PantryManager';
 import KitchenAppliances from './components/KitchenAppliances';
 import WeeklyCalendar from './pages/WeeklyCalendar';
+import SpiceCabinetBuilder from './pages/SpiceCabinetBuilder';
+import GroceryList from './pages/GroceryList';
+import AddToPantry from './pages/AddToPantry';
+import AddToShoppingList from './pages/AddToShoppingList';
+import AddSpicesToList from './pages/AddSpicesToList';
 
 import ErrorBoundary from './components/ErrorBoundary';
 import LifestyleSurvey from './components/LifestyleSurvey';
@@ -31,6 +36,11 @@ function App() {
             <Route path="kitchen-appliances" element={<KitchenAppliances />} />
             <Route path="lifestyle-survey" element={<LifestyleSurvey />} />
             <Route path="weekly-calendar" element={<WeeklyCalendar />} />
+            <Route path="spice-cabinet-builder" element={<SpiceCabinetBuilder />} />
+            <Route path="grocery-list" element={<GroceryList />} />
+            <Route path="add-to-pantry" element={<AddToPantry />} />
+            <Route path="add-to-shopping-list" element={<AddToShoppingList />} />
+            <Route path="add-spices-to-list" element={<AddSpicesToList />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

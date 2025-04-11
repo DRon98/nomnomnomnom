@@ -514,22 +514,44 @@
 
 .ingredient-info {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
 }
 
 .ingredient-name {
-  font-weight: 500;
-  color: #333;
+  flex: 1;
+  font-size: 0.95rem;
+  color: var(--text-color);
 }
 
 .ingredient-amount {
-  font-size: 0.85rem;
-  color: #6c757d;
-  background-color: #f8f9fa;
-  padding: 2px 8px;
-  border-radius: 12px;
-  display: inline-block;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  min-width: 80px;
+  text-align: right;
+}
+
+.pantry-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--success-color, #4CAF50);
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-left: 8px;
+  transition: transform 0.2s ease;
+}
+
+.pantry-indicator:hover {
+  transform: scale(1.1);
+  cursor: help;
+}
+
+.pantry-check {
+  font-size: 12px;
 }
 
 .ingredient-item button {
@@ -1035,4 +1057,63 @@
 .recipe-builder-error button:hover {
   background-color: #c0392b;
   transform: translateY(-1px);
+}
+
+.ingredients-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.ingredients-header h4 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.add-to-shopping-list-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.add-to-shopping-list-btn:hover {
+  background-color: #2980b9;
+  transform: translateY(-1px);
+}
+
+.add-to-shopping-list-btn:active {
+  transform: translateY(0);
+}
+
+.shopping-list-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #3498db;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-left: 8px;
+  transition: transform 0.2s ease;
+}
+
+.shopping-list-indicator:hover {
+  transform: scale(1.1);
+  cursor: help;
+}
+
+.shopping-cart-icon {
+  font-size: 12px;
 }

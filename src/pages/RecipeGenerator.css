@@ -555,19 +555,32 @@
 
 .recipe-stats {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 15px;
-  padding: 10px 0;
-  border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin: 15px 0;
 }
 
-.recipe-stats div {
+.recipe-stats > div {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   color: #666;
-  font-size: 0.9em;
+  font-size: 0.9rem;
+}
+
+.recipe-stats svg {
+  color: #3498db;
+}
+
+.pantry-stat {
+  padding: 4px 10px;
+  background-color: #e8f4fd;
+  border-radius: 15px;
+  color: #2980b9 !important;
+}
+
+.pantry-stat svg {
+  color: #2980b9;
 }
 
 .recipe-tags {

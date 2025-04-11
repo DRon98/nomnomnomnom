@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import './RecipeBuilder.css';
-import { FaFire, FaClock, FaUtensils, FaListUl, FaChartBar, FaPlus, FaMinus, FaTrash, FaInfoCircle, FaSpinner, FaStar } from 'react-icons/fa';
+import { FaFire, FaClock, FaUtensils, FaListUl, FaChartBar, FaPlus, FaMinus, FaTrash, FaInfoCircle, FaSpinner, FaStar, FaCheck, FaShoppingCart } from 'react-icons/fa';
 import { generateRecipeBuilderFromAPI } from '../utils/api';
+import { addToGroceries } from '../store/inventorySlice';
 
 
 const RecipeBuilder = () => {
@@ -13,19 +15,18 @@ const RecipeBuilder = () => {
   const [activeTab, setActiveTab] = useState('full');
   const [steps, setSteps] = useState([]);
   const [maxTime, setMaxTime] = useState(0);
+  const [ingredients, setIngredients] = useState([]);
   const [difficulty, setDifficulty] = useState('');
   const [tags, setTags] = useState([]);
-  const [newIngredient, setNewIngredient] = useState('');
-  const [pantryItems, setPantryItems] = useState([
-    'soy sauce', 'mirin', 'sake', 'eggs', 'green onions', 'garlic', 'ginger'
-  ]);
-  const [activeTastes, setActiveTastes] = useState([]);
   const [highlightedIngredients, setHighlightedIngredients] = useState([]);
   const [activeTasteAdjustment, setActiveTasteAdjustment] = useState(null);
   const [isStarred, setIsStarred] = useState(false);
   const location = useLocation();
 
   const timelineRef = useRef(null);
+  const dispatch = useDispatch();
+  const pantryItems = useSelector(state => state.inventory.pantry || []);
+  const groceryItems = useSelector(state => state.inventory.groceries || []);
 
   useEffect(() => {
     const fetchRecipeData = async () => {
@@ -43,7 +44,7 @@ const RecipeBuilder = () => {
         }
 
         const recipeData = await generateRecipeBuilderFromAPI(JSON.parse(recipeId));
-        console.log('Recipe Data:', recipeData);
+        console.log('Recipe Data:', recipeData.fullIngredients);
         
         // Update all the state with the recipe data
         setRecipe(recipeData);
@@ -51,7 +52,7 @@ const RecipeBuilder = () => {
         setMaxTime(recipeData.maxTime);
         setDifficulty(recipeData.difficulty);
         setTags(recipeData.tags);
-        
+        setIngredients(recipeData.fullIngredients);
       } catch (err) {
         console.error('Error fetching recipe:', err);
         setError('Failed to load recipe. Please try again.');
@@ -153,24 +154,6 @@ const RecipeBuilder = () => {
     ));
   };
 
-  const addToPantry = (ingredient) => {
-    if (!pantryItems.includes(ingredient)) {
-      setPantryItems([...pantryItems, ingredient]);
-    }
-  };
-
-  const removeFromPantry = (ingredient) => {
-    setPantryItems(pantryItems.filter(item => item !== ingredient));
-  };
-
-  const handleAddIngredient = (e) => {
-    e.preventDefault();
-    if (newIngredient.trim()) {
-      addToPantry(newIngredient.trim());
-      setNewIngredient('');
-    }
-  };
-
   const handleTasteClick = (tasteAdjustment) => {
     setActiveTasteAdjustment(activeTasteAdjustment?.type === tasteAdjustment.type ? null : tasteAdjustment);
   };
@@ -225,38 +208,38 @@ const RecipeBuilder = () => {
     return (
       <div className="full-recipe">
         <div className="ingredients-section">
-          <h4>
-            <FaUtensils /> Ingredients
-          </h4>
+          <div className="ingredients-header">
+            <h4>
+              <FaUtensils /> Ingredients
+            </h4>
+            <button 
+              className="add-to-shopping-list-btn"
+              onClick={handleAddToShoppingList}
+            >
+              <FaShoppingCart /> Add Missing to Shopping List
+            </button>
+          </div>
           <ul className="ingredients-list">
-            {Array.from(new Set(steps.flatMap(step => step.ingredients))).map((ingredient, index) => (
+            {ingredients.map((ingredient, index) => (
               <li key={index} className="ingredient-item">
                 <div className="ingredient-info">
-                  <span className="ingredient-name">{ingredient.ingredientname}</span>
-                  <span className="ingredient-amount">
-                    {ingredient.amount} {ingredient.unit}
-                  </span>
+                  <span className="ingredient-name">{ingredient.name}</span>
+                  <span className="ingredient-amount">{ingredient.quantity} {ingredient.unit}</span>
+                  {isIngredientInPantry(ingredient) && (
+                    <div className="pantry-indicator" title="In Pantry">
+                      <FaCheck className="pantry-check" />
+                    </div>
+                  )}
+                  {!isIngredientInPantry(ingredient) && isIngredientInGroceries(ingredient) && (
+                    <div className="shopping-list-indicator" title="In Shopping List">
+                      <FaShoppingCart className="shopping-cart-icon" />
+                    </div>
+                  )}
                 </div>
-                <button
-                  onClick={() => pantryItems.includes(ingredient.ingredientname) ? removeFromPantry(ingredient.ingredientname) : addToPantry(ingredient.ingredientname)}
-                  title={pantryItems.includes(ingredient.ingredientname) ? "Remove from pantry" : "Add to pantry"}
-                >
-                  {pantryItems.includes(ingredient.ingredientname) ? <FaMinus /> : <FaPlus />}
-                </button>
               </li>
             ))}
           </ul>
-          <form className="add-ingredient" onSubmit={handleAddIngredient}>
-            <input
-              type="text"
-              placeholder="Add ingredient to pantry"
-              value={newIngredient}
-              onChange={(e) => setNewIngredient(e.target.value)}
-            />
-            <button type="submit">
-              <FaPlus /> Add
-            </button>
-          </form>
+        
         </div>
         <div className="instructions-section">
           <h4>Instructions</h4>
@@ -309,9 +292,7 @@ const RecipeBuilder = () => {
                       {ingredient.amount} {ingredient.unit}
                     </span>
                   </div>
-                  {pantryItems.includes(ingredient.ingredientname) && (
-                    <span className="pantry-badge">in pantry</span>
-                  )}
+          
                 </li>
               ))}
             </ul>
@@ -479,6 +460,36 @@ const RecipeBuilder = () => {
         )}
       </div>
     );
+  };
+
+  const isIngredientInPantry = (ingredient) => {
+    return pantryItems.some(item => 
+      item.food.name.toLowerCase() === ingredient.name.toLowerCase()
+    );
+  };
+
+  const isIngredientInGroceries = (ingredient) => {
+    return groceryItems.some(item => 
+      item.food.name.toLowerCase() === ingredient.name.toLowerCase()
+    );
+  };
+
+  const handleAddToShoppingList = () => {
+    const missingIngredients = ingredients.filter(ingredient => !isIngredientInPantry(ingredient));
+    
+    missingIngredients.forEach(ingredient => {
+      if (!isIngredientInGroceries(ingredient)) {
+        dispatch(addToGroceries({
+          food: {
+            id: `${ingredient.name.toLowerCase().replace(/\s+/g, '_')}`,
+            name: ingredient.name,
+            category: ingredient.category || 'other',
+            unit: ingredient.unit
+          },
+          amount: ingredient.quantity
+        }));
+      }
+    });
   };
 
   return (

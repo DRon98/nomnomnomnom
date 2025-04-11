@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, Link } from 'react-router-dom';
-import { FaClock, FaUtensils, FaSearch, FaSpinner, FaChevronDown, FaChevronUp, FaChevronLeft, FaChevronRight, FaPlus } from 'react-icons/fa';
+import { FaClock, FaUtensils, FaSearch, FaSpinner, FaChevronDown, FaChevronUp, FaChevronLeft, FaChevronRight, FaPlus, FaShoppingBasket } from 'react-icons/fa';
 import { FaUsers } from 'react-icons/fa';
 import { generateRecipePreviewsFromAPI } from '../utils/api';
 import './RecipeGenerator.css';
@@ -129,7 +129,7 @@ const RecipeGenerator = () => {
   // Move useSelector hooks to component level
   const foodPreferences = useSelector(state => state.foodPreferences);
   const kitchenAppliances = useSelector(state => state.kitchenAppliances.selectedAppliances);
-  const pantryItems = useSelector(state => state.inventory.pantry) || [];
+  const pantryItems = useSelector(state => state.inventory.pantry || []);
   const shoppingListItems = useSelector(state => state.inventory.groceries) || [];
 
   // Handle ingredients from URL query parameters
@@ -258,6 +258,16 @@ const RecipeGenerator = () => {
     }
   };
 
+  const getIngredientsInPantryCount = (ingredients) => {
+    const inPantryCount = ingredients.reduce((count, ingredient) => {
+      const isInPantry = pantryItems.some(item => 
+        item.food.name.toLowerCase() === ingredient.name.toLowerCase()
+      );
+      return isInPantry ? count + 1 : count;
+    }, 0);
+    return inPantryCount;
+  };
+
   const renderIngredientsList = () => (
     <div className="ingredients-list">
       <div className="ingredients-section">
@@ -341,6 +351,9 @@ const RecipeGenerator = () => {
       seasonings: recipe.seasonings || []
     };
 
+    const inPantryCount = getIngredientsInPantryCount(recipe.ingredients);
+    const totalIngredients = recipe.ingredients.length;
+
     return (
       <div key={recipe.recipe_id} className="recipe-card">
         <h3>{recipe.name}</h3>
@@ -354,6 +367,9 @@ const RecipeGenerator = () => {
           </div>
           <div>
             <FaUtensils /> {recipe.stats.calories} cal
+          </div>
+          <div className="pantry-stat">
+            <FaShoppingBasket /> {inPantryCount}/{totalIngredients} ingredients in pantry
           </div>
         </div>
         <div className="recipe-tags">

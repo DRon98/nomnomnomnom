@@ -141,6 +141,7 @@
   flex-direction: column;
   gap: 10px;
   margin-bottom: 10px;
+  position: relative;
 }
 
 .copy-options {

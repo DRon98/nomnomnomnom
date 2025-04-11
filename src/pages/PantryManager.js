@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { FaPlus, FaMinus, FaSearch, FaFilter, FaSort } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { FaPlus, FaMinus, FaSearch, FaFilter, FaSort, FaLeaf, FaSync } from 'react-icons/fa';
 import { updatePantryAmount } from '../store/inventorySlice';
 import './PantryManager.css';
 
@@ -85,8 +86,14 @@ const PantryManager = () => {
           <FaPlus /> From Grocery List
         </button>
         <button className="action-btn refill" onClick={handleRefillPrevious}>
-          <FaPlus /> Refill Previous
+          <FaSync /> Refill Previous Items
         </button>
+        <Link to="/add-to-pantry" className="action-btn add-items">
+          <FaPlus /> Add Items to Pantry
+        </Link>
+        <Link to="/spice-cabinet-builder" className="action-btn add-items">
+          <FaLeaf /> Build Spice Cabinet
+        </Link>
       </div>
 
       <div className="search-filter-container">

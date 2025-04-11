@@ -129,7 +129,7 @@ const InventoryDropdowns = () => {
               </button>
             </div>
             <div className="dropdown-link">
-              <Link to="/grocery-builder" className="inventory-link">Go to Grocery Builder</Link>
+              <Link to="/grocery-list" className="inventory-link">Go to Grocery List</Link>
             </div>
             <div className="items-list">
               {groceryItems.length > 0 ? (
