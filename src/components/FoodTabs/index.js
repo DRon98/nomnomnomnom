@@ -6,6 +6,7 @@ import { generateRecommendationsFromAPI } from '../../utils/api';
 import { FILTER_OPTIONS, FOOD_CATEGORIES } from '../../constants';
 import FoodCard from '../FoodCard';
 import { FaSearch, FaFilter, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import WeeklyCalendar from '../../pages/WeeklyCalendar';
 import './styles.css';
 
 const FoodTabs = ({ view = 'day' }) => {
@@ -248,7 +249,7 @@ const FoodTabs = ({ view = 'day' }) => {
 
     return filtered;
   };
-
+//<WeeklyCalendar />
   const filteredRecommendedFoods = getFilteredFoods(recommendedFoods);
   const filteredFoodsToAvoid = getFilteredFoods(foodsToAvoid);
 
@@ -384,7 +385,7 @@ const FoodTabs = ({ view = 'day' }) => {
                   ))
                 ) : (
                   <div className="no-foods-message">
-                    {foodsToAvoid.length > 0 ? 'No foods match the selected filters' : 'Click "Generate Recommendations" to get foods to avoid'}
+
                   </div>
                 )}
               </div>

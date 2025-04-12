@@ -373,6 +373,7 @@ const RecipeGenerator = () => {
           </div>
         </div>
         <div className="recipe-tags">
+          {console.log("recipe",recipe)}
           {recipe.tags.map((tag, index) => (
             <span key={index} className="tag">{tag}</span>
           ))}

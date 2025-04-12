@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import StateSelector from '../components/StateSelector';
 import FoodTabs from '../components/FoodTabs';
-import MealPlanner from '../components/MealPlanner';
 import TabsContainer from '../components/TabsContainer';
 import './Home.css';
 import { CURRENT_STATES, DESIRED_STATES } from '../utils/constants';
@@ -37,9 +36,6 @@ function Home() {
             {' '}
             (Edit in Profile)
           </div>
-        </div>
-        <div className="right-section">
-          <MealPlanner />
         </div>
       </div>
     </div>

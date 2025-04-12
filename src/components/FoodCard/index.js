@@ -132,7 +132,7 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
 
   return (
     <div ref={refCombiner} className={getCardClass()} onClick={handleClick}>
-      <div className="food-icon">{food.emoji || food.icon}</div>
+      {/* <div className="food-icon">{food.emoji || food.icon}</div> */}
       <h3 className="food-name">{food.name}</h3>
       
       {!inMealPlan && !isBatchMode && (
@@ -165,9 +165,6 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
             </div>
           )}
 
-          <div className="food-rating">
-            Rating: {getRatingEmoji(food.rating)}
-          </div>
           
           <div className="food-actions">
             <button
@@ -188,8 +185,8 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
               🛒 {food.base_ingredients_for_grocery_list ? 'Add' : 'Add to List'}
             </button>
           </div>
-          
-          <div className={status.className}>{status.text}</div>
+{/*           
+          <div className={status.className}>{status.text}</div> */}
         </>
       )}
 

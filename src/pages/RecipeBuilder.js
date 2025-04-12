@@ -44,7 +44,7 @@ const RecipeBuilder = () => {
         }
 
         const recipeData = await generateRecipeBuilderFromAPI(JSON.parse(recipeId));
-        console.log('Recipe Data:', recipeData.fullIngredients);
+        console.log('Recipe Data:',JSON.stringify(recipeData));
         
         // Update all the state with the recipe data
         setRecipe(recipeData);
@@ -247,7 +247,7 @@ const RecipeBuilder = () => {
             {steps.map(step => (
               <li key={step.id}>
                 <strong>{step.name}</strong> ({step.duration} minutes)
-                <p>{step.description}</p>
+  
                 <ul>
                   {step.prepSteps.map((prepStep, index) => (
                     <li key={index}>{prepStep}</li>
@@ -303,6 +303,7 @@ const RecipeBuilder = () => {
               {selectedStep.prepSteps.map((step, index) => (
                 <li key={index}>{step}</li>
               ))}
+           
             </ul>
           </div>
         </div>
