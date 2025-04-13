@@ -6,8 +6,7 @@ import { FaFire, FaClock, FaUtensils, FaListUl, FaChartBar, FaPlus, FaMinus, FaT
 import { generateRecipeBuilderFromAPI } from '../utils/api';
 import { addToGroceries } from '../store/inventorySlice';
 
-
-const RecipeBuilder = () => {
+const RecipeBuilder = ({ recipeData }) => {
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,6 +20,7 @@ const RecipeBuilder = () => {
   const [highlightedIngredients, setHighlightedIngredients] = useState([]);
   const [activeTasteAdjustment, setActiveTasteAdjustment] = useState(null);
   const [isStarred, setIsStarred] = useState(false);
+  const [apiResponse, setApiResponse] = useState(null);
   const location = useLocation();
 
   const timelineRef = useRef(null);
@@ -34,25 +34,21 @@ const RecipeBuilder = () => {
         setLoading(true);
         setError(null);
         
-        // Get recipe ID from URL parameters
-        const params = new URLSearchParams(location.search);
-        const recipeId = params.get('recipe');
-        console.log('Recipe ID:', recipeId);
-        
-        if (!recipeId) {
-          throw new Error('No recipe ID provided');
+        if (!recipeData) {
+          throw new Error('No recipe data provided');
         }
 
-        const recipeData = await generateRecipeBuilderFromAPI(JSON.parse(recipeId));
-        console.log('Recipe Data:',JSON.stringify(recipeData));
-        
-        // Update all the state with the recipe data
-        setRecipe(recipeData);
-        setSteps(recipeData.steps);
-        setMaxTime(recipeData.maxTime);
-        setDifficulty(recipeData.difficulty);
-        setTags(recipeData.tags);
-        setIngredients(recipeData.fullIngredients);
+        // If we already have the API response for this recipe, use it
+        if (apiResponse) {
+          updateRecipeState(apiResponse);
+          setLoading(false);
+          return;
+        }
+
+        // Otherwise, make the API call
+        const response = await generateRecipeBuilderFromAPI(recipeData);
+        setApiResponse(response); // Cache the response
+        updateRecipeState(response);
       } catch (err) {
         console.error('Error fetching recipe:', err);
         setError('Failed to load recipe. Please try again.');
@@ -62,7 +58,16 @@ const RecipeBuilder = () => {
     };
 
     fetchRecipeData();
-  }, [location.search]);
+  }, [recipeData]);
+
+  const updateRecipeState = (recipeData) => {
+    setRecipe(recipeData);
+    setSteps(recipeData.steps);
+    setMaxTime(recipeData.maxTime);
+    setDifficulty(recipeData.difficulty);
+    setTags(recipeData.tags);
+    setIngredients(recipeData.fullIngredients);
+  };
 
   if (loading) {
     return (

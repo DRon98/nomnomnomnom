@@ -20,7 +20,8 @@ const initialState = {
   activeFilters: {
     categories: [],
     dietaryRestrictions: []
-  }
+  },
+  selectedFoods: [],
 };
 
 const foodsSlice = createSlice({
@@ -99,7 +100,15 @@ const foodsSlice = createSlice({
         categories: [],
         dietaryRestrictions: []
       };
-    }
+    },
+    
+    setSelectedFoods: (state, action) => {
+      state.selectedFoods = action.payload;
+    },
+    
+    clearSelectedFoods: (state) => {
+      state.selectedFoods = [];
+    },
   }
 });
 
@@ -126,7 +135,9 @@ export const {
   setError,
   setSearchTerm,
   setActiveFilters,
-  clearFilters
+  clearFilters,
+  setSelectedFoods,
+  clearSelectedFoods
 } = foodsSlice.actions;
 
 export default foodsSlice.reducer; 

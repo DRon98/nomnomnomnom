@@ -15,6 +15,7 @@ import GroceryList from './pages/GroceryList';
 import AddToPantry from './pages/AddToPantry';
 import AddToShoppingList from './pages/AddToShoppingList';
 import AddSpicesToList from './pages/AddSpicesToList';
+import TabbedRecipeGenerator from './components/TabbedRecipeGenerator';
 
 import ErrorBoundary from './components/ErrorBoundary';
 import LifestyleSurvey from './components/LifestyleSurvey';
@@ -31,7 +32,7 @@ function App() {
             <Route path="grocery-builder" element={<GroceryBuilder />} />
             <Route path="food-survey" element={<FoodSurvey />} />
             <Route path="recipe-builder" element={<RecipeBuilder />} />
-            <Route path="recipe-generator" element={<RecipeGenerator />} />
+            <Route path="recipe-generator" element={<TabbedRecipeGenerator />} />
             <Route path="pantry" element={<PantryManager />} />
             <Route path="kitchen-appliances" element={<KitchenAppliances />} />
             <Route path="lifestyle-survey" element={<LifestyleSurvey />} />

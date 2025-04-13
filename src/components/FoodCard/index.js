@@ -132,13 +132,36 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
 
   return (
     <div ref={refCombiner} className={getCardClass()} onClick={handleClick}>
-      {/* <div className="food-icon">{food.emoji || food.icon}</div> */}
-      <h3 className="food-name">{food.name}</h3>
-      
+      <div className="food-card-header">
+        <h3>{food.name}</h3>
+        <label className="checkbox-container">
+          <input
+            type="checkbox"
+            checked={isSelected}
+            onChange={() => onSelect(food)}
+            className="select-checkbox"
+          />
+          <span className="checkmark"></span>
+        </label>
+      </div>
+      <p className="description">{food.description}</p>
+      {food.stats && (
+        <div className="stats">
+          {Object.entries(food.stats).map(([key, value]) => (
+            <span key={key}>{value}</span>
+          ))}
+        </div>
+      )}
+      {food.tags && (
+        <div className="tags">
+          {food.tags.map(tag => (
+            <span key={tag} className="tag">{tag}</span>
+          ))}
+        </div>
+      )}
+
       {!inMealPlan && !isBatchMode && (
         <>
-          <p className="food-description">{food.description}</p>
-          
           {food.base_ingredients_for_grocery_list && food.base_ingredients_for_grocery_list.length > 0 && (
             <div className="ingredients-section">
               <button 
@@ -165,9 +188,8 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
             </div>
           )}
 
-          
           <div className="food-actions">
-            <button
+            {/* <button
               className="food-action-button pantry"
               onClick={handleAddToPantry}
               title={food.base_ingredients_for_grocery_list ? 'Add' : 'Add to Pantry'}
@@ -183,7 +205,7 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
               title={food.base_ingredients_for_grocery_list ? 'Shopping List' : 'Add to Shopping List'}
             >
               🛒 {food.base_ingredients_for_grocery_list ? 'Add' : 'Add to List'}
-            </button>
+            </button> */}
           </div>
 {/*           
           <div className={status.className}>{status.text}</div> */}
@@ -207,17 +229,6 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
         }}>
           ×
         </button>
-      )}
-
-      {isBatchMode && (
-        <div className="food-checkbox">
-          <input
-            type="checkbox"
-            checked={isSelected}
-            onChange={() => onSelect?.()}
-            onClick={(e) => e.stopPropagation()}
-          />
-        </div>
       )}
     </div>
   );

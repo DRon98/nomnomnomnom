@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, Link } from 'react-router-dom';
-import { FaClock, FaUtensils, FaSearch, FaSpinner, FaChevronDown, FaChevronUp, FaChevronLeft, FaChevronRight, FaPlus, FaShoppingBasket } from 'react-icons/fa';
-import { FaUsers } from 'react-icons/fa';
+import { FaClock, FaUtensils, FaSearch, FaSpinner, FaChevronDown, FaChevronUp, FaChevronLeft, FaChevronRight, FaPlus, FaShoppingBasket, FaTimes, FaUsers } from 'react-icons/fa';
 import { generateRecipePreviewsFromAPI } from '../utils/api';
+import RecipeBuilder from '../pages/RecipeBuilder';
 import './RecipeGenerator.css';
 
 const DEFAULT_FILTERS = {
@@ -114,10 +114,15 @@ const ScrollableIngredientList = ({ items, onSelect, selectedIds, emptyMessage, 
   );
 };
 
-const RecipeGenerator = () => {
+const RecipeGenerator = ({ 
+  baseIngredients = [], 
+  recipes: passedRecipes = [], 
+  onRecipesUpdate,
+  onRecipeChosen,
+  chosenRecipe
+}) => {
   const location = useLocation();
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
-  const [recipes, setRecipes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isCuisinesExpanded, setIsCuisinesExpanded] = useState(false);
   const [isTastesExpanded, setIsTastesExpanded] = useState(false);
@@ -125,6 +130,9 @@ const RecipeGenerator = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [error, setError] = useState(null);
+  const [showRecipeModal, setShowRecipeModal] = useState(false);
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [recipeBuilderData, setRecipeBuilderData] = useState(null);
   
   // Move useSelector hooks to component level
   const foodPreferences = useSelector(state => state.foodPreferences);
@@ -174,6 +182,21 @@ const RecipeGenerator = () => {
     item.food.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Add effect to populate ingredients when baseIngredients changes
+  useEffect(() => {
+    if (baseIngredients.length > 0) {
+      const ingredientObjects = baseIngredients.map(name => ({
+        foodId: name.toLowerCase().replace(/\s+/g, '-'),
+        food: {
+          name: name,
+          unit: 'unit',
+          icon: '🥘' // Default icon for all base ingredients
+        }
+      }));
+      setSelectedIngredients(ingredientObjects);
+    }
+  }, [baseIngredients]);
+
   const handleIngredientSelect = (ingredient) => {
     // Toggle selection: if already selected, remove it
     if (selectedIngredients.find(item => item.foodId === ingredient.foodId)) {
@@ -218,7 +241,6 @@ const RecipeGenerator = () => {
         pantryOnly: filters.pantryOnly,
         mealTypes: [filters.mealType],
         tags: [...filters.cuisines, ...filters.tastes]
-
       },
       ingredients: selectedIngredients.map(item => ({
         name: item.food.name,
@@ -246,10 +268,9 @@ const RecipeGenerator = () => {
     };
 
     try {
-     // console.log('Recipe Filters Responses and Ingredients:', recipeData);
       const response = await generateRecipePreviewsFromAPI(recipeData);
       console.log('Recipe Previews Response:', response.recommended);
-      setRecipes(response.recommended);
+      onRecipesUpdate(response.recommended);
     } catch (error) {
       console.error('Error generating recipes:', error);
       setError('Failed to generate recipes. Please try again.');
@@ -353,9 +374,10 @@ const RecipeGenerator = () => {
 
     const inPantryCount = getIngredientsInPantryCount(recipe.ingredients);
     const totalIngredients = recipe.ingredients.length;
+    const isChosen = chosenRecipe?.recipe_id === recipe.recipe_id;
 
     return (
-      <div key={recipe.recipe_id} className="recipe-card">
+      <div key={recipe.recipe_id} className={`recipe-card ${isChosen ? 'chosen' : ''}`}>
         <h3>{recipe.name}</h3>
         <p>{recipe.description}</p>
         <div className="recipe-stats">
@@ -373,17 +395,20 @@ const RecipeGenerator = () => {
           </div>
         </div>
         <div className="recipe-tags">
-          {console.log("recipe",recipe)}
           {recipe.tags.map((tag, index) => (
             <span key={index} className="tag">{tag}</span>
           ))}
         </div>
-        <Link 
-          to={`/recipe-builder?recipe=${encodeURIComponent(JSON.stringify(formattedRecipe))}`}
+        <button 
           className="view-recipe-button"
+          onClick={() => {
+            setSelectedRecipe(recipe);
+            setRecipeBuilderData(formattedRecipe);
+            setShowRecipeModal(true);
+          }}
         >
           View Recipe
-        </Link>
+        </button>
       </div>
     );
   };
@@ -538,9 +563,9 @@ const RecipeGenerator = () => {
             <FaSpinner className="loading-spinner" />
             <p>Generating recipes...</p>
           </div>
-        ) : recipes.length > 0 ? (
+        ) : passedRecipes.length > 0 ? (
           <div className="recipe-grid">
-            {recipes.map(recipe => renderRecipeCard(recipe))}
+            {passedRecipes.map(recipe => renderRecipeCard(recipe))}
           </div>
         ) : (
           <>
@@ -552,6 +577,30 @@ const RecipeGenerator = () => {
           </>
         )}
       </div>
+
+      {showRecipeModal && (
+        <div className="modal-overlay" onClick={() => setShowRecipeModal(false)}>
+          <div className="modal-content recipe-modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <button 
+                className="close-modal"
+                onClick={() => setShowRecipeModal(false)}
+              >
+                <FaTimes />
+              </button>
+              <div className="modal-actions">
+                <button 
+                  className={`use-recipe-button ${chosenRecipe?.recipe_id === selectedRecipe?.recipe_id ? 'chosen' : ''}`}
+                  onClick={() => onRecipeChosen(selectedRecipe)}
+                >
+                  {chosenRecipe?.recipe_id === selectedRecipe?.recipe_id ? 'Recipe Selected' : 'Use Recipe'}
+                </button>
+              </div>
+            </div>
+            <RecipeBuilder recipeData={recipeBuilderData} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
