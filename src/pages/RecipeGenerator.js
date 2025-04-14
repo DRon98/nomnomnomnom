@@ -17,8 +17,8 @@ const DEFAULT_FILTERS = {
   skillLevel: 'intermediate'
 };
 
-const AVAILABLE_CUISINES = ['Japanese', 'Italian', 'Mexican', 'Indian', 'Chinese', 'American', 'Mediterranean'];
-const AVAILABLE_TASTES = ['savory', 'sweet', 'spicy', 'umami', 'sour', 'bitter'];
+const AVAILABLE_CUISINES = ["Italian", "Chinese", "Mexican", "Indian", "Japanese", "Thai", "French", "Greek", "Spanish", "Korean", "Vietnamese", "Brazilian", "Ethiopian", "Moroccan", "Turkish", "Lebanese", "German", "Russian", "Caribbean", "Peruvian", "Argentinian", "Malaysian", "Indonesian", "Filipino", "Egyptian", "Pakistani", "Bangladeshi", "Nigerian", "South African", "Polish"];
+const AVAILABLE_TASTES = ["savory", "sweet", "spicy", "umami", "sour", "bitter", "crunchy", "creamy", "chewy", "crispy", "smooth", "grainy", "aromatic", "earthy", "fragrant", "pungent", "floral", "smoky"]
 const COOKING_TIMES = ['any', '15', '30', '45', '60'];
 const MEAL_TYPES = ['breakfast', 'lunch', 'dinner', 'snack'];
 const SKILL_LEVELS = ['beginner', 'intermediate', 'advanced'];
@@ -133,6 +133,8 @@ const RecipeGenerator = ({
   const [showRecipeModal, setShowRecipeModal] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [recipeBuilderData, setRecipeBuilderData] = useState(null);
+  const [selectedPreview, setSelectedPreview] = useState(null);
+  const [activeIngredientsTab, setActiveIngredientsTab] = useState('ingredients');
   
   // Move useSelector hooks to component level
   const foodPreferences = useSelector(state => state.foodPreferences);
@@ -289,75 +291,6 @@ const RecipeGenerator = ({
     return inPantryCount;
   };
 
-  const renderIngredientsList = () => (
-    <div className="ingredients-list">
-      <div className="ingredients-section">
-        <h3>Pantry Items</h3>
-        <ScrollableIngredientList
-          items={pantryItems}
-          onSelect={handleIngredientSelect}
-          selectedIds={selectedIngredients.map(item => item.foodId)}
-          emptyMessage="No items in pantry"
-          showRemoveButton={false}
-        />
-        {selectedIngredients.map(item => console.log(item))}
-      </div>
-      <div className="ingredients-section">
-        <h3>Shopping List</h3>
-        <ScrollableIngredientList
-          items={shoppingListItems}
-          onSelect={handleIngredientSelect}
-          selectedIds={selectedIngredients.map(item => item.foodId)}
-          emptyMessage="No items in shopping list"
-          showRemoveButton={false}
-        />
-      </div>
-      <div className="ingredients-section">
-        <h3>Add More Ingredients</h3>
-        <div className="search-container">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setShowDropdown(true);
-            }}
-            onFocus={() => setShowDropdown(true)}
-            placeholder="Search for ingredients..."
-            className="ingredient-search"
-          />
-          {showDropdown && searchQuery && (
-            <div className="search-dropdown">
-              {filteredIngredients.map(item => (
-                <div
-                  key={item.foodId}
-                  className="dropdown-item"
-                  onClick={() => handleIngredientSelect(item)}
-                >
-                  <span className="ingredient-icon">{item.food.icon}</span>
-                  <span className="ingredient-name">{item.food.name}</span>
-                </div>
-              ))}
-              {filteredIngredients.length === 0 && (
-                <div className="dropdown-item empty">No ingredients found</div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-      <div className="ingredients-section">
-        <h3>Ingredients to Use</h3>
-        <ScrollableIngredientList
-          items={selectedIngredients}
-          onSelect={handleIngredientRemove}
-          selectedIds={[]}
-          emptyMessage="No ingredients selected"
-          showRemoveButton={true}
-        />
-      </div>
-    </div>
-  );
-
   const renderRecipeCard = (recipe) => {
     // Format the recipe data for the API call
     const formattedRecipe = {
@@ -375,9 +308,20 @@ const RecipeGenerator = ({
     const inPantryCount = getIngredientsInPantryCount(recipe.ingredients);
     const totalIngredients = recipe.ingredients.length;
     const isChosen = chosenRecipe?.recipe_id === recipe.recipe_id;
+    const isSelected = selectedPreview?.recipe_id === recipe.recipe_id;
 
     return (
-      <div key={recipe.recipe_id} className={`recipe-card ${isChosen ? 'chosen' : ''}`}>
+      <div 
+        key={recipe.recipe_id} 
+        className={`recipe-card ${isChosen ? 'chosen' : ''} ${isSelected ? 'selected' : ''}`}
+        onClick={(e) => {
+          // Only set preview if not clicking the View Recipe button
+          if (!e.target.closest('.view-recipe-button')) {
+            setSelectedPreview(recipe);
+            setActiveIngredientsTab('preview');
+          }
+        }}
+      >
         <h3>{recipe.name}</h3>
         <p>{recipe.description}</p>
         <div className="recipe-stats">
@@ -401,7 +345,8 @@ const RecipeGenerator = ({
         </div>
         <button 
           className="view-recipe-button"
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation();
             setSelectedRecipe(recipe);
             setRecipeBuilderData(formattedRecipe);
             setShowRecipeModal(true);
@@ -409,6 +354,166 @@ const RecipeGenerator = ({
         >
           View Recipe
         </button>
+      </div>
+    );
+  };
+
+  const renderRecipePreview = () => {
+    if (!selectedPreview) {
+      return (
+        <div className="empty-preview">
+          <FaUtensils />
+          <p>Click on a recipe card to view its details</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="recipe-preview-content">
+        <div className="preview-header">
+          <h2>{selectedPreview.name}</h2>
+          <button 
+            className={`use-recipe-button ${chosenRecipe?.recipe_id === selectedPreview.recipe_id ? 'chosen' : ''}`}
+            onClick={() => onRecipeChosen(selectedPreview)}
+          >
+            {chosenRecipe?.recipe_id === selectedPreview.recipe_id ? 'Recipe Selected' : 'Use Recipe'}
+          </button>
+        </div>
+
+        <div className="preview-stats">
+          <div><FaClock /> {selectedPreview.stats.totalTime} min</div>
+          <div><FaUsers /> {selectedPreview.stats.servings} servings</div>
+          <div><FaUtensils /> {selectedPreview.stats.calories} cal</div>
+        </div>
+
+        {/* <div className="preview-tags">
+          {selectedPreview.tags.map((tag, index) => (
+            <span key={index} className="tag">{tag}</span>
+          ))}
+        </div> */}
+
+        <div className="preview-tables">
+          <div className="ingredients-table">
+            <h3>Ingredients</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Quantity</th>
+                  <th>Unit</th>
+                </tr>
+              </thead>
+              <tbody>
+                {selectedPreview.ingredients.map((ingredient, index) => (
+                  <tr key={index}>
+                    <td>{ingredient.name}</td>
+                    <td>{ingredient.quantity}</td>
+                    <td>{ingredient.unit}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="seasonings-table">
+            <h3>Seasonings</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Quantity</th>
+                  <th>Unit</th>
+                </tr>
+              </thead>
+              <tbody>
+                {selectedPreview.seasonings.map((seasoning, index) => (
+                  <tr key={index}>
+                    <td>{seasoning.name}</td>
+                    <td>{seasoning.quantity}</td>
+                    <td>{seasoning.unit}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderIngredientsList = () => {
+    return (
+      <div className="ingredients-list">
+        <div className="ingredients-tabs">
+          <button
+            className={`tab-button ${activeIngredientsTab === 'ingredients' ? 'active' : ''}`}
+            onClick={() => setActiveIngredientsTab('ingredients')}
+          >
+            Ingredients
+          </button>
+          <button
+            className={`tab-button ${activeIngredientsTab === 'preview' ? 'active' : ''}`}
+            onClick={() => setActiveIngredientsTab('preview')}
+          >
+            Recipe Preview
+          </button>
+        </div>
+
+        <div className="ingredients-tab-content">
+          {activeIngredientsTab === 'ingredients' ? (
+            <>
+              <div className="ingredients-section">
+                <h3>Pantry Items</h3>
+                <ScrollableIngredientList
+                  items={pantryItems}
+                  onSelect={handleIngredientSelect}
+                  selectedIds={selectedIngredients.map(item => item.foodId)}
+                  emptyMessage="No items in pantry"
+                  showRemoveButton={false}
+                />
+              </div>
+              <div className="ingredients-section">
+                <h3>Shopping List</h3>
+                <ScrollableIngredientList
+                  items={shoppingListItems}
+                  onSelect={handleIngredientSelect}
+                  selectedIds={selectedIngredients.map(item => item.foodId)}
+                  emptyMessage="No items in shopping list"
+                  showRemoveButton={false}
+                />
+              </div>
+              <div className="ingredients-section">
+                <h3>Add More Ingredients</h3>
+                <div className="search-container">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setShowDropdown(true);
+                    }}
+                    onFocus={() => setShowDropdown(true)}
+                    placeholder="Search for ingredients..."
+                    className="ingredient-search"
+                  />
+                </div>
+
+     <div className="ingredients-section">
+        <h3>Ingredients to Use</h3>
+        <ScrollableIngredientList
+          items={selectedIngredients}
+          onSelect={handleIngredientRemove}
+          selectedIds={[]}
+          emptyMessage="No ingredients selected"
+          showRemoveButton={true}
+        />
+      </div>
+              </div>
+            </>
+          ) : (
+            renderRecipePreview()
+          )}
+        </div>
       </div>
     );
   };
@@ -468,6 +573,48 @@ const RecipeGenerator = ({
           </label>
         </div>
 
+        <div className="filter-group">
+          <label>Cooking Time (minutes)</label>
+          <select
+            value={filters.cookingTime}
+            onChange={(e) => handleFilterChange('cookingTime', e.target.value)}
+          >
+            {COOKING_TIMES.map(time => (
+              <option key={time} value={time}>
+                {time === 'any' ? 'Any' : `Under ${time} minutes`}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="filter-group">
+          <label>Meal Type</label>
+          <select
+            value={filters.mealType}
+            onChange={(e) => handleFilterChange('mealType', e.target.value)}
+          >
+            {MEAL_TYPES.map(type => (
+              <option key={type} value={type}>
+                {type.charAt(0).toUpperCase() + type.slice(1)}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="filter-group">
+          <label>Skill Level</label>
+          <select
+            value={filters.skillLevel}
+            onChange={(e) => handleFilterChange('skillLevel', e.target.value)}
+          >
+            {SKILL_LEVELS.map(level => (
+              <option key={level} value={level}>
+                {level.charAt(0).toUpperCase() + level.slice(1)}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div className="filter-group collapsible">
           <div 
             className="collapsible-header"
@@ -514,50 +661,11 @@ const RecipeGenerator = ({
           )}
         </div>
 
-        <div className="filter-group">
-          <label>Cooking Time (minutes)</label>
-          <select
-            value={filters.cookingTime}
-            onChange={(e) => handleFilterChange('cookingTime', e.target.value)}
-          >
-            {COOKING_TIMES.map(time => (
-              <option key={time} value={time}>
-                {time === 'any' ? 'Any' : `Under ${time} minutes`}
-              </option>
-            ))}
-          </select>
-        </div>
 
-        <div className="filter-group">
-          <label>Meal Type</label>
-          <select
-            value={filters.mealType}
-            onChange={(e) => handleFilterChange('mealType', e.target.value)}
-          >
-            {MEAL_TYPES.map(type => (
-              <option key={type} value={type}>
-                {type.charAt(0).toUpperCase() + type.slice(1)}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="filter-group">
-          <label>Skill Level</label>
-          <select
-            value={filters.skillLevel}
-            onChange={(e) => handleFilterChange('skillLevel', e.target.value)}
-          >
-            {SKILL_LEVELS.map(level => (
-              <option key={level} value={level}>
-                {level.charAt(0).toUpperCase() + level.slice(1)}
-              </option>
-            ))}
-          </select>
-        </div>
       </div>
 
       <div className="recipes-section">
+        {renderIngredientsList()}
         {isLoading ? (
           <div className="loading-state">
             <FaSpinner className="loading-spinner" />
@@ -568,13 +676,10 @@ const RecipeGenerator = ({
             {passedRecipes.map(recipe => renderRecipeCard(recipe))}
           </div>
         ) : (
-          <>
-            {renderIngredientsList()}
-            <div className="empty-state">
-              <FaUtensils />
-              <p>Set your filters and click "Generate Recipes" to get started!</p>
-            </div>
-          </>
+          <div className="empty-state">
+            <FaUtensils />
+            <p>Set your filters and click "Generate Recipes" to get started!</p>
+          </div>
         )}
       </div>
 
@@ -605,4 +710,4 @@ const RecipeGenerator = ({
   );
 };
 
-export default RecipeGenerator; 
+export default RecipeGenerator;
