@@ -35,6 +35,7 @@ const TabbedRecipeGenerator = () => {
 
   return (
     <div className="tabbed-recipe-generator">
+      <div className="placeholder-container"> </div> {/* Added empty container */}
       <div className="recipe-tabs">
         {selectedFoods.map((food, index) => (
           <button
@@ -67,4 +68,4 @@ const TabbedRecipeGenerator = () => {
   );
 };
 
-export default TabbedRecipeGenerator; 
+export default TabbedRecipeGenerator;

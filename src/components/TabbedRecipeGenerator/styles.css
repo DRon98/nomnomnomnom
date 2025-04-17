@@ -5,6 +5,14 @@
   padding: 20px;
 }
 
+/* Added style for the placeholder container */
+.placeholder-container {
+  height: 60px; /* Adjust height as needed to match header */
+  width: 100%;
+  background-color: white; /* Set background to white */
+  margin-bottom: 20px; /* Add some space below the placeholder */
+}
+
 .recipe-tabs {
   display: flex;
   gap: 4px;
@@ -144,4 +152,4 @@
   background: #f8f9fa;
   border-radius: 8px;
   margin: 20px;
-} 
+}

@@ -497,17 +497,16 @@ const RecipeGenerator = ({
                     className="ingredient-search"
                   />
                 </div>
-
-     <div className="ingredients-section">
-        <h3>Ingredients to Use</h3>
-        <ScrollableIngredientList
-          items={selectedIngredients}
-          onSelect={handleIngredientRemove}
-          selectedIds={[]}
-          emptyMessage="No ingredients selected"
-          showRemoveButton={true}
-        />
-      </div>
+                <div className="ingredients-section">
+            <h3>Ingredients to Use</h3>
+            <ScrollableIngredientList
+              items={selectedIngredients}
+              onSelect={handleIngredientRemove}
+              selectedIds={[]}
+              emptyMessage="No ingredients selected"
+              showRemoveButton={true}
+            />
+          </div>
               </div>
             </>
           ) : (
