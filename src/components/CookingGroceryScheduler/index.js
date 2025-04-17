@@ -15,7 +15,7 @@ const DAYS_OF_WEEK = [
 ];
 
 const TIME_OF_DAY = ['Morning', 'Afternoon', 'Evening', 'Night'];
-const MEAL_TYPES = ['Breakfast', 'Lunch/Dinner', 'Snacks'];
+const MEAL_TYPES = ['Breakfast', 'Main', 'Snacks'];
 const GROCERY_METHODS = ['Online', 'In Person', 'Combination'];
 
 const CookingGroceryScheduler = () => {
@@ -30,7 +30,7 @@ const CookingGroceryScheduler = () => {
     totalFrequency: 0,
     mealFrequencies: {
       Breakfast: 0,
-      'Lunch/Dinner': 0,
+      Main: 0,
       Snacks: 0
     },
     eatingOutFrequency: 0,

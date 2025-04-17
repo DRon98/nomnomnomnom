@@ -20,7 +20,7 @@ const DEFAULT_FILTERS = {
 const AVAILABLE_CUISINES = ["Italian", "Chinese", "Mexican", "Indian", "Japanese", "Thai", "French", "Greek", "Spanish", "Korean", "Vietnamese", "Brazilian", "Ethiopian", "Moroccan", "Turkish", "Lebanese", "German", "Russian", "Caribbean", "Peruvian", "Argentinian", "Malaysian", "Indonesian", "Filipino", "Egyptian", "Pakistani", "Bangladeshi", "Nigerian", "South African", "Polish"];
 const AVAILABLE_TASTES = ["savory", "sweet", "spicy", "umami", "sour", "bitter", "crunchy", "creamy", "chewy", "crispy", "smooth", "grainy", "aromatic", "earthy", "fragrant", "pungent", "floral", "smoky"]
 const COOKING_TIMES = ['any', '15', '30', '45', '60'];
-const MEAL_TYPES = ['breakfast', 'lunch', 'dinner', 'snack'];
+const MEAL_TYPES = ['Breakfast', 'Main(Lunch/Dinner)', 'Snack', 'Dessert'];
 const SKILL_LEVELS = ['beginner', 'intermediate', 'advanced'];
 
 const DUMMY_INGREDIENTS = [
@@ -374,7 +374,14 @@ const RecipeGenerator = ({
           <h2>{selectedPreview.name}</h2>
           <button 
             className={`use-recipe-button ${chosenRecipe?.recipe_id === selectedPreview.recipe_id ? 'chosen' : ''}`}
-            onClick={() => onRecipeChosen(selectedPreview)}
+            onClick={() => {
+              console.log('Recipe Chosen:', {
+                servings: selectedPreview.stats.servings,
+                calories: selectedPreview.stats.calories,
+                mealType: filters.mealType
+              });
+              onRecipeChosen(selectedPreview);
+            }}
           >
             {chosenRecipe?.recipe_id === selectedPreview.recipe_id ? 'Recipe Selected' : 'Use Recipe'}
           </button>
@@ -695,7 +702,14 @@ const RecipeGenerator = ({
               <div className="modal-actions">
                 <button 
                   className={`use-recipe-button ${chosenRecipe?.recipe_id === selectedRecipe?.recipe_id ? 'chosen' : ''}`}
-                  onClick={() => onRecipeChosen(selectedRecipe)}
+                  onClick={() => {
+                    console.log('Recipe Chosen:', {
+                      servings: selectedRecipe.stats.servings,
+                      calories: selectedRecipe.stats.calories,
+                      mealType: filters.mealType
+                    });
+                    onRecipeChosen(selectedRecipe);
+                  }}
                 >
                   {chosenRecipe?.recipe_id === selectedRecipe?.recipe_id ? 'Recipe Selected' : 'Use Recipe'}
                 </button>

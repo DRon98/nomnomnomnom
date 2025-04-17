@@ -35,7 +35,14 @@ const TabbedRecipeGenerator = () => {
 
   return (
     <div className="tabbed-recipe-generator">
-      <div className="placeholder-container"> </div> {/* Added empty container */}
+      <div className="placeholder-container">
+        <span><strong>Breakfast:</strong>  servings, avg calories</span>
+        <span><strong>Main (Lunch/Dinner):</strong>  servings, avg calories</span>
+        <span><strong>Snacks:</strong>  servings, avg calories</span>
+        <span><strong>Desserts:</strong>  servings, avg calories</span>
+        <span><strong>Eating Out:</strong>  times/week</span>
+        <span><strong>Avg Daily Calories:</strong> calories</span>
+      </div> {/* Added text content */}
       <div className="recipe-tabs">
         {selectedFoods.map((food, index) => (
           <button
