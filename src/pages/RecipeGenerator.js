@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux'; // Add useDispatch
+import { addMeal } from '../store/mealTrackingSlice'; // Import addMeal
 import { useLocation, Link } from 'react-router-dom';
 import { FaClock, FaUtensils, FaSearch, FaSpinner, FaChevronDown, FaChevronUp, FaChevronLeft, FaChevronRight, FaPlus, FaShoppingBasket, FaTimes, FaUsers } from 'react-icons/fa';
 import { generateRecipePreviewsFromAPI } from '../utils/api';
@@ -13,7 +14,7 @@ const DEFAULT_FILTERS = {
   cuisines: [],
   tastes: [],
   cookingTime: 'any',
-  mealType: 'dinner',
+  mealType: 'Breakfast',
   skillLevel: 'intermediate'
 };
 
@@ -122,6 +123,7 @@ const RecipeGenerator = ({
   chosenRecipe
 }) => {
   const location = useLocation();
+  const dispatch = useDispatch(); // Get the dispatch function
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [isLoading, setIsLoading] = useState(false);
   const [isCuisinesExpanded, setIsCuisinesExpanded] = useState(false);
@@ -179,10 +181,7 @@ const RecipeGenerator = ({
     }
   }, [selectedIngredients, error]);
 
-  // Filter dummy ingredients based on search query
-  const filteredIngredients = DUMMY_INGREDIENTS.filter(item =>
-    item.food.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+
 
   // Add effect to populate ingredients when baseIngredients changes
   useEffect(() => {
@@ -375,11 +374,13 @@ const RecipeGenerator = ({
           <button 
             className={`use-recipe-button ${chosenRecipe?.recipe_id === selectedPreview.recipe_id ? 'chosen' : ''}`}
             onClick={() => {
-              console.log('Recipe Chosen:', {
+              const mealData = {
                 servings: selectedPreview.stats.servings,
                 calories: selectedPreview.stats.calories,
                 mealType: filters.mealType
-              });
+              };
+              console.log('Recipe Chosen:', mealData);
+              dispatch(addMeal(mealData)); // Dispatch the addMeal action
               onRecipeChosen(selectedPreview);
             }}
           >

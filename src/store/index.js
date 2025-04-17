@@ -9,6 +9,7 @@ import lifestyleReducer from './lifestyleSlice';
 import foodPreferencesReducer from './foodPreferencesSlice';
 import calendarReducer from './calendarSlice';
 import scheduleDataReducer from './scheduleDataSlice';
+import mealTrackingReducer from './mealTrackingSlice'; // Import the new reducer
 
 const store = configureStore({
   reducer: {
@@ -21,7 +22,8 @@ const store = configureStore({
     lifestyle: lifestyleReducer,
     foodPreferences: foodPreferencesReducer,
     calendar: calendarReducer,
-    scheduleData: scheduleDataReducer
+    scheduleData: scheduleDataReducer,
+    mealTracking: mealTrackingReducer // Add the new reducer to the store
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
