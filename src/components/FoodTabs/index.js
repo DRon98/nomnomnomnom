@@ -271,8 +271,9 @@ const FoodTabs = ({ view = 'day' }) => {
                   <span className="no-items-message">No items selected</span>
                 )}
               </div>
+             
             </div>
-
+            <div className="tip-content">Depending on how often you cook, we recommend you select at least 3 food combinations for lunch/dinner, 1-2 breakfast options, and your choice of snacks and desserts</div>
             {loading ? (
               <div className="loading">Generating recommendations...</div>
             ) : (
