@@ -1,0 +1,132 @@
+.saved-recipes-dropdown {
+  position: relative;
+  display: inline-block;
+  z-index: 1000;
+}
+
+.saved-recipes-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.saved-recipes-button:hover {
+  background-color: #2980b9;
+  transform: translateY(-1px);
+}
+
+.chevron {
+  transition: transform 0.2s ease;
+}
+
+.chevron.open {
+  transform: rotate(180deg);
+}
+
+.saved-recipes-menu {
+  position: fixed;
+  top: auto;
+  right: auto;
+  min-width: 250px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1001;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.saved-recipes-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.saved-recipes-menu::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.saved-recipes-menu::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.saved-recipes-menu::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.saved-recipe-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s ease;
+}
+
+.saved-recipe-item:last-child {
+  border-bottom: none;
+}
+
+.saved-recipe-item:hover {
+  background-color: #f8f9fa;
+}
+
+.saved-recipe-item span {
+  color: #333;
+  font-size: 14px;
+  margin-right: 12px;
+}
+
+.add-recipe-button {
+  background: none;
+  border: none;
+  color: #3498db;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.add-recipe-button:hover {
+  background-color: #e8f4fd;
+  transform: scale(1.1);
+}
+
+.no-saved-recipes {
+  padding: 16px;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  font-size: 14px;
+} 
+
+.recipe-tab {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 20px;
+    background: #f8f9fa;
+    border: none;
+    border-radius: 8px;
+    color: #495057;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    min-width: 120px;
+  }

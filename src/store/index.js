@@ -10,6 +10,7 @@ import foodPreferencesReducer from './foodPreferencesSlice';
 import calendarReducer from './calendarSlice';
 import scheduleDataReducer from './scheduleDataSlice';
 import mealTrackingReducer from './mealTrackingSlice'; // Import the new reducer
+import favoritesReducer from './favoritesSlice';
 
 const store = configureStore({
   reducer: {
@@ -23,7 +24,8 @@ const store = configureStore({
     foodPreferences: foodPreferencesReducer,
     calendar: calendarReducer,
     scheduleData: scheduleDataReducer,
-    mealTracking: mealTrackingReducer // Add the new reducer to the store
+    mealTracking: mealTrackingReducer,
+    favorites: favoritesReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

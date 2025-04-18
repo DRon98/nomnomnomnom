@@ -1,10 +1,13 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'; // Add useDispatch
 import { addMeal } from '../store/mealTrackingSlice'; // Import addMeal
+import { toggleFavorite } from '../store/favoritesSlice';
 import { useLocation, Link } from 'react-router-dom';
-import { FaClock, FaUtensils, FaSearch, FaSpinner, FaChevronDown, FaChevronUp, FaChevronLeft, FaChevronRight, FaPlus, FaShoppingBasket, FaTimes, FaUsers } from 'react-icons/fa';
+import { FaClock, FaUtensils, FaSearch, FaSpinner, FaChevronDown, FaChevronUp, FaChevronLeft, FaChevronRight, FaPlus, FaShoppingBasket, FaTimes, FaUsers, FaStar } from 'react-icons/fa';
 import { generateRecipePreviewsFromAPI } from '../utils/api';
 import RecipeBuilder from '../pages/RecipeBuilder';
+import RecipeModal from '../components/RecipeModal/RecipeModal';
+import RecipeCard from '../components/RecipeCard/RecipeCard';
 import './RecipeGenerator.css';
 
 const DEFAULT_FILTERS = {
@@ -143,6 +146,7 @@ const RecipeGenerator = ({
   const kitchenAppliances = useSelector(state => state.kitchenAppliances.selectedAppliances);
   const pantryItems = useSelector(state => state.inventory.pantry || []);
   const shoppingListItems = useSelector(state => state.inventory.groceries) || [];
+  const favoriteRecipes = useSelector(state => state.favorites.recipes);
 
   // Handle ingredients from URL query parameters
   useEffect(() => {
@@ -291,69 +295,31 @@ const RecipeGenerator = ({
   };
 
   const renderRecipeCard = (recipe) => {
-    // Format the recipe data for the API call
-    const formattedRecipe = {
-      title: recipe.name,
-      description: recipe.description,
-      stats: {
-        totalTime: recipe.stats.totalTime
-      },
-      difficulty: recipe.difficulty || 'medium',
-      tags: recipe.tags || [],
-      ingredients: recipe.ingredients || [],
-      seasonings: recipe.seasonings || []
-    };
-
     const inPantryCount = getIngredientsInPantryCount(recipe.ingredients);
     const totalIngredients = recipe.ingredients.length;
     const isChosen = chosenRecipe?.recipe_id === recipe.recipe_id;
     const isSelected = selectedPreview?.recipe_id === recipe.recipe_id;
+    const isFavorite = favoriteRecipes.some(fav => fav.recipe_id === recipe.recipe_id);
 
     return (
-      <div 
-        key={recipe.recipe_id} 
-        className={`recipe-card ${isChosen ? 'chosen' : ''} ${isSelected ? 'selected' : ''}`}
-        onClick={(e) => {
-          // Only set preview if not clicking the View Recipe button
-          if (!e.target.closest('.view-recipe-button')) {
-            setSelectedPreview(recipe);
-            setActiveIngredientsTab('preview');
-          }
+      <RecipeCard
+        key={recipe.recipe_id}
+        recipe={recipe}
+        isChosen={isChosen}
+        isSelected={isSelected}
+        isFavorite={isFavorite}
+        onSelect={(recipe) => {
+          setSelectedPreview(recipe);
+          setActiveIngredientsTab('preview');
         }}
-      >
-        <h3>{recipe.name}</h3>
-        <p>{recipe.description}</p>
-        <div className="recipe-stats">
-          <div>
-            <FaClock /> {recipe.stats.totalTime} min
-          </div>
-          <div>
-            <FaUsers /> {recipe.stats.servings} servings
-          </div>
-          <div>
-            <FaUtensils /> {recipe.stats.calories} cal
-          </div>
-          <div className="pantry-stat">
-            <FaShoppingBasket /> {inPantryCount}/{totalIngredients} ingredients in pantry
-          </div>
-        </div>
-        <div className="recipe-tags">
-          {recipe.tags.map((tag, index) => (
-            <span key={index} className="tag">{tag}</span>
-          ))}
-        </div>
-        <button 
-          className="view-recipe-button"
-          onClick={(e) => {
-            e.stopPropagation();
-            setSelectedRecipe(recipe);
-            setRecipeBuilderData(formattedRecipe);
-            setShowRecipeModal(true);
-          }}
-        >
-          View Recipe
-        </button>
-      </div>
+        onViewRecipe={(recipe, formattedRecipe) => {
+          setSelectedRecipe(recipe);
+          setRecipeBuilderData(formattedRecipe);
+          setShowRecipeModal(true);
+        }}
+        inPantryCount={inPantryCount}
+        totalIngredients={totalIngredients}
+      />
     );
   };
 
@@ -690,36 +656,15 @@ const RecipeGenerator = ({
         )}
       </div>
 
-      {showRecipeModal && (
-        <div className="modal-overlay" onClick={() => setShowRecipeModal(false)}>
-          <div className="modal-content recipe-modal" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <button 
-                className="close-modal"
-                onClick={() => setShowRecipeModal(false)}
-              >
-                <FaTimes />
-              </button>
-              <div className="modal-actions">
-                <button 
-                  className={`use-recipe-button ${chosenRecipe?.recipe_id === selectedRecipe?.recipe_id ? 'chosen' : ''}`}
-                  onClick={() => {
-                    console.log('Recipe Chosen:', {
-                      servings: selectedRecipe.stats.servings,
-                      calories: selectedRecipe.stats.calories,
-                      mealType: filters.mealType
-                    });
-                    onRecipeChosen(selectedRecipe);
-                  }}
-                >
-                  {chosenRecipe?.recipe_id === selectedRecipe?.recipe_id ? 'Recipe Selected' : 'Use Recipe'}
-                </button>
-              </div>
-            </div>
-            <RecipeBuilder recipeData={recipeBuilderData} />
-          </div>
-        </div>
-      )}
+      {/* <RecipeModal
+        isOpen={showRecipeModal}
+        onClose={() => setShowRecipeModal(false)}
+        selectedRecipe={selectedRecipe}
+        chosenRecipe={chosenRecipe}
+        onRecipeChosen={onRecipeChosen}
+        recipeBuilderData={recipeBuilderData}
+        mealType={filters.mealType}
+      /> */}
     </div>
   );
 };
