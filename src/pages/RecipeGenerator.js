@@ -494,6 +494,7 @@ const RecipeGenerator = ({
           <button onClick={() => setError(null)}>Dismiss</button>
         </div>
       )}
+      
       <div className="filters-section">
         <h2>
           <FaUtensils /> Recipe Filters
@@ -633,6 +634,7 @@ const RecipeGenerator = ({
       </div>
 
       <div className="recipes-section">
+        
         {renderIngredientsList()}
         {isLoading ? (
           <div className="loading-state">
