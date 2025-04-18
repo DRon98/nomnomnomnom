@@ -273,7 +273,7 @@ const FoodTabs = ({ view = 'day' }) => {
               </div>
              
             </div>
-            <div className="tip-content">Depending on how often you cook, we recommend you select at least 3 food combinations for lunch/dinner, 1-2 breakfast options, and your choice of snacks and desserts</div>
+            <div className="tip-content">Depending on how often you cook and eat out each week, we recommend you select at least 3 food combinations for lunch/dinner, 1-2 breakfast options, and your choice of snacks and desserts</div>
             {loading ? (
               <div className="loading">Generating recommendations...</div>
             ) : (
