@@ -10,11 +10,7 @@ jest.mock('../InventoryDropdowns', () => {
   };
 });
 
-jest.mock('../FoodJournal', () => {
-  return function MockFoodJournal() {
-    return <div data-testid="mock-food-journal">Food Journal</div>;
-  };
-});
+
 
 describe('Header Component', () => {
   it('renders the logo with correct text', () => {
@@ -49,15 +45,6 @@ describe('Header Component', () => {
     expect(screen.getByTestId('mock-inventory-dropdowns')).toBeInTheDocument();
   });
 
-  it('renders the FoodJournal component', () => {
-    render(
-      <BrowserRouter>
-        <Header />
-      </BrowserRouter>
-    );
-    
-    expect(screen.getByTestId('mock-food-journal')).toBeInTheDocument();
-  });
 
   it('renders the profile link with correct href', () => {
     render(

@@ -9,6 +9,8 @@ import RecipeBuilder from '../pages/RecipeBuilder';
 import RecipeModal from '../components/RecipeModal/RecipeModal';
 import RecipeCard from '../components/RecipeCard/RecipeCard';
 import './RecipeGenerator.css';
+import InventoryDropdowns from '../components/InventoryDropdowns';
+
 
 const DEFAULT_FILTERS = {
   servings: 4,
@@ -90,7 +92,7 @@ const ScrollableIngredientList = ({ items, onSelect, selectedIds, emptyMessage, 
             className={`ingredient-pill ${!showRemoveButton ? 'clickable' : ''} ${selectedIds.includes(item.foodId) ? 'selected' : ''}`}
             onClick={() => !showRemoveButton && onSelect(item)}
           >
-            <span className="ingredient-icon">{item.food.icon}</span>
+            {item.food.icon && <span className="ingredient-icon">{item.food.icon}</span>}
             <span className="ingredient-name">{item.food.name}</span>
             {showRemoveButton && (
               <button
@@ -365,7 +367,7 @@ const RecipeGenerator = ({
             <span key={index} className="tag">{tag}</span>
           ))}
         </div> */}
-
+             
         <div className="preview-tables">
           <div className="ingredients-table">
             <h3>Ingredients</h3>
@@ -437,41 +439,7 @@ const RecipeGenerator = ({
           {activeIngredientsTab === 'ingredients' ? (
             <>
               <div className="ingredients-section">
-                <h3>Pantry Items</h3>
-                <ScrollableIngredientList
-                  items={pantryItems}
-                  onSelect={handleIngredientSelect}
-                  selectedIds={selectedIngredients.map(item => item.foodId)}
-                  emptyMessage="No items in pantry"
-                  showRemoveButton={false}
-                />
-              </div>
               <div className="ingredients-section">
-                <h3>Shopping List</h3>
-                <ScrollableIngredientList
-                  items={shoppingListItems}
-                  onSelect={handleIngredientSelect}
-                  selectedIds={selectedIngredients.map(item => item.foodId)}
-                  emptyMessage="No items in shopping list"
-                  showRemoveButton={false}
-                />
-              </div>
-              <div className="ingredients-section">
-                <h3>Add More Ingredients</h3>
-                <div className="search-container">
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => {
-                      setSearchQuery(e.target.value);
-                      setShowDropdown(true);
-                    }}
-                    onFocus={() => setShowDropdown(true)}
-                    placeholder="Search for ingredients..."
-                    className="ingredient-search"
-                  />
-                </div>
-                <div className="ingredients-section">
             <h3>Ingredients to Use</h3>
             <ScrollableIngredientList
               items={selectedIngredients}
@@ -481,6 +449,33 @@ const RecipeGenerator = ({
               showRemoveButton={true}
             />
           </div>
+              
+                   
+              </div>
+             
+              <div className="ingredients-section">
+                <h3>Add more items</h3>
+                 <div className="dropdowns">
+                <InventoryDropdowns 
+                  showPantry={true}
+                  showShoppingList={true}
+                  showSpicesCabinet={true}
+                  showHeader={false}
+                  enableAddToRecipe={true}
+                  onAddIngredient={(ingredient) => {
+                    const newIngredient = {
+                      foodId: ingredient.name.toLowerCase().replace(/\s+/g, '-'),
+                      food: {
+                        name: ingredient.name,
+                        unit: ingredient.unit || 'unit'
+                      }
+                    };
+                    if (!selectedIngredients.some(item => item.foodId === newIngredient.foodId)) {
+                      setSelectedIngredients([...selectedIngredients, newIngredient]);
+                    }
+                  }}
+                />
+                </div>
               </div>
             </>
           ) : (
@@ -535,16 +530,7 @@ const RecipeGenerator = ({
           />
         </div>
 
-        <div className="filter-group">
-          <label>
-            <input
-              type="checkbox"
-              checked={filters.pantryOnly}
-              onChange={(e) => handleFilterChange('pantryOnly', e.target.checked)}
-            />
-            Use Only Pantry Ingredients
-          </label>
-        </div>
+  
 
         <div className="filter-group">
           <label>Cooking Time (minutes)</label>
@@ -633,7 +619,16 @@ const RecipeGenerator = ({
             </div>
           )}
         </div>
-
+        <div className="filter-group">
+          <label>
+            <input
+              type="checkbox"
+              checked={filters.pantryOnly}
+              onChange={(e) => handleFilterChange('pantryOnly', e.target.checked)}
+            />
+            Use Only Pantry Ingredients
+          </label>
+        </div>
 
       </div>
 

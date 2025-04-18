@@ -28,7 +28,7 @@ console.log('Header rendered');
         </Link>
       </div>
       <div className="header-actions">
-        <InventoryDropdowns />
+         <InventoryDropdowns type="both" showHeader={true} />
 
         <Link to="/recipe-generator" className="recipe-button">
           🥘
@@ -50,9 +50,7 @@ console.log('Header rendered');
               <Link to="/profile" className="dropdown-item">
                 <FaUser /> View Profile
               </Link>
-              <Link to="/food-journal" className="dropdown-item">
-                <FaChartBar /> Food Journal
-              </Link>
+            
               <Link to="/kitchen-appliances" className="dropdown-item">
                 <FaCog /> Kitchen Appliances
               </Link>

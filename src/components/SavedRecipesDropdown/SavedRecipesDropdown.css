@@ -9,14 +9,16 @@
   align-items: center;
   gap: 8px;
   padding: 10px 16px;
-  background-color: #3498db;
+  background-color: #2c87c3;
   color: white;
   border: none;
+  height:58px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
   transition: all 0.2s ease;
+  margin-top: 10px;
 }
 
 .saved-recipes-button:hover {
@@ -89,14 +91,15 @@
 .add-recipe-button {
   background: none;
   border: none;
-  color: #3498db;
+  color: #378ac1;
   cursor: pointer;
-  padding: 6px;
+  padding: 2px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
+  margin:10px;
 }
 
 .add-recipe-button:hover {

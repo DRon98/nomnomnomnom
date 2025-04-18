@@ -1,6 +1,6 @@
 .inventory-dropdowns {
     display: flex;
-    gap: 300px; /* Increased from 20px to 40px to provide more space between icons */
+    gap: 150px; /* Increased from 20px to 40px to provide more space between icons */
   }
   
   .inventory-child-foods {
@@ -19,7 +19,7 @@
   .inventory-button {
     background: none;
     border: none;
-    font-size: 24px;
+    font-size: 20px;
     cursor: pointer;
     padding: 5px;
     border-radius: 5px;
@@ -181,4 +181,20 @@
     border-radius: 4px;
     font-size: 11px;
     margin-bottom: 4px;
+  }
+
+  .add-to-recipe-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 8px;
+    margin-right: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s;
+  }
+
+  .add-to-recipe-button:hover {
+    background-color: #45a049;
   }

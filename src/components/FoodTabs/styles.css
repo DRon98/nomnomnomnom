@@ -40,6 +40,7 @@
 .action-bar {
   display: flex;
   justify-content: center;
+  align-items: center; /* Add this line */
   padding: 20px;
   background: white;
   border-bottom: 1px solid #eee;
@@ -48,7 +49,7 @@
 .button-group {
   display: flex;
   gap: 15px;
-  align-items: center;
+  align-items: center; /* Re-add to explicitly center buttons within the group */
 }
 
 .search-filter-container {
@@ -162,11 +163,23 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-sizing: border-box; /* Ensure consistent box model */
+  /* line-height: normal; Removed to test alignment */
+  /* vertical-align: middle; Removed for flex alignment */
+  /* height: 44px; Restore explicit height */ /* Removed explicit height */
+  /* display: inline-flex; Restore display */ /* Removed */
+  /* align-items: center; Restore internal alignment */ /* Removed */
+  justify-content: center; /* Center content horizontally */
 }
 
 .generate-button:hover:not(:disabled) {
   background-color: #2980b9;
   transform: translateY(-1px);
+}
+
+.add-recipes-button:disabled {
+  background-color: #bdc3c7; /* Explicit disabled state */
+  cursor: not-allowed;
 }
 
 .generate-button:disabled {
@@ -184,16 +197,28 @@
   font-weight: 500;
   cursor: not-allowed;
   transition: all 0.2s ease;
+  box-sizing: border-box; /* Ensure consistent box model */
+  /* line-height: normal; Removed to test alignment */
+  /* vertical-align: middle; Removed for flex alignment */
+  /* height: 44px; Restore explicit height */ /* Removed explicit height */
+  /* display: inline-flex; Restore display */ /* Removed */
+  /* align-items: center; Restore internal alignment */ /* Removed */
+  justify-content: center; /* Center content horizontally */
 }
 
 .add-recipes-button.active {
-  background-color: #2ecc71;
+  background-color: #2ecc71; /* Green active state */
   cursor: pointer;
 }
 
 .add-recipes-button.active:hover {
-  background-color: #27ae60;
+  background-color: #27ae60; /* Darker green hover state */
   transform: translateY(-1px);
+}
+
+.add-recipes-button:disabled {
+  background-color: #bdc3c7; /* Explicit disabled state */
+  cursor: not-allowed;
 }
 
 .selection-tooltip {

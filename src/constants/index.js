@@ -116,9 +116,4 @@ export const FOOD_CONSUMPTION_LEVELS = {
 /**
  * @constant {Object} QUICK_JOURNAL_MESSAGES - Response messages for quick journal completion
  */
-export const QUICK_JOURNAL_MESSAGES = {
-  all: 'Great job! Add details',
-  most: 'Nice work! Log more',
-  some: 'Good start! Complete journal',
-  none: 'No worries! Log details'
-}; 
+

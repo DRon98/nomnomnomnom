@@ -231,7 +231,7 @@ const FoodTabs = ({ view = 'day' }) => {
                   onClick={handleAddToRecipes}
                   disabled={selectedItems.length === 0}
                 >
-                  Add to Recipes
+                  Add to Recipe Builder
                 </button>
               </div>
             </div>
