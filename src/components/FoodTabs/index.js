@@ -246,11 +246,16 @@ const FoodTabs = ({ view = 'day' }) => {
             <div className="selected-foods-bar">
               <div className="selected-foods-header">
                 <span>Selected Items ({selectedItems.length})</span>
+                <span> Snacks: {selectedItems.filter(item => item.meal === 'Snack').length}</span>
+                <span> Main Dishes: {selectedItems.filter(item => item.meal === 'Main(Lunch/Dinner)').length}</span>
+                <span> Breakfast: {selectedItems.filter(item => item.meal === 'Breakfast').length}</span>
+                <span> Desserts: {selectedItems.filter(item => item.meal === 'Dessert').length}</span>
                 <button 
                   className="clear-all" 
                   onClick={handleClearSelection}
                   disabled={selectedItems.length === 0}
                 >
+                  {console.log("sel",selectedItems)}
                   Clear All
                 </button>
               </div>
@@ -294,7 +299,7 @@ const FoodTabs = ({ view = 'day' }) => {
                     </div>
                   )
                 ) : (
-                  <WeeklyCalendar />
+                  <></>
                 )}
               </div>
             )}

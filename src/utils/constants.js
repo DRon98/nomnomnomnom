@@ -1,20 +1,20 @@
 import { FOOD_CATEGORIES } from '../constants';
 
 export const CURRENT_STATES = [
-  'Cold', 'Depressed', 'Anxious', 'Healthy', 'On their period', 'Tired',
-  'Energized', 'Stressed', 'Happy', 'Sick', 'Hungry', 'Thirsty', 'Painful',
-  'Relaxed', 'Focused', 'Distracted', 'Motivated', 'Lethargic', 'Overwhelmed',
-  'Content', 'Irritable', 'Nauseous', 'Feverish', 'Injured', 'Alert', 'Sleepy',
-  'Bloated', 'Dehydrated', 'Refreshed', 'Nervous', 'Calm', 'Frustrated',
-  'Excited', 'Bored', 'Grateful', 'Angry', 'Sad', 'Hopeful', 'Confident', 'Insecure'
+  'Depressed', 'Sad', 'Anxious', 'Stressed', 'Overwhelmed', 'Irritable', 'Angry', 'Frustrated', 'Nervous', 'Insecure',
+  'Bored', 'Distracted', 'Hopeful', 'Confident',
+  'Happy', 'Content', 'Grateful', 'Excited', 'Motivated',
+  'Cold', 'Sick', 'Nauseous', 'Feverish', 'Injured', 'Painful', 'Bloated', 'Dehydrated', 'Hungry', 'Thirsty',
+  'Tired', 'Sleepy', 'Lethargic', 'On their period',
+  'Healthy', 'Energized', 'Relaxed', 'Calm', 'Focused', 'Alert', 'Refreshed'
 ];
 
 export const DESIRED_STATES = [
-  'Calm', 'Content', 'Joyful', 'Optimistic', 'Grateful', 'Loving', 'Peaceful', 'Focused',
-  'Clear-headed', 'Alert', 'Creative', 'Motivated', 'Reflective', 'Resilient', 'Mindful',
-  'Energized', 'Rested', 'Strong', 'Light', 'Balanced', 'Refreshed', 'Satiated', 'Vibrant',
-  'Flexible', 'Sexually Aroused', 'Pain-free', 'Hydrated', 'Blissful', 'Driven', 'Tranquil',
-  'Dynamic', 'Grounded'
+  'Calm', 'Peaceful', 'Tranquil', 'Content', 'Blissful', 'Grateful', 'Loving', 'Grounded', 'Balanced',
+  'Joyful', 'Optimistic', 'Excited', 'Vibrant', 'Dynamic', 'Driven',
+  'Focused', 'Clear-headed', 'Reflective', 'Mindful', 'Creative', 'Resilient',
+  'Energized', 'Rested', 'Refreshed', 'Strong', 'Light', 'Flexible', 'Hydrated', 'Satiated', 'Pain-free',
+  'Sexually Aroused', 'Motivated', 'Alert'
 ];
 
 export const DUMMY_FOODS = [

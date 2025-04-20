@@ -2,9 +2,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import StateSelector from '../components/StateSelector';
 import FoodTabs from '../components/FoodTabs';
-import TabsContainer from '../components/TabsContainer';
-import './Home.css';
 import { CURRENT_STATES, DESIRED_STATES } from '../utils/constants';
+import './Home.css';
 
 function Home() {
   const dietaryRestrictions = useSelector(state => state.user.dietaryRestrictions);
@@ -13,7 +12,7 @@ function Home() {
     <div className="app-content">
       <div className="day-view">
         <div className="left-section">
-          <TabsContainer>
+          <div className="states-container">
             <StateSelector
               type="current"
               options={CURRENT_STATES}
@@ -24,7 +23,7 @@ function Home() {
               options={DESIRED_STATES}
               question="How do you want to feel?"
             />
-          </TabsContainer>
+          </div>
           <FoodTabs view="day" />
           <div className="dietary-restrictions">
             Dietary restrictions applied: {

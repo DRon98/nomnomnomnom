@@ -121,18 +121,102 @@
   box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
 }
 
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
   border-bottom: 1px solid #eee;
 }
 
-.modal-actions {
+.modal-header h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.close-modal-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #666;
+  cursor: pointer;
+  padding: 5px;
   display: flex;
-  gap: 12px;
   align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.close-modal-button:hover {
+  color: #333;
+}
+
+.modal-body {
+  margin-bottom: 20px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.modal-footer button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancel-button {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  color: #666;
+}
+
+.cancel-button:hover {
+  background-color: #eee;
+}
+
+.confirm-button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+}
+
+.confirm-button:hover {
+  background-color: #45a049;
 }
 
 .use-recipe-button {
@@ -324,4 +408,33 @@
 
 .use-recipe-button:hover {
   background: #27ae60;
+}
+
+.confirm-meal-plan-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 20px;
+  background-color: white;
+  border-bottom: 1px solid #eee;
+}
+
+.confirm-meal-plan-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.confirm-meal-plan-button:hover {
+  background-color: #45a049;
+}
+
+.confirm-meal-plan-button:active {
+  transform: translateY(1px);
 }

@@ -25,7 +25,7 @@ const RecipeModal = ({
             <FaTimes />
           </button>
           <div className="modal-actions">
-            <button 
+            {/* <button 
               className={`use-recipe-button ${chosenRecipe?.recipe_id === selectedRecipe?.recipe_id ? 'chosen' : ''}`}
               onClick={() => {
                 console.log('Recipe Chosen:', {
@@ -37,7 +37,7 @@ const RecipeModal = ({
               }}
             >
               {chosenRecipe?.recipe_id === selectedRecipe?.recipe_id ? 'Recipe Selected' : 'Use Recipe'}
-            </button>
+            </button> */}
           </div>
         </div>
         <RecipeBuilder recipeData={recipeBuilderData} />

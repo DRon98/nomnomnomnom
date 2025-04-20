@@ -14,7 +14,7 @@ import InventoryDropdowns from '../components/InventoryDropdowns';
 
 const DEFAULT_FILTERS = {
   servings: 4,
-  maxCalories: 700,
+  maxCalories: null,
   pantryOnly: false,
   cuisines: [],
   tastes: [],
@@ -237,7 +237,8 @@ const RecipeGenerator = ({
 
   const generateRecipes = async () => {
     setIsLoading(true);
-    
+    const pantrySpices = pantryItems.filter(item => item.food.category == 'Spices & Seasonings');
+
     const recipeData = {
       recipeFilters: {
         prepTime: { min: 15, max: filters.cookingTime === 'any' ? 90 : parseInt(filters.cookingTime) },
@@ -270,6 +271,12 @@ const RecipeGenerator = ({
           amount: item.amount,
           unit: item.food.unit || 'unit',
           category: item.food.category
+        })),
+        pantrySpices: pantrySpices.map(item => ({
+          foodId: item.foodId,
+          name: item.food.name,
+          amount: item.amount,
+          unit: item.food.unit || 'unit',
         }))
       }
     };

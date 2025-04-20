@@ -152,6 +152,7 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
           ))}
         </div>
       )}
+      {food.meal}
       {food.tags && (
         <div className="tags">
           {food.tags.map(tag => (
@@ -173,6 +174,7 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
               >
                 {showIngredients ? 'Hide Ingredients' : 'Show Ingredients'} 
                 {showIngredients ? '▼' : '▶'}
+                
               </button>
               
               {showIngredients && (

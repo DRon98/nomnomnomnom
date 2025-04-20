@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import RecipeGenerator from '../../pages/RecipeGenerator';
 import SavedRecipesDropdown from '../SavedRecipesDropdown/SavedRecipesDropdown';
 import RecipeModal from '../RecipeModal/RecipeModal';
-import { FaCheck, FaClock, FaUsers, FaUtensils } from 'react-icons/fa';
+import { FaCheck, FaClock, FaUsers, FaUtensils, FaTimes } from 'react-icons/fa';
 import { addMeal } from '../../store/mealTrackingSlice';
 import './styles.css';
 
@@ -18,6 +18,7 @@ const TabbedRecipeGenerator = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [servingsCount, setServingsCount] = useState(4);
   const [selectedMealType, setSelectedMealType] = useState('Breakfast');
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   if (!selectedFoods.length) {
     return (
@@ -95,6 +96,48 @@ const TabbedRecipeGenerator = () => {
 
   return (
     <div className="tabbed-recipe-generator">
+      {isConfirmModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h2>Confirm Meal Plan</h2>
+            {Object.keys(chosenRecipes).map((name) => (
+              <p>
+                {chosenRecipes[name].name}
+              </p>
+            ))}
+      
+              <button 
+                className="close-modal-button"
+                onClick={() => setIsConfirmModalOpen(false)}
+              >
+                <FaTimes />
+              </button>
+            </div>
+            <div className="modal-body">
+              {/* Add your meal plan confirmation content here */}
+            </div>
+            <div className="modal-footer">
+              <button 
+                className="cancel-button"
+                onClick={() => setIsConfirmModalOpen(false)}
+              >
+                Cancel
+              </button>
+              <button 
+                className="confirm-button"
+                onClick={() => {
+                  // Add your confirmation logic here
+                  setIsConfirmModalOpen(false);
+                }}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="placeholder-container meal-stats-container">
         <span><strong>Breakfast:</strong> {breakfastStats.servings} servings, {breakfastStats.avgCalories} avg calories</span>
         <span><strong>Main (Lunch/Dinner):</strong> {mainStats.servings} servings, {mainStats.avgCalories} avg calories</span>
@@ -137,6 +180,15 @@ const TabbedRecipeGenerator = () => {
         ))}
       </div>
       
+      <div className="confirm-meal-plan-container">
+        <button 
+          className="confirm-meal-plan-button"
+          onClick={() => setIsConfirmModalOpen(true)}
+        >
+          Confirm Meal Plan
+        </button>
+      </div>
+
       <div className="recipe-tab-content">
 
         {isGeneratorTab ? (
@@ -150,7 +202,6 @@ const TabbedRecipeGenerator = () => {
           />
         ) : (
           <div className="saved-recipe-tab">
-            {console.log(activeRecipe)}
             {activeRecipe && (
               <div className="saved-recipe-details">
                 <div className="saved-recipe-header">
