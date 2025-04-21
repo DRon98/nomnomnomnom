@@ -419,13 +419,7 @@ const RecipeBuilder = ({ recipeData }) => {
           ))}
         </div>
       </div>
-      <button 
-        className={`star-button ${isStarred ? 'starred' : ''}`}
-        onClick={() => setIsStarred(!isStarred)}
-        title={isStarred ? "Remove from favorites" : "Add to favorites"}
-      >
-        <FaStar />
-      </button>
+
     </div>
   );
 
@@ -548,14 +542,6 @@ const RecipeBuilder = ({ recipeData }) => {
         </div>
       </div>
 
-      <div className="recipe-actions">
-        <button className="action-button print">
-          Print Recipe
-        </button>
-        <button className="action-button share">
-          Share Recipe
-        </button>
-      </div>
 
     </div>
   );
