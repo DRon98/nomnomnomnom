@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaBlender, FaUtensils, FaFire, FaCoffee } from 'react-icons/fa';
 import { toggleAppliance, toggleCategory } from '../store/kitchenAppliancesSlice';
 import './KitchenAppliances.css';
-
+import { useUserAppliances } from '../hooks/useAppliances';
+import { getCurrentUserId } from '../utils/auth';
 const APPLIANCE_CATEGORIES = {
   basics: {
     icon: <FaUtensils />,
@@ -63,6 +64,21 @@ const APPLIANCE_CATEGORIES = {
 const KitchenAppliances = () => {
   const dispatch = useDispatch();
   const selectedAppliances = useSelector(state => state.kitchenAppliances.selectedAppliances);
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const id = await getCurrentUserId();
+      setUserId(id);
+    };
+    fetchUserId();
+  }, []);
+
+  const { data: userAppliances, isLoading, error } = useUserAppliances(userId);
+
+  useEffect(() => {
+    console.log('User Appliances:', userAppliances);
+  }, [userAppliances]);
 
   const handleToggleAppliance = (appliance, category) => {
     dispatch(toggleAppliance({ appliance: appliance.toLowerCase(), category }));

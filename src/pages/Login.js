@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import supabase from "../utils/supabaseClient";
 import { Link, useNavigate } from "react-router-dom";
 import './Login.css';
+import { useQueryClient } from '@tanstack/react-query';
+
 
 const Login = ({ onRegisterClick }) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -31,6 +34,8 @@ const Login = ({ onRegisterClick }) => {
 
     if (data) {
       navigate("/dashboard");
+      queryClient.clear();
+
       return null;
     }
   };

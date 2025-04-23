@@ -4,13 +4,33 @@ import { FaUser, FaChartBar, FaLifeRing, FaCog, FaStar, FaMoon, FaSignOutAlt, Fa
 import InventoryDropdowns from '../InventoryDropdowns';
 import Register from '../../pages/Register';
 import Login from '../../pages/Login';
+import supabase from '../../utils/supabaseClient';
 import './styles.css';
 
 const Header = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    // Check initial auth state
+    const checkUser = async () => {
+      const { data: { user: initialUser } } = await supabase.auth.getUser();
+      setUser(initialUser);
+    };
+    checkUser();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -22,7 +42,12 @@ const Header = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-console.log('Header rendered');
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setIsProfileOpen(false);
+  };
+
   return (
     <header className="header">
       <div className="header-content">
@@ -39,12 +64,20 @@ console.log('Header rendered');
           <Link to="/weekly-calendar" className="calendar-button">
             <FaCalendarAlt />
           </Link> */}
-          <button className="auth-button login" onClick={() => setIsLoginModalOpen(true)}>
-            Login
-          </button>
-          <button className="auth-button signup" onClick={() => setIsSignupModalOpen(true)}>
-            Sign Up
-          </button>
+          {user ? (
+            <div className="welcome-message">
+              Welcome, {user.email?.split('@')[0]}
+            </div>
+          ) : (
+            <>
+              <button className="auth-button login" onClick={() => setIsLoginModalOpen(true)}>
+                Login
+              </button>
+              <button className="auth-button signup" onClick={() => setIsSignupModalOpen(true)}>
+                Sign Up
+              </button>
+            </>
+          )}
           <div className="profile-dropdown" ref={dropdownRef}>
             <button 
               className={`profile-button ${isProfileOpen ? 'active' : ''}`}
@@ -87,7 +120,7 @@ console.log('Header rendered');
                   </div>
                 </button>
                 <div className="dropdown-divider"></div>
-                <button className="dropdown-item text-danger">
+                <button className="dropdown-item text-danger" onClick={handleLogout}>
                   <FaSignOutAlt /> Log Out
                 </button>
               </div>

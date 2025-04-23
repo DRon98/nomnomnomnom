@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
@@ -21,33 +22,41 @@ import ErrorBoundary from './components/ErrorBoundary';
 import LifestyleSurvey from './components/LifestyleSurvey';
 import './App.css';
 import './components/ErrorBoundary/styles.css';
+import { queryClient } from './utils/queryClient';
+import { AuthProvider } from './utils/authContext';
+// Create a client
+
 
 function App() {
   return (
-    <ErrorBoundary>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} />
-            <Route path="grocery-builder" element={<GroceryBuilder />} />
-            <Route path="food-survey" element={<FoodSurvey />} />
-            <Route path="recipe-builder" element={<RecipeBuilder />} />
-            <Route path="recipe-generator" element={<TabbedRecipeGenerator />} />
-            <Route path="pantry" element={<PantryManager />} />
-            <Route path="kitchen-appliances" element={<KitchenAppliances />} />
-            <Route path="lifestyle-survey" element={<LifestyleSurvey />} />
-            <Route path="weekly-calendar" element={<WeeklyCalendar />} />
-            <Route path="spice-cabinet-builder" element={<SpiceCabinetBuilder />} />
-            <Route path="grocery-list" element={<GroceryList />} />
-            <Route path="add-to-pantry" element={<AddToPantry />} />
-            <Route path="add-to-shopping-list" element={<AddToShoppingList />} />
-            <Route path="add-spices-to-list" element={<AddSpicesToList />} />
-            <Route path="register" element={<Register />} />
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+      <ErrorBoundary>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Home />} />
+              <Route path="grocery-builder" element={<GroceryBuilder />} />
+              <Route path="food-survey" element={<FoodSurvey />} />
+              <Route path="recipe-builder" element={<RecipeBuilder />} />
+              <Route path="recipe-generator" element={<TabbedRecipeGenerator />} />
+              <Route path="pantry" element={<PantryManager />} />
+              <Route path="kitchen-appliances" element={<KitchenAppliances />} />
+              <Route path="lifestyle-survey" element={<LifestyleSurvey />} />
+              <Route path="weekly-calendar" element={<WeeklyCalendar />} />
+              <Route path="spice-cabinet-builder" element={<SpiceCabinetBuilder />} />
+              <Route path="grocery-list" element={<GroceryList />} />
+              <Route path="add-to-pantry" element={<AddToPantry />} />
+              <Route path="add-to-shopping-list" element={<AddToShoppingList />} />
+              <Route path="add-spices-to-list" element={<AddSpicesToList />} />
+              <Route path="register" element={<Register />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </ErrorBoundary>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
 
