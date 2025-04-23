@@ -21,8 +21,7 @@ export const applianceService = {
 
   // Get all appliances for a user
   getUserAppliances: async (userId) => {
-    const token = getAuthToken(); 
-    console.log('Token:', token);
+    const token = await getAuthToken();
     const response = await axios.get(
       `${API_URL}/users/${userId}/appliances`,
       {
@@ -31,7 +30,6 @@ export const applianceService = {
         },
       }
     );
-    
     return response.data;
   },
 
