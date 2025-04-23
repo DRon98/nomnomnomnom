@@ -2,11 +2,14 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaUser, FaChartBar, FaLifeRing, FaCog, FaStar, FaMoon, FaSignOutAlt, FaCalendarAlt } from 'react-icons/fa';
 import InventoryDropdowns from '../InventoryDropdowns';
-
+import Register from '../../pages/Register';
+import Login from '../../pages/Login';
 import './styles.css';
 
 const Header = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -30,12 +33,18 @@ console.log('Header rendered');
         </div>
         <div className="header-actions">
           <InventoryDropdowns type="both" showHeader={true} />
-          <Link to="/recipe-generator" className="recipe-button">
+          {/* <Link to="/recipe-generator" className="recipe-button">
             🥘
           </Link>
           <Link to="/weekly-calendar" className="calendar-button">
             <FaCalendarAlt />
-          </Link>
+          </Link> */}
+          <button className="auth-button login" onClick={() => setIsLoginModalOpen(true)}>
+            Login
+          </button>
+          <button className="auth-button signup" onClick={() => setIsSignupModalOpen(true)}>
+            Sign Up
+          </button>
           <div className="profile-dropdown" ref={dropdownRef}>
             <button 
               className={`profile-button ${isProfileOpen ? 'active' : ''}`}
@@ -86,6 +95,36 @@ console.log('Header rendered');
           </div>
         </div>
       </div>
+
+      {/* Login Modal */}
+      {isLoginModalOpen && (
+        <div className="modal-overlay" onClick={() => setIsLoginModalOpen(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setIsLoginModalOpen(false)}>×</button>
+            <div className="modal-body">
+              <Login onRegisterClick={() => {
+                setIsLoginModalOpen(false);
+                setIsSignupModalOpen(true);
+              }} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Signup Modal */}
+      {isSignupModalOpen && (
+        <div className="modal-overlay" onClick={() => setIsSignupModalOpen(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setIsSignupModalOpen(false)}>×</button>
+            <div className="modal-body">
+              <Register onLoginClick={() => {
+                setIsSignupModalOpen(false);
+                setIsLoginModalOpen(true);
+              }} />
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 };

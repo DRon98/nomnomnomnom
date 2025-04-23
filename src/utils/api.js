@@ -2,16 +2,16 @@
  * API client for making requests to the proxy server
  */
 
-const API_BASE_URL = 'http://localhost:3001/api';
-
+const REACT_APP_API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 /**
  * Generates food recommendations using the proxy API
  * @param {Object} userPreferences - Contains all user preferences data
  * @returns {Promise<{recommended: Array, avoid: Array, surveyData: Object, lifestyleData: Object}>}
  */
 export const generateRecommendationsFromAPI = async (userPreferences) => {
+
   try {
-    const response = await fetch(`${API_BASE_URL}/groq/recommendations`, {
+    const response = await fetch(`${REACT_APP_API_BASE_URL}/groq/recommendations`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ export const generateRecommendationsFromAPI = async (userPreferences) => {
 
 export const generateRecipePreviewsFromAPI = async (recipeFilters) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/groq/recipe-previews`, {
+    const response = await fetch(`${REACT_APP_API_BASE_URL}/groq/recipe-previews`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ export const generateRecipePreviewsFromAPI = async (recipeFilters) => {
 
 export const generateRecipeBuilderFromAPI = async (recipeData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/groq/recipe-builder`, {
+    const response = await fetch(`${REACT_APP_API_BASE_URL}/groq/recipe-builder`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ export const generateRecipeBuilderFromAPI = async (recipeData) => {
 
 export const generateMealPlanFromAPI = async (mealPlanData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/groq/meal-plan`, {
+    const response = await fetch(`${REACT_APP_API_BASE_URL}/groq/meal-plan`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -16,7 +16,7 @@ import AddToPantry from './pages/AddToPantry';
 import AddToShoppingList from './pages/AddToShoppingList';
 import AddSpicesToList from './pages/AddSpicesToList';
 import TabbedRecipeGenerator from './components/TabbedRecipeGenerator';
-
+import Register from './pages/Register';
 import ErrorBoundary from './components/ErrorBoundary';
 import LifestyleSurvey from './components/LifestyleSurvey';
 import './App.css';
@@ -42,6 +42,7 @@ function App() {
             <Route path="add-to-pantry" element={<AddToPantry />} />
             <Route path="add-to-shopping-list" element={<AddToShoppingList />} />
             <Route path="add-spices-to-list" element={<AddSpicesToList />} />
+            <Route path="register" element={<Register />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
