@@ -11,30 +11,30 @@ function Home() {
   return (
     <div className="app-content">
       <div className="day-view">
-        <div className="left-section">
-          <div className="states-container">
-            <StateSelector
-              type="current"
-              options={CURRENT_STATES}
-              question="How do you feel?"
-            />
-            <StateSelector
-              type="desired"
-              options={DESIRED_STATES}
-              question="How do you want to feel?"
-            />
-          </div>
+        <div className="states-container">
+          <StateSelector
+            type="current"
+            options={CURRENT_STATES}
+            question="How do you feel?"
+          />
+          <StateSelector
+            type="desired"
+            options={DESIRED_STATES}
+            question="How do you want to feel?"
+          />
+        </div>
+        <div className="tabs-container">
           <FoodTabs view="day" />
-          <div className="dietary-restrictions">
-            Dietary restrictions applied: {
-              Object.entries(dietaryRestrictions)
-                .filter(([_, value]) => value)
-                .map(([key]) => key)
-                .join(', ')
-            }
-            {' '}
-            (Edit in Profile)
-          </div>
+        </div>
+        <div className="dietary-restrictions">
+          Dietary restrictions applied: {
+            Object.entries(dietaryRestrictions)
+              .filter(([_, value]) => value)
+              .map(([key]) => key)
+              .join(', ')
+          }
+          {' '}
+          (Edit in Profile)
         </div>
       </div>
     </div>

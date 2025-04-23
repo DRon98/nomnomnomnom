@@ -99,21 +99,21 @@
 }
 
 .state-bubble.current-state {
-  border-color: #8cc63f;
+  border-color: #F4A261;
 }
 
 .state-bubble.desired-state {
-  border-color: #3498db;
+  border-color: #FFDAB9;
 }
 
 .state-bubble.selected.current-state {
-  background-color: #8cc63f;
+  background-color: #F4A261;
   color: white;
 }
 
 .state-bubble.selected.desired-state {
-  background-color: #3498db;
-  color: white;
+  background-color: #FFDAB9;
+  color: #333;
 }
 
 .state-bubble:focus {

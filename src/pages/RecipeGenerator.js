@@ -1,12 +1,9 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux'; // Add useDispatch
 import { addMeal } from '../store/mealTrackingSlice'; // Import addMeal
-import { toggleFavorite } from '../store/favoritesSlice';
 import { useLocation, Link } from 'react-router-dom';
 import { FaClock, FaUtensils, FaSearch, FaSpinner, FaChevronDown, FaChevronUp, FaChevronLeft, FaChevronRight, FaPlus, FaShoppingBasket, FaTimes, FaUsers, FaStar } from 'react-icons/fa';
 import { generateRecipePreviewsFromAPI } from '../utils/api';
-import RecipeBuilder from '../pages/RecipeBuilder';
-import RecipeModal from '../components/RecipeModal/RecipeModal';
 import RecipeCard from '../components/RecipeCard/RecipeCard';
 import './RecipeGenerator.css';
 import InventoryDropdowns from '../components/InventoryDropdowns';
@@ -29,15 +26,7 @@ const COOKING_TIMES = ['any', '15', '30', '45', '60'];
 const MEAL_TYPES = ['Breakfast', 'Main(Lunch/Dinner)', 'Snack', 'Dessert'];
 const SKILL_LEVELS = ['beginner', 'intermediate', 'advanced'];
 
-const DUMMY_INGREDIENTS = [
-  { foodId: 'ice-cream', food: { name: 'Ice Cream', icon: '🍨' } },
-  { foodId: 'chocolate', food: { name: 'Chocolate', icon: '🍫' } },
-  { foodId: 'banana', food: { name: 'Banana', icon: '🍌' } },
-  { foodId: 'pizza', food: { name: 'Pizza', icon: '🍕' } },
-  { foodId: 'sushi', food: { name: 'Sushi', icon: '🍱' } },
-];
-
-const ScrollableIngredientList = ({ items, onSelect, selectedIds, emptyMessage, showRemoveButton }) => {
+const ScrollableIngredientList = React.memo(({ items, onSelect, selectedIds, emptyMessage, showRemoveButton }) => {
   const containerRef = useRef(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
@@ -50,7 +39,6 @@ const ScrollableIngredientList = ({ items, onSelect, selectedIds, emptyMessage, 
       const container = containerRef.current;
       const containerWidth = container.clientWidth;
       const contentWidth = container.scrollWidth;
-      
       setContainerWidth(containerWidth);
       setContentWidth(contentWidth);
       setShowLeftArrow(translateX < 0);
@@ -58,21 +46,43 @@ const ScrollableIngredientList = ({ items, onSelect, selectedIds, emptyMessage, 
     }
   }, [translateX]);
 
-  const scroll = (direction) => {
+  const scroll = useCallback((direction) => {
     const scrollAmount = direction === 'left' ? 200 : -200;
     const newTranslateX = Math.min(0, Math.max(translateX + scrollAmount, -(contentWidth - containerWidth)));
     setTranslateX(newTranslateX);
-  };
+  }, [translateX, contentWidth, containerWidth]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     checkOverflow();
     window.addEventListener('resize', checkOverflow);
     return () => window.removeEventListener('resize', checkOverflow);
   }, [items, checkOverflow]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     checkOverflow();
   }, [translateX, checkOverflow]);
+
+  const renderedItems = useMemo(() => items.map(item => (
+      <div 
+        key={item.foodId} 
+        className={`ingredient-pill ${!showRemoveButton ? 'clickable' : ''} ${selectedIds.includes(item.foodId) ? 'selected' : ''}`}
+        onClick={() => !showRemoveButton && onSelect(item)}
+      >
+        {item.food.icon && <span className="ingredient-icon">{item.food.icon}</span>}
+        <span className="ingredient-name">{item.food.name}</span>
+        {showRemoveButton && (
+          <button
+            className="remove-ingredient"
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelect(item.foodId);
+            }}
+          >
+            ×
+          </button>
+        )}
+      </div>
+    )), [items, onSelect, selectedIds, showRemoveButton]);
 
   return (
     <div className="ingredients-scroll">
@@ -86,27 +96,7 @@ const ScrollableIngredientList = ({ items, onSelect, selectedIds, emptyMessage, 
         ref={containerRef}
         style={{ transform: `translateX(${translateX}px)` }}
       >
-        {items.map(item => (
-          <div 
-            key={item.foodId} 
-            className={`ingredient-pill ${!showRemoveButton ? 'clickable' : ''} ${selectedIds.includes(item.foodId) ? 'selected' : ''}`}
-            onClick={() => !showRemoveButton && onSelect(item)}
-          >
-            {item.food.icon && <span className="ingredient-icon">{item.food.icon}</span>}
-            <span className="ingredient-name">{item.food.name}</span>
-            {showRemoveButton && (
-              <button
-                className="remove-ingredient"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onSelect(item.foodId);
-                }}
-              >
-                ×
-              </button>
-            )}
-          </div>
-        ))}
+        {renderedItems}
         {items.length === 0 && (
           <div className="empty-message">{emptyMessage}</div>
         )}
@@ -118,7 +108,9 @@ const ScrollableIngredientList = ({ items, onSelect, selectedIds, emptyMessage, 
       )}
     </div>
   );
-};
+}, (prev, next) => {
+  return prev.items === next.items && prev.selectedIds === next.selectedIds;
+});
 
 const RecipeGenerator = ({ 
   baseIngredients = [], 
@@ -660,15 +652,6 @@ const RecipeGenerator = ({
         )}
       </div>
 
-      {/* <RecipeModal
-        isOpen={showRecipeModal}
-        onClose={() => setShowRecipeModal(false)}
-        selectedRecipe={selectedRecipe}
-        chosenRecipe={chosenRecipe}
-        onRecipeChosen={onRecipeChosen}
-        recipeBuilderData={recipeBuilderData}
-        mealType={filters.mealType}
-      /> */}
     </div>
   );
 };

@@ -5,8 +5,7 @@
   grid-template-columns: 300px 1fr;
   gap: 30px;
   padding: 20px;
-  height: 100vh; /* Set to full viewport height */
-  overflow: hidden; /* Prevent double scrollbars */
+  height: calc(100vh - 60px); /* Keep height to define the area for scrolling children */
 }
 
 /* Tab Container Styles */
@@ -77,11 +76,13 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  height: calc(100vh - 80px); /* Fixed height */
+  height: 100%;
   position: sticky;
-  overflow-y: auto; /* Make filters scrollable if needed */
+  top: 20px; /* Added sticky positioning offset */
+  overflow-y: auto;
   width: 300px;
-  padding-bottom:200px;
+  padding-bottom: 24px;
+  margin-bottom: 200px;
 }
 
 .filters-section h2 {
@@ -278,7 +279,6 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-
   overflow-y: auto;
   z-index: 1000;
 }
@@ -321,7 +321,7 @@
 
 /* Filter Groups */
 .filter-group {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .filter-group label {
@@ -342,6 +342,7 @@
 
 .filter-group input[type="checkbox"] {
   margin-right: 8px;
+  margin-bottom: 100px;
 }
 
 /* Collapsible Sections */
@@ -349,6 +350,7 @@
   border: 1px solid #eee;
   border-radius: 8px;
   overflow: hidden;
+  margin-bottom: 10px;
 }
 
 .collapsible-header {
@@ -402,11 +404,11 @@
 .recipes-section {
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  height: calc(100vh - 120px); /* Adjust height to account for padding and margins */
+  height: 100%;
   overflow-y: auto;
+  padding-bottom: 24px;
+  gap: 30px;
   padding-right: 15px;
-  padding-bottom:200px;
 }
 
 .recipe-grid {
@@ -414,6 +416,8 @@
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
   padding: 20px 0;
+  flex-grow: 1;
+  margin-bottom: 200px;
 }
 
 .recipe-preview {

@@ -39,25 +39,51 @@ h1 {
 
 .action-buttons {
   display: flex;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
 }
 
 .action-btn {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: white;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
 }
 
-.action-btn:hover {
+.action-btn svg {
+  font-size: 18px;
+}
+
+.action-btn.primary-action {
+  background-color: #F4A261;
+  color: white;
+}
+
+.action-btn.primary-action:hover {
+  background-color: #f3934d;
   transform: translateY(-1px);
+}
+
+.action-btn.secondary-action {
+  background-color: #E4C1A0;
+  color: #333;
+}
+
+.action-btn.secondary-action:hover {
+  background-color: #ddb68f;
+  transform: translateY(-1px);
+}
+
+.action-btn:active {
+  transform: translateY(0);
 }
 
 .add-new {

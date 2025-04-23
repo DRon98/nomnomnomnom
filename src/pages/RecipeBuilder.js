@@ -97,34 +97,9 @@ const RecipeBuilder = ({ recipeData }) => {
   };
 
   const getStepStyle = (step) => {
-    const totalMinutes = Math.max(...steps.map(s => s.startTime + s.duration));
-    const heightPercent = (step.duration / totalMinutes) * 100;
-    const topPercent = (step.startTime / totalMinutes) * 100;
-    
-    let left = '20px';
-    let width = 'calc(100% - 40px)';
-    
-    if (step.parallel) {
-      width = 'calc(33% - 20px)';
-      const parallelSteps = steps.filter(s => 
-        s.startTime <= step.startTime + step.duration && 
-        s.startTime + s.duration >= step.startTime && 
-        s.parallel
-      );
-      const index = parallelSteps.indexOf(step);
-      if (index === 1) {
-        left = 'calc(33% + 10px)';
-      } else if (index === 2) {
-        left = 'calc(66% + 10px)';
-      }
-    }
-    
-    return {
-      height: `${Math.max(heightPercent, 10)}%`,
-      top: `${topPercent}%`,
-      left,
-      width
-    };
+    // For parallel steps, we don't need to calculate anything - CSS grid will handle it
+    // We only need to ensure non-parallel steps span all columns, which is handled by CSS
+    return {};
   };
 
   const renderGridLines = () => {
@@ -164,46 +139,57 @@ const RecipeBuilder = ({ recipeData }) => {
   };
 
   const renderTimeline = () => {
+    // Group steps by their start time to maintain order
+    const stepGroups = steps.reduce((groups, step) => {
+      const startTime = step.startTime;
+      if (!groups[startTime]) {
+        groups[startTime] = [];
+      }
+      groups[startTime].push(step);
+      return groups;
+    }, {});
+
+    // Sort by start time and flatten
+    const sortedSteps = Object.entries(stepGroups)
+      .sort(([timeA], [timeB]) => Number(timeA) - Number(timeB))
+      .flatMap(([_, stepsAtTime]) => stepsAtTime);
+
     return (
       <div className="timeline-container">
         <div className="timeline-header">
-          {renderTimeMarkers()}
+          <div>Prep Steps</div>
+          <div>Cook Steps</div>
+          <div>Finish Steps</div>
         </div>
         <div className="timeline-grid" ref={timelineRef}>
-          {renderGridLines()}
-          {steps.map(step => {
-            const progress = step.startTime / (step.startTime + step.duration);
-            
-            return (
-              <div
-                key={step.id}
-                className={`timeline-step intensity-${step.intensity} ${step.parallel ? 'parallel' : ''} ${selectedStep?.id === step.id ? 'selected' : ''}`}
-                style={getStepStyle(step)}
-                onClick={() => handleStepClick(step)}
-              >
-                <div className="step-content">
-                  <div className="step-header">
-                    <span className="step-name">{step.name}</span>
-                    <div className="step-meta">
-                      <div className="info-tooltip">
-                        <FaInfoCircle className="info-icon" />
-                        <span className="tooltip-text">{step.description}</span>
-                      </div>
-                      <span className="step-duration">
-                        <FaClock /> {step.duration}min
-                      </span>
+          {sortedSteps.map(step => (
+            <div
+              key={step.id}
+              className={`timeline-step ${step.parallel ? 'parallel' : ''} intensity-${step.intensity} ${selectedStep?.id === step.id ? 'selected' : ''}`}
+              onClick={() => handleStepClick(step)}
+            >
+              <div className="step-content">
+                <div className="step-header">
+                  <span className="step-name">{step.name}</span>
+                  <div className="step-meta">
+                    <div className="info-tooltip">
+                      <FaInfoCircle className="info-icon" />
+                      <span className="tooltip-text">{step.description}</span>
                     </div>
+                    <span className="step-duration">
+                      <FaClock /> {step.duration}min
+                    </span>
                   </div>
-                  <div className="step-description">{step.description}</div>
                 </div>
-                {step.intensity === 'high' && (
-                  <div className="intensity-indicator">
-                    <FaFire />
-                  </div>
-                )}
+                <div className="step-description">{step.description}</div>
               </div>
-            );
-          })}
+              {step.intensity === 'high' && (
+                <div className="intensity-indicator">
+                  <FaFire />
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -217,12 +203,6 @@ const RecipeBuilder = ({ recipeData }) => {
             <h4>
               <FaUtensils /> Ingredients
             </h4>
-            <button 
-              className="add-to-shopping-list-btn"
-              onClick={handleAddToShoppingList}
-            >
-              <FaShoppingCart /> Add Missing to Shopping List
-            </button>
           </div>
           <ul className="ingredients-list">
             {ingredients.map((ingredient, index) => (

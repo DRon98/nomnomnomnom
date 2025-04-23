@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { FaClock, FaUsers, FaUtensils, FaShoppingBasket, FaStar } from 'react-icons/fa';
 import { toggleFavorite } from '../../store/favoritesSlice';
@@ -21,8 +21,8 @@ const RecipeCard = ({
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Format the recipe data for the API call
-  const formattedRecipe = {
+  // Format the recipe data for the API call – memoized to avoid recalculation on every render
+  const formattedRecipe = useMemo(() => ({
     title: recipe.name,
     description: recipe.description,
     stats: {
@@ -34,7 +34,7 @@ const RecipeCard = ({
     tags: recipe.tags || [],
     ingredients: recipe.ingredients || [],
     seasonings: recipe.seasonings || []
-  };
+  }), [recipe]);
 
   const handleViewRecipe = (e) => {
     e.stopPropagation();
@@ -113,4 +113,14 @@ const RecipeCard = ({
   );
 };
 
-export default RecipeCard; 
+export default React.memo(RecipeCard, (prev, next) => {
+  // Re‑render only if core props relevant to visual state change
+  return (
+    prev.recipe.recipe_id === next.recipe.recipe_id &&
+    prev.isChosen === next.isChosen &&
+    prev.isSelected === next.isSelected &&
+    prev.isFavorite === next.isFavorite &&
+    prev.inPantryCount === next.inPantryCount &&
+    prev.totalIngredients === next.totalIngredients
+  );
+}); 

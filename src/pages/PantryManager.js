@@ -79,19 +79,19 @@ const PantryManager = () => {
       <h1>Pantry Manager</h1>
 
       <div className="action-buttons">
-        <button className="action-btn add-new" onClick={handleAddNewItem}>
+        <button className="action-btn primary-action" onClick={handleAddNewItem}>
           <FaPlus /> Add New Item
         </button>
-        <button className="action-btn add-grocery" onClick={handleAddFromGrocery}>
+        <button className="action-btn secondary-action" onClick={handleAddFromGrocery}>
           <FaPlus /> From Grocery List
         </button>
-        <button className="action-btn refill" onClick={handleRefillPrevious}>
+        <button className="action-btn secondary-action" onClick={handleRefillPrevious}>
           <FaSync /> Refill Previous Items
         </button>
-        <Link to="/add-to-pantry" className="action-btn add-items">
+        <Link to="/add-to-pantry" className="action-btn primary-action">
           <FaPlus /> Add Items to Pantry
         </Link>
-        <Link to="/spice-cabinet-builder" className="action-btn add-items">
+        <Link to="/spice-cabinet-builder" className="action-btn secondary-action">
           <FaLeaf /> Build Spice Cabinet
         </Link>
       </div>

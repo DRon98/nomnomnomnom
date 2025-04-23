@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   addCurrentState,
@@ -15,14 +15,29 @@ const StateSelector = ({ type, options, question, showSelectedStates = true }) =
     type === 'current' ? state.user.currentStates : state.user.desiredStates
   );
 
-  const handleStateToggle = (state) => {
+  const handleStateToggle = useCallback((state) => {
     const isSelected = selectedStates.includes(state);
     const action = type === 'current' 
       ? (isSelected ? removeCurrentState : addCurrentState)
       : (isSelected ? removeDesiredState : addDesiredState);
-    
     dispatch(action(state));
-  };
+  }, [dispatch, selectedStates, type]);
+
+  const renderedOptions = useMemo(() => options.map(state => (
+    <button
+      key={state}
+      className={`state-bubble ${selectedStates.includes(state) ? 'selected' : ''} ${type}-state`}
+      onClick={() => handleStateToggle(state)}
+    >
+      {state}
+    </button>
+  )), [options, selectedStates, type, handleStateToggle]);
+
+  const selectedPreview = useMemo(() => selectedStates.map(state => (
+    <div key={state} className={`state-bubble selected ${type}-state`}>
+      {state}
+    </div>
+  )), [selectedStates, type]);
 
   return (
     <div className="state-selector">
@@ -41,29 +56,17 @@ const StateSelector = ({ type, options, question, showSelectedStates = true }) =
       
       {isExpanded && (
         <div className="state-bubbles-container">
-          {options.map(state => (
-            <button
-              key={state}
-              className={`state-bubble ${selectedStates.includes(state) ? 'selected' : ''} ${type}-state`}
-              onClick={() => handleStateToggle(state)}
-            >
-              {state}
-            </button>
-          ))}
+          {renderedOptions}
         </div>
       )}
       
       {!isExpanded && selectedStates.length > 0 && (
         <div className="selected-states-preview">
-          {selectedStates.map(state => (
-            <div key={state} className={`state-bubble selected ${type}-state`}>
-              {state}
-            </div>
-          ))}
+          {selectedPreview}
         </div>
       )}
     </div>
   );
 };
 
-export default StateSelector;
+export default React.memo(StateSelector);
