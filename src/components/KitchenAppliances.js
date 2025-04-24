@@ -20,7 +20,10 @@ const APPLIANCE_CATEGORIES = {
       'Measuring Spoons',
       'Mixing Bowls',
       'Colander',
-      'Can Opener'
+      'Can Opener',
+      'Tongs',
+      'Peeler',
+      'Whisk'
     ]
   },
   cooking: {
@@ -34,7 +37,8 @@ const APPLIANCE_CATEGORIES = {
       'Slow Cooker',
       'Pressure Cooker',
       'Rice Cooker',
-      'Toaster Oven'
+      'Toaster Oven',
+      'Grill'
     ]
   },
   prep: {
@@ -60,7 +64,8 @@ const APPLIANCE_CATEGORIES = {
       'Ice Cream Maker',
       'Dehydrator',
       'Sous Vide',
-      'Deep Fryer'
+      'Deep Fryer',
+      'Espresso Machine'
     ]
   }
 };
