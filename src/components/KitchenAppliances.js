@@ -65,6 +65,9 @@ const KitchenAppliances = () => {
   const dispatch = useDispatch();
   const selectedAppliances = useSelector(state => state.kitchenAppliances.selectedAppliances);
   const [userId, setUserId] = useState(null);
+  const appliancesToDelete = useSelector(state => state.kitchenAppliances.appliancesToDelete);
+  const [existingAppliances, setExistingAppliances] = useState([]); // Store appliances from GET
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchUserId = async () => {
