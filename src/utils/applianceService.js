@@ -21,6 +21,7 @@ export const applianceService = {
 
   // Get all appliances for a user
   getUserAppliances: async (userId) => {
+    console.log('Getting user appliances for user:', userId);
     const token = await getAuthToken();
     const response = await axios.get(
       `${API_URL}/users/${userId}/appliances`,

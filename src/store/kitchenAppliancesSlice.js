@@ -6,7 +6,7 @@ const initialState = {
     cooking: [],
     prep: [],
     specialty: []
-  }
+  },appliancesToDelete: []
 };
 
 const kitchenAppliancesSlice = createSlice({
@@ -49,8 +49,19 @@ const kitchenAppliancesSlice = createSlice({
         prep: [],
         specialty: []
       };
+      state.appliancesToDelete = [];
     }
-  }
+  },
+  markForDeletion: (state, action) => {
+    const applianceId = action.payload;
+    if (!state.appliancesToDelete.includes(applianceId)) {
+      state.appliancesToDelete.push(applianceId);
+    }
+  },
+  unmarkForDeletion: (state, action) => {
+    const applianceId = action.payload;
+    state.appliancesToDelete = state.appliancesToDelete.filter(id => id !== applianceId);
+  },
 });
 
 export const {

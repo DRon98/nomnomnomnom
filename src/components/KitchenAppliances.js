@@ -81,6 +81,7 @@ const KitchenAppliances = () => {
   }, [userAppliances]);
 
   const handleToggleAppliance = (appliance, category) => {
+
     dispatch(toggleAppliance({ appliance: appliance.toLowerCase(), category }));
   };
 
@@ -91,10 +92,32 @@ const KitchenAppliances = () => {
     }));
   };
 
+
+  // {
+  //   "appliances_to_add": [
+  //     {
+  //       "name": "string",
+  //       "category": "string",
+  //       "is_owned": true
+  //     }
+  //   ],
+  //   "appliance_ids_to_delete": [
+  //     "string"
+  //   ]
+  // }
   const handleSubmit = () => {
-    console.log('Kitchen Appliances Survey Responses:', {
-      kitchenAppliances: selectedAppliances
-    });
+    // console.log('Kitchen Appliances Survey Responses:', 
+    // // console.log('Kitchen Appliances Survey Responses:',
+    // selectedAppliances
+    const result = Object.keys(selectedAppliances).flatMap(category =>
+      selectedAppliances[category].map(name => ({
+        name,
+        category,
+        is_owned: true
+      }))
+    );
+    
+    console.log('r',result)
   };
 
   const isApplianceSelected = (appliance, category) => {
