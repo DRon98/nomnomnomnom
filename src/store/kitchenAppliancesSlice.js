@@ -6,7 +6,8 @@ const initialState = {
     cooking: [],
     prep: [],
     specialty: []
-  },appliancesToDelete: []
+  },
+  appliancesToDelete: []
 };
 
 const kitchenAppliancesSlice = createSlice({
@@ -38,6 +39,16 @@ const kitchenAppliancesSlice = createSlice({
       }
     },
     
+    addApplianceToDelete: (state, action) => {
+      if (!state.appliancesToDelete.includes(action.payload)) {
+        state.appliancesToDelete.push(action.payload);
+      }
+    },
+    
+    clearAppliancesToDelete: (state) => {
+      state.appliancesToDelete = [];
+    },
+    
     setSelectedAppliances: (state, action) => {
       state.selectedAppliances = action.payload;
     },
@@ -49,7 +60,6 @@ const kitchenAppliancesSlice = createSlice({
         prep: [],
         specialty: []
       };
-      state.appliancesToDelete = [];
     }
   },
   markForDeletion: (state, action) => {
@@ -67,6 +77,8 @@ const kitchenAppliancesSlice = createSlice({
 export const {
   toggleAppliance,
   toggleCategory,
+  addApplianceToDelete,
+  clearAppliancesToDelete,
   setSelectedAppliances,
   clearSelectedAppliances
 } = kitchenAppliancesSlice.actions;

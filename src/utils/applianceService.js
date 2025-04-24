@@ -48,4 +48,21 @@ export const applianceService = {
     );
     return applianceId;
   },
+
+  updateAppliances: async (userId, updateData) => {
+    const token = await getAuthToken();
+    const response = await axios.put(
+      `${API_URL}/users/${userId}/appliances/update`,
+      updateData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    return response.data;
+  },
+
 };
+
