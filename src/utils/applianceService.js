@@ -50,6 +50,7 @@ export const applianceService = {
   },
 
   updateAppliances: async (userId, updateData) => {
+    console.log('Update Data: appliances', updateData);
     const token = await getAuthToken();
     const response = await axios.put(
       `${API_URL}/users/${userId}/appliances/update`,

@@ -7,7 +7,7 @@ const initialState = {
     prep: [],
     specialty: []
   },
-  appliancesToDelete: []
+  applianceToggles: [] // Array of { appliance_id, is_owned }
 };
 
 const kitchenAppliancesSlice = createSlice({
@@ -15,38 +15,48 @@ const kitchenAppliancesSlice = createSlice({
   initialState,
   reducers: {
     toggleAppliance: (state, action) => {
-      const { appliance, category } = action.payload;
+      const { appliance, category, applianceId } = action.payload;
       const categoryAppliances = state.selectedAppliances[category];
       const index = categoryAppliances.indexOf(appliance);
       
       if (index === -1) {
         categoryAppliances.push(appliance);
+        // Add to toggles if it's a new appliance
+        if (applianceId) {
+          state.applianceToggles.push({ appliance_id: applianceId, is_owned: true });
+        }
       } else {
         categoryAppliances.splice(index, 1);
+        // Add to toggles if it's an existing appliance
+        if (applianceId) {
+          state.applianceToggles.push({ appliance_id: applianceId, is_owned: false });
+        }
       }
     },
     
     toggleCategory: (state, action) => {
-      const { category, items } = action.payload;
+      const { category, items, applianceIds } = action.payload;
       const currentAppliances = state.selectedAppliances[category];
       
       if (items.every(item => currentAppliances.includes(item))) {
         // If all items are selected, remove them all
         state.selectedAppliances[category] = [];
+        // Add all appliance IDs to toggles with is_owned: false
+        applianceIds?.forEach(id => {
+          state.applianceToggles.push({ appliance_id: id, is_owned: false });
+        });
       } else {
         // Otherwise, add all missing items
         state.selectedAppliances[category] = items;
+        // Add all appliance IDs to toggles with is_owned: true
+        applianceIds?.forEach(id => {
+          state.applianceToggles.push({ appliance_id: id, is_owned: true });
+        });
       }
     },
     
-    addApplianceToDelete: (state, action) => {
-      if (!state.appliancesToDelete.includes(action.payload)) {
-        state.appliancesToDelete.push(action.payload);
-      }
-    },
-    
-    clearAppliancesToDelete: (state) => {
-      state.appliancesToDelete = [];
+    clearApplianceToggles: (state) => {
+      state.applianceToggles = [];
     },
     
     setSelectedAppliances: (state, action) => {
@@ -61,24 +71,13 @@ const kitchenAppliancesSlice = createSlice({
         specialty: []
       };
     }
-  },
-  markForDeletion: (state, action) => {
-    const applianceId = action.payload;
-    if (!state.appliancesToDelete.includes(applianceId)) {
-      state.appliancesToDelete.push(applianceId);
-    }
-  },
-  unmarkForDeletion: (state, action) => {
-    const applianceId = action.payload;
-    state.appliancesToDelete = state.appliancesToDelete.filter(id => id !== applianceId);
-  },
+  }
 });
 
 export const {
   toggleAppliance,
   toggleCategory,
-  addApplianceToDelete,
-  clearAppliancesToDelete,
+  clearApplianceToggles,
   setSelectedAppliances,
   clearSelectedAppliances
 } = kitchenAppliancesSlice.actions;

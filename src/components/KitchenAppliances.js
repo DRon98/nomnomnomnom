@@ -73,6 +73,7 @@ const APPLIANCE_CATEGORIES = {
 const KitchenAppliances = () => {
   const dispatch = useDispatch();
   const selectedAppliances = useSelector(state => state.kitchenAppliances.selectedAppliances);
+  const appliancesToToggle = useSelector(state => state.kitchenAppliances.applianceToggles);
   const [userId, setUserId] = useState(null);
   const appliancesToDelete = useSelector(state => state.kitchenAppliances.appliancesToDelete);
   const [existingAppliances, setExistingAppliances] = useState([]); // Store appliances from GET
@@ -94,11 +95,13 @@ const KitchenAppliances = () => {
     if (userAppliances) {
       // Group appliances by category
       const appliancesByCategory = userAppliances.reduce((acc, appliance) => {
-        const category = appliance.category.toLowerCase();
-        if (!acc[category]) {
-          acc[category] = [];
+        if (appliance.is_owned) {  // Only add appliances that are owned
+          const category = appliance.category.toLowerCase();
+          if (!acc[category]) {
+            acc[category] = [];
+          }
+          acc[category].push(appliance.name.toLowerCase());
         }
-        acc[category].push(appliance.name.toLowerCase());
         return acc;
       }, {});
 
@@ -121,47 +124,56 @@ const KitchenAppliances = () => {
       a => a.name.toLowerCase() === appliance.toLowerCase() && a.category.toLowerCase() === category.toLowerCase()
     );
 
-    if (existingAppliance && isApplianceSelected(appliance, category)) {
-      // If unselecting an existing appliance, add to appliancesToDelete
-      dispatch(addApplianceToDelete(existingAppliance.id));
-    }
-
-    dispatch(toggleAppliance({ appliance: appliance.toLowerCase(), category }));
-  };
-
-  const handleToggleCategory = (category) => {
-    dispatch(toggleCategory({
+    dispatch(toggleAppliance({ 
+      appliance: appliance.toLowerCase(), 
       category,
-      items: APPLIANCE_CATEGORIES[category].items.map(item => item.toLowerCase())
+      applianceId: existingAppliance?.id 
     }));
   };
 
+  const handleToggleCategory = (category) => {
+    const items = APPLIANCE_CATEGORIES[category].items.map(item => item.toLowerCase());
+    const applianceIds = userAppliances
+      ?.filter(a => a.category.toLowerCase() === category.toLowerCase())
+      .map(a => a.id);
 
-   // React Query mutation for updating appliances
-   const updateAppliancesMutation = useMutation({
-    mutationFn: (updateData) => applianceService.updateAppliances(userId, updateData),
+    dispatch(toggleCategory({
+      category,
+      items,
+      applianceIds
+    }));
+  };
+
+  // React Query mutation for updating appliances
+  const updateAppliancesMutation = useMutation({
+    mutationFn: (updateData) => {
+      console.log('Mutation function called with:', updateData);
+      return applianceService.updateAppliances(userId, updateData);
+    },
     onMutate: async (updateData) => {
+      console.log('Update Data mutation:', updateData);
       // Optimistic update: Cancel ongoing queries and update cache
       await queryClient.cancelQueries(['appliances', userId]);
-
+      
       const previousAppliances = queryClient.getQueryData(['appliances', userId]);
 
       // Update cache optimistically
       queryClient.setQueryData(['appliances', userId], (old) => {
-        // Remove deleted appliances
-        let updatedAppliances = old
-          ? old.filter((appliance) => !updateData.appliance_ids_to_delete.includes(appliance.id))
-          : [];
-        // Add new appliances
-        const newAppliances = updateData.appliances_to_add.map((appliance, index) => ({
-          id: `temp-id-${Date.now()}-${index}`, // Temporary ID
-          user_id: userId,
-          name: appliance.name,
-          category: appliance.category,
-          is_owned: appliance.is_owned,
-          created_at: new Date().toISOString(),
-        }));
-        return [...updatedAppliances, ...newAppliances];
+        if (!old) return [];
+        
+        // Create a map of appliance IDs to their new is_owned status
+        const toggleMap = new Map(
+          updateData.appliances_to_toggle.map(toggle => [toggle.appliance_id, toggle.is_owned])
+        );
+
+        // Update existing appliances based on toggle status
+        return old.map(appliance => {
+          const newIsOwned = toggleMap.get(appliance.id);
+          if (newIsOwned !== undefined) {
+            return { ...appliance, is_owned: newIsOwned };
+          }
+          return appliance;
+        });
       });
 
       // Clear error message
@@ -183,45 +195,42 @@ const KitchenAppliances = () => {
     },
   });
 
- const handleSubmit = () => {
+  const handleSubmit = () => {
     if (!userId) {
       setErrorMessage('User not authenticated');
       return;
     }
 
-    // Transform selectedAppliances into appliances_to_add
-    const appliancesToAdd = Object.keys(selectedAppliances).flatMap((category) =>
-      selectedAppliances[category].map((name) => ({
-        name,
-        category,
-        is_owned: true,
-      }))
-    );
-
-    // Filter out appliances that already exist in userAppliances
-    const existingApplianceNames = userAppliances
-      ? userAppliances.map((appliance) => appliance.name.toLowerCase())
-      : [];
-    const newAppliancesToAdd = appliancesToAdd.filter(
-      (appliance) => !existingApplianceNames.includes(appliance.name.toLowerCase())
-    );
-
-    // Get appliances to delete from Redux state
-    const applianceIdsToDelete = appliancesToDelete;
+    // Get appliances to toggle from Redux state
+    const applianceToggles = appliancesToToggle;
+    console.log('Submitting with toggles:', applianceToggles);
 
     // Prepare payload
     const updateData = {
-      appliances_to_add: newAppliancesToAdd,
-      appliance_ids_to_delete: applianceIdsToDelete,
+      appliances_to_toggle: applianceToggles
     };
 
     console.log('Update Data:', updateData);
     // Trigger mutation
-    updateAppliancesMutation.mutate(updateData);
+    updateAppliancesMutation.mutate(updateData, {
+      onSuccess: (data) => {
+        console.log('Mutation successful:', data);
+      },
+      onError: (error) => {
+        console.error('Mutation failed:', error);
+      }
+    });
   };
 
   const isApplianceSelected = (appliance, category) => {
-    return selectedAppliances[category].includes(appliance.toLowerCase());
+    const applianceInRedux = selectedAppliances[category.toLowerCase()]?.includes(appliance.toLowerCase());
+    const applianceInAPI = userAppliances?.find(a => 
+      a.name.toLowerCase() === appliance.toLowerCase() && 
+      a.category.toLowerCase() === category.toLowerCase()
+    );
+    
+    // Return true if the appliance is in Redux state (clicked) OR if it's owned according to the API
+    return applianceInRedux || (applianceInAPI && applianceInAPI.is_owned);
   };
 
   const isCategoryFullySelected = (category) => {
