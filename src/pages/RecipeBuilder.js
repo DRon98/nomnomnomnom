@@ -6,7 +6,7 @@ import { FaFire, FaClock, FaUtensils, FaListUl, FaChartBar, FaPlus, FaMinus, FaT
 import { generateRecipeBuilderFromAPI } from '../utils/api';
 import { addToGroceries } from '../store/inventorySlice';
 
-const RecipeBuilder = ({ recipeData }) => {
+const RecipeBuilder = ({ recipeData, hide = false }) => {
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,7 +24,6 @@ const RecipeBuilder = ({ recipeData }) => {
   const location = useLocation();
 
   const timelineRef = useRef(null);
-  const dispatch = useDispatch();
   const pantryItems = useSelector(state => state.inventory.pantry || []);
   const groceryItems = useSelector(state => state.inventory.groceries || []);
 
@@ -71,7 +70,7 @@ const RecipeBuilder = ({ recipeData }) => {
 
   if (loading) {
     return (
-      <div className="recipe-builder-loading">
+      <div className="recipe-builder recipe-builder-loading" data-hide={hide}>
         <FaSpinner className="loading-spinner" />
         <p>Loading recipe...</p>
       </div>
@@ -80,7 +79,7 @@ const RecipeBuilder = ({ recipeData }) => {
 
   if (error) {
     return (
-      <div className="recipe-builder-error">
+      <div className="recipe-builder recipe-builder-error" data-hide={hide}>
         <p>{error}</p>
         <button onClick={() => window.location.reload()}>Try Again</button>
       </div>
@@ -96,43 +95,7 @@ const RecipeBuilder = ({ recipeData }) => {
     setActiveTab('prep');
   };
 
-  const getStepStyle = (step) => {
-    // For parallel steps, we don't need to calculate anything - CSS grid will handle it
-    // We only need to ensure non-parallel steps span all columns, which is handled by CSS
-    return {};
-  };
-
-  const renderGridLines = () => {
-    const totalMinutes = Math.max(...steps.map(step => step.startTime + step.duration));
-    const numLines = Math.ceil(totalMinutes / 30) + 1;
-    
-    return Array.from({ length: numLines }, (_, i) => (
-      <div
-        key={`grid-${i}`}
-        className="timeline-grid-line"
-        style={{ top: `${(i / (numLines - 1)) * 100}%` }}
-      />
-    ));
-  };
-
-  const renderTimeMarkers = () => {
-    const totalMinutes = Math.max(...steps.map(step => step.startTime + step.duration));
-    const numMarkers = Math.ceil(totalMinutes / 30) + 1;
-    
-    return Array.from({ length: numMarkers }, (_, i) => (
-      <div 
-        key={`marker-${i}`}
-        className="time-marker"
-        style={{ 
-          position: 'absolute',
-          top: `${(i / (numMarkers - 1)) * 100}%`,
-          transform: 'translateY(-50%)'
-        }}
-      >
-        {i * 30}min
-      </div>
-    ));
-  };
+  
 
   const handleTasteClick = (tasteAdjustment) => {
     setActiveTasteAdjustment(activeTasteAdjustment?.type === tasteAdjustment.type ? null : tasteAdjustment);
@@ -157,9 +120,7 @@ const RecipeBuilder = ({ recipeData }) => {
     return (
       <div className="timeline-container">
         <div className="timeline-header">
-          <div>Prep Steps</div>
-          <div>Cook Steps</div>
-          <div>Finish Steps</div>
+         
         </div>
         <div className="timeline-grid" ref={timelineRef}>
           {sortedSteps.map(step => (
@@ -454,75 +415,59 @@ const RecipeBuilder = ({ recipeData }) => {
     );
   };
 
-  const handleAddToShoppingList = () => {
-    const missingIngredients = ingredients.filter(ingredient => !isIngredientInPantry(ingredient));
-    
-    missingIngredients.forEach(ingredient => {
-      if (!isIngredientInGroceries(ingredient)) {
-        dispatch(addToGroceries({
-          food: {
-            id: `${ingredient.name.toLowerCase().replace(/\s+/g, '_')}`,
-            name: ingredient.name,
-            category: ingredient.category || 'other',
-            unit: ingredient.unit
-          },
-          amount: ingredient.quantity
-        }));
-      }
-    });
-  };
+ 
 
   return (
-    <div className="recipe-builder-container">
-      <div className="recipe-header">
-        <input
-          type="text"
-          className="recipe-title-input"
-          placeholder="Enter Recipe Title"
-          value={recipe.title}
-          onChange={(e) => setRecipe({ ...recipe, title: e.target.value })}
-        />
-        {renderRecipeStats()}
-        {renderTasteAdjustments()}
-      </div>
-
-      <div className="recipe-content">
-        <div className="recipe-timeline">
-          <h3>Recipe Timeline</h3>
-          {renderTimeline()}
+    <div className="recipe-builder" data-hide={hide}>
+      <div className="recipe-builder-content">
+        <div className="recipe-header">
+          <input
+            type="text"
+            className="recipe-title-input"
+            placeholder="Enter Recipe Title"
+            value={recipe.title}
+            onChange={(e) => setRecipe({ ...recipe, title: e.target.value })}
+          />
+          {renderRecipeStats()}
+          {renderTasteAdjustments()}
         </div>
 
-        <div className="recipe-details">
-          <div className="recipe-tabs">
-            <button
-              className={`tab-button ${activeTab === 'full' ? 'active' : ''}`}
-              onClick={() => setActiveTab('full')}
-            >
-              <FaUtensils /> Full Recipe
-            </button>
-            <button
-              className={`tab-button ${activeTab === 'prep' ? 'active' : ''}`}
-              onClick={() => setActiveTab('prep')}
-            >
-              <FaListUl /> Prep Steps
-            </button>
-            <button
-              className={`tab-button ${activeTab === 'nutrition' ? 'active' : ''}`}
-              onClick={() => setActiveTab('nutrition')}
-            >
-              <FaChartBar /> Nutrition
-            </button>
+        <div className="recipe-content">
+          <div className="recipe-timeline">
+            <h3>Recipe Timeline</h3>
+            {renderTimeline()}
           </div>
 
-          <div className="recipe-tab-content">
-            {activeTab === 'full' && renderFullRecipe()}
-            {activeTab === 'prep' && renderPrepSteps()}
-            {activeTab === 'nutrition' && renderNutritionInfo()}
+          <div className="recipe-details">
+            <div className="recipe-tabs">
+              <button
+                className={`tab-button ${activeTab === 'full' ? 'active' : ''}`}
+                onClick={() => setActiveTab('full')}
+              >
+                <FaUtensils /> Full Recipe
+              </button>
+              <button
+                className={`tab-button ${activeTab === 'prep' ? 'active' : ''}`}
+                onClick={() => setActiveTab('prep')}
+              >
+                <FaListUl /> Prep Steps
+              </button>
+              <button
+                className={`tab-button ${activeTab === 'nutrition' ? 'active' : ''}`}
+                onClick={() => setActiveTab('nutrition')}
+              >
+                <FaChartBar /> Nutrition
+              </button>
+            </div>
+
+            <div className="recipe-tab-content">
+              {activeTab === 'full' && renderFullRecipe()}
+              {activeTab === 'prep' && renderPrepSteps()}
+              {activeTab === 'nutrition' && renderNutritionInfo()}
+            </div>
           </div>
         </div>
       </div>
-
-
     </div>
   );
 };

@@ -1,0 +1,151 @@
+.saved-recipe-details {
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.saved-recipe-header {
+  margin-bottom: 2rem;
+}
+
+.saved-recipe-header h2 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+  font-size: 1.8rem;
+}
+
+.saved-recipe-header .description {
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.saved-recipe-stats {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
+}
+
+.stat-item svg {
+  color: #2196f3;
+}
+
+.saved-recipe-controls {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.control-group label {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.control-group input,
+.control-group select {
+  padding: 0.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 1rem;
+  min-width: 120px;
+}
+
+.control-group input:focus,
+.control-group select:focus {
+  border-color: #2196f3;
+  outline: none;
+}
+
+.saved-recipe-ingredients {
+  margin-bottom: 2rem;
+}
+
+.saved-recipe-ingredients h3 {
+  margin: 0 0 1rem 0;
+  color: #333;
+}
+
+.saved-recipe-ingredients ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.saved-recipe-ingredients li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e0e0e0;
+  color: #333;
+}
+
+.saved-recipe-ingredients li:last-child {
+  border-bottom: none;
+}
+
+.saved-recipe-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.view-recipe-button,
+.use-recipe-button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.view-recipe-button {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.view-recipe-button:hover {
+  background: #e0e0e0;
+}
+
+.use-recipe-button {
+  background: #2196f3;
+  color: white;
+}
+
+.use-recipe-button:hover {
+  background: #1976d2;
+}
+
+@media (max-width: 768px) {
+  .saved-recipe-stats,
+  .saved-recipe-controls {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .control-group {
+    width: 100%;
+  }
+  
+  .control-group input,
+  .control-group select {
+    width: 100%;
+  }
+} 

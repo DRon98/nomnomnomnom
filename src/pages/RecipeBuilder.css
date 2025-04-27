@@ -1003,3 +1003,19 @@
 .shopping-cart-icon {
   font-size: 12px;
 }
+
+.recipe-builder {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.recipe-builder[data-hide="true"] {
+  display: none;
+}
+
+.recipe-builder-content {
+  height: 100%;
+  overflow-y: auto;
+  padding: 20px;
+}

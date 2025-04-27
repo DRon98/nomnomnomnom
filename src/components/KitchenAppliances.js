@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { FaBlender, FaUtensils, FaFire, FaCoffee } from 'react-icons/fa';
 import { toggleAppliance, toggleCategory, addApplianceToDelete } from '../store/kitchenAppliancesSlice';
@@ -90,7 +91,7 @@ const KitchenAppliances = () => {
   }, []);
 
   const { data: userAppliances, isLoading, error } = useUserAppliances(userId);
-
+  console.log('User Appldcdciances:', userAppliances);
   useEffect(() => {
     if (userAppliances) {
       // Group appliances by category
@@ -115,7 +116,7 @@ const KitchenAppliances = () => {
   }, [userAppliances, dispatch]);
 
   useEffect(() => {
-    console.log('User Appliances:', userAppliances);
+
   }, [userAppliances]);
 
   const handleToggleAppliance = (appliance, category) => {
@@ -287,4 +288,4 @@ const KitchenAppliances = () => {
   );
 };
 
-export default KitchenAppliances; 
+export default React.memo(KitchenAppliances);

@@ -16,7 +16,9 @@ const RecipeCard = ({
   totalIngredients,
   chosenRecipe,
   onRecipeChosen,
-  mealType
+  mealType,
+  renderRecipePreview,
+  handleUseRecipe
 }) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -92,11 +94,18 @@ const RecipeCard = ({
             <span key={index} className="tag">{tag}</span>
           ))}
         </div>
+      
         <button 
           className="view-recipe-button"
           onClick={handleViewRecipe}
         >
           View Recipe
+        </button>
+        <button 
+          className="view-recipe-button"
+          onClick={handleUseRecipe}
+        >
+          Use Recipe
         </button>
       </div>
 

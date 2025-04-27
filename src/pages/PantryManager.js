@@ -4,14 +4,17 @@ import { Link } from 'react-router-dom';
 import { FaPlus, FaMinus, FaSearch, FaFilter, FaSort, FaLeaf, FaSync } from 'react-icons/fa';
 import { updatePantryAmount } from '../store/inventorySlice';
 import './PantryManager.css';
+import { useFoods } from '../hooks/useFoods';
 
 const CATEGORIES = ['Protein', 'Carbs', 'Vegetables', 'Fruits', 'Dairy', 'Fats', 'Condiments', 'Spices'];
 
 const PantryManager = () => {
+  const { data: foods, isLoading, error } = useFoods();
+  console.log("foods",foods)
   const [searchTerm, setSearchTerm] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  
+
   // Get pantry items from Redux store with safety check
   const pantryItems = useSelector(state => state?.inventory?.pantry || []);
   const dispatch = useDispatch();

@@ -5,6 +5,7 @@ import { useLocation, Link } from 'react-router-dom';
 import { FaClock, FaUtensils, FaSearch, FaSpinner, FaChevronDown, FaChevronUp, FaChevronLeft, FaChevronRight, FaPlus, FaShoppingBasket, FaTimes, FaUsers, FaStar } from 'react-icons/fa';
 import { generateRecipePreviewsFromAPI } from '../utils/api';
 import RecipeCard from '../components/RecipeCard/RecipeCard';
+import ScrollableIngredientList from '../components/ScrollableIngredientList/ScrollableIngredientList';
 import './RecipeGenerator.css';
 import InventoryDropdowns from '../components/InventoryDropdowns';
 
@@ -26,98 +27,13 @@ const COOKING_TIMES = ['any', '15', '30', '45', '60'];
 const MEAL_TYPES = ['Breakfast', 'Main(Lunch/Dinner)', 'Snack', 'Dessert'];
 const SKILL_LEVELS = ['beginner', 'intermediate', 'advanced'];
 
-const ScrollableIngredientList = React.memo(({ items, onSelect, selectedIds, emptyMessage, showRemoveButton }) => {
-  const containerRef = useRef(null);
-  const [showLeftArrow, setShowLeftArrow] = useState(false);
-  const [showRightArrow, setShowRightArrow] = useState(false);
-  const [translateX, setTranslateX] = useState(0);
-  const [containerWidth, setContainerWidth] = useState(0);
-  const [contentWidth, setContentWidth] = useState(0);
-
-  const checkOverflow = useCallback(() => {
-    if (containerRef.current) {
-      const container = containerRef.current;
-      const containerWidth = container.clientWidth;
-      const contentWidth = container.scrollWidth;
-      setContainerWidth(containerWidth);
-      setContentWidth(contentWidth);
-      setShowLeftArrow(translateX < 0);
-      setShowRightArrow(contentWidth > containerWidth + Math.abs(translateX));
-    }
-  }, [translateX]);
-
-  const scroll = useCallback((direction) => {
-    const scrollAmount = direction === 'left' ? 200 : -200;
-    const newTranslateX = Math.min(0, Math.max(translateX + scrollAmount, -(contentWidth - containerWidth)));
-    setTranslateX(newTranslateX);
-  }, [translateX, contentWidth, containerWidth]);
-
-  useEffect(() => {
-    checkOverflow();
-    window.addEventListener('resize', checkOverflow);
-    return () => window.removeEventListener('resize', checkOverflow);
-  }, [items, checkOverflow]);
-
-  useEffect(() => {
-    checkOverflow();
-  }, [translateX, checkOverflow]);
-
-  const renderedItems = useMemo(() => items.map(item => (
-      <div 
-        key={item.foodId} 
-        className={`ingredient-pill ${!showRemoveButton ? 'clickable' : ''} ${selectedIds.includes(item.foodId) ? 'selected' : ''}`}
-        onClick={() => !showRemoveButton && onSelect(item)}
-      >
-        {item.food.icon && <span className="ingredient-icon">{item.food.icon}</span>}
-        <span className="ingredient-name">{item.food.name}</span>
-        {showRemoveButton && (
-          <button
-            className="remove-ingredient"
-            onClick={(e) => {
-              e.stopPropagation();
-              onSelect(item.foodId);
-            }}
-          >
-            ×
-          </button>
-        )}
-      </div>
-    )), [items, onSelect, selectedIds, showRemoveButton]);
-
-  return (
-    <div className="ingredients-scroll">
-      {showLeftArrow && (
-        <button className="scroll-button left" onClick={() => scroll('left')}>
-          <FaChevronLeft />
-        </button>
-      )}
-      <div 
-        className="ingredients-scroll-container" 
-        ref={containerRef}
-        style={{ transform: `translateX(${translateX}px)` }}
-      >
-        {renderedItems}
-        {items.length === 0 && (
-          <div className="empty-message">{emptyMessage}</div>
-        )}
-      </div>
-      {showRightArrow && (
-        <button className="scroll-button right" onClick={() => scroll('right')}>
-          <FaChevronRight />
-        </button>
-      )}
-    </div>
-  );
-}, (prev, next) => {
-  return prev.items === next.items && prev.selectedIds === next.selectedIds;
-});
-
 const RecipeGenerator = ({ 
   baseIngredients = [], 
   recipes: passedRecipes = [], 
   onRecipesUpdate,
   onRecipeChosen,
-  chosenRecipe
+  chosenRecipe,
+  handleUseRecipe
 }) => {
   const location = useLocation();
   const dispatch = useDispatch(); // Get the dispatch function
@@ -154,7 +70,7 @@ const RecipeGenerator = ({
             foodId: name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
             food: {
               name: name.trim(),
-              icon: '🍳',  // Default icon for now
+              icon: '',  // Default icon for now
               unit: 'unit'
             }
           }));
@@ -196,16 +112,6 @@ const RecipeGenerator = ({
     }
   }, [baseIngredients]);
 
-  const handleIngredientSelect = (ingredient) => {
-    // Toggle selection: if already selected, remove it
-    if (selectedIngredients.find(item => item.foodId === ingredient.foodId)) {
-      handleIngredientRemove(ingredient.foodId);
-    } else {
-      setSelectedIngredients([...selectedIngredients, ingredient]);
-    }
-    setSearchQuery('');
-    setShowDropdown(false);
-  };
 
   const handleIngredientRemove = (ingredientId) => {
     setSelectedIngredients(selectedIngredients.filter(item => item.foodId !== ingredientId));
@@ -320,6 +226,8 @@ const RecipeGenerator = ({
         }}
         inPantryCount={inPantryCount}
         totalIngredients={totalIngredients}
+        renderRecipePreview={renderRecipePreview}
+        handleUseRecipe={handleUseRecipe}
       />
     );
   };
@@ -361,11 +269,6 @@ const RecipeGenerator = ({
           <div><FaUtensils /> {selectedPreview.stats.calories} cal</div>
         </div>
 
-        {/* <div className="preview-tags">
-          {selectedPreview.tags.map((tag, index) => (
-            <span key={index} className="tag">{tag}</span>
-          ))}
-        </div> */}
              
         <div className="preview-tables">
           <div className="ingredients-table">
