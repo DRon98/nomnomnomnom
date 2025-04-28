@@ -14,7 +14,7 @@ export const inventoryService = {
   },
   putInventory: async (userId, inv_type, payload) => {
     const token = await getAuthToken();
-    const response = await axios.put(`${API_URL}/users/${userId}/inventories/${inv_type}`, payload, {
+    const response = await axios.put(`${API_URL}/users/${userId}/inventories/${inv_type}/items/bulk`, payload, {
         headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -25,6 +25,7 @@ export const inventoryService = {
 };
 //"/users/{user_id}/inventories/{inv_type}"
 //`${API_URL}/users/${userId}/inventories`
-//`${API_URL}/users/${userId}/inventories/${inv_type}`
+//`${API_URL}/users/${userId}/inventories/${inv_type}
+// /users/{user_id}/inventories/{inv_type}/items/bulk`
 
    

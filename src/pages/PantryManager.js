@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FaPlus, FaMinus, FaSearch, FaFilter, FaSort, FaLeaf, FaSync } from 'react-icons/fa';
 import { updatePantryAmount } from '../store/inventorySlice';
 import './PantryManager.css';
 import { useFoods } from '../hooks/useFoods';
-
+import { getCurrentUserId } from '../utils/auth';
+import { useInventory } from '../hooks/useInventory';
 const CATEGORIES = ['Protein', 'Carbs', 'Vegetables', 'Fruits', 'Dairy', 'Fats', 'Condiments', 'Spices'];
 
 const PantryManager = () => {
@@ -14,7 +15,7 @@ const PantryManager = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
-
+  const [userId, setUserId] = useState(null);
   // Get pantry items from Redux store with safety check
   const pantryItems = useSelector(state => state?.inventory?.pantry || []);
   const dispatch = useDispatch();
@@ -32,6 +33,17 @@ const PantryManager = () => {
       </div>
     );
   };
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const id = await getCurrentUserId();
+      setUserId(id);
+    };
+    fetchUserId();
+  }, []);
+
+  const { data: pantrydata, isLoading: pantryLoading, error: pantryError } = useInventory(userId, 'pantry');
+    console.log("pantrydata", pantrydata)
 
   const getQuantityColor = (quantity, maxQuantity) => {
     const ratio = quantity / maxQuantity;
@@ -150,43 +162,36 @@ const PantryManager = () => {
         </div>
 
         <div className="table-body">
-          {Array.isArray(filteredItems) && filteredItems.length > 0 ? (
-            filteredItems.map(item => (
-              <div key={item.foodId || Math.random()} className="table-row">
-                <div className="cell">{item.food.name || 'Unnamed Item'}</div>
-                <div className="cell">{item.food.category || 'Uncategorized'}</div>
-                <div className="cell quantity-cell">
-                  {renderQuantityIndicator(item.amount || 0)}
-                </div>
-                <div className="cell">
-                  {item.food.expiration ? new Date(item.food.expiration).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: '2-digit',
-                    year: 'numeric'
-                  }) : '-'}
-                </div>
+          {pantrydata?.items?.map(item => (
+              <div key={item.id} className="table-row">
+                <div className="cell">{item.name}</div>
+                <div className="cell">{item.unit}</div>
+                <div className="cell quantity-cell">{item.quantity}</div>
+                <div className="cell">{item.expiration_date || '-'}</div>
                 <div className="cell actions">
                   <button 
                     className="action-icon"
-                    onClick={() => dispatch(updatePantryAmount({ foodId: item.foodId, amount: item.amount + 1 }))}
+                    onClick={() => dispatch(updatePantryAmount({ 
+                      inventoryId: item.id,
+                      foodId: item.food_id, 
+                      amount: item.quantity + 1 
+                    }))}
                   >
                     <FaPlus />
                   </button>
                   <button 
                     className="action-icon"
-                    onClick={() => dispatch(updatePantryAmount({ foodId: item.foodId, amount: Math.max(1, item.amount - 1) }))}
+                    onClick={() => dispatch(updatePantryAmount({ 
+                      inventoryId: item.id,
+                      foodId: item.food_id, 
+                      amount: Math.max(0.1, item.quantity - 1) 
+                    }))}
                   >
                     <FaMinus />
                   </button>
                 </div>
-              </div>
-            ))
-          ) : (
-            <div className="empty-state">
-              <p>No items in your pantry</p>
-              <p className="empty-subtitle">Add items from the grocery list or create new items</p>
-            </div>
-          )}
+              </div>    
+            ))}
         </div>
       </div>
     </div>

@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { addToPantry } from '../store/inventorySlice';
-import Selector from '../components/SpiceSelector';
+import Selector from '../components/Selector';
 
 export const SPICE_CATEGORIES = {
   spices: {
@@ -90,6 +90,7 @@ const SpiceCabinetBuilder = () => {
 
   return (
     <Selector
+      inventoryType="spice_cabinet"
       categories={SPICE_CATEGORIES}
       onComplete={handleComplete}
       onBack={() => navigate('/pantry')}

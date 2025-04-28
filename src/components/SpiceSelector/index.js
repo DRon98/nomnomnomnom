@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FaCheck } from 'react-icons/fa';
 import './styles.css';
 
-const Selector = ({ 
+const SpiceSelector = ({ 
   categories,
   onComplete,
   onBack,
@@ -100,7 +100,7 @@ const Selector = ({
                 key={item}
                 className={`option-bubble ${selections[activeTab].has(item) ? 'selected' : ''}`}
                 onClick={() => handleSelect(item)}
-              >
+              >vvvdf
                 {item}
                 {selections[activeTab].has(item) && <FaCheck className="check-icon" />}
               </button>
@@ -122,4 +122,4 @@ const Selector = ({
   );
 };
 
-export default Selector; 
+export default SpiceSelector; 

@@ -187,9 +187,28 @@
 }
 
 .option-bubble.selected {
-  background-color: #e8f4fd;
-  border-color: #3498db;
-  color: #2980b9;
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.option-bubble.in-pantry {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #1976d2;
+}
+
+.option-bubble.in-pantry .check-icon {
+  color: #1976d2;
+}
+
+.option-bubble.marked-for-removal {
+  background-color: #ffebee;
+  color: #d32f2f;
+  border: 1px solid #d32f2f;
+}
+
+.option-bubble.marked-for-removal .check-icon {
+  color: #d32f2f;
 }
 
 .check-icon {

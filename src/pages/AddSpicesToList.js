@@ -29,7 +29,7 @@ const AddSpicesToList = () => {
 
   return (
     <Selector
-      categories={SPICE_CATEGORIES}
+    inventoryType="spice_cabinet"
       onComplete={handleComplete}
       onBack={() => navigate('/grocery-list')}
       title="Add Spices & Seasonings to Shopping List"

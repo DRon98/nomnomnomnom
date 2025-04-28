@@ -9,6 +9,7 @@ export const useFoods = () => {
     queryKey: [FOODS_QUERY_KEY],
     queryFn: async () => {
       const token = await getAuthToken();
+   
       return foodService.getFoods(token);
     },
     staleTime: 1000 * 60 * 5, // 5 minutes

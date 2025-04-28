@@ -3,7 +3,7 @@ import { inventoryService } from "../services/inventoryService";
 
 
 
-export const useInventory = (userId, inv_type) => {
+export const useInventory = ( userId, inv_type) => {
   return useQuery({
     queryKey: ['inventory', userId, inv_type],
     queryFn: () => inventoryService.getInventory(userId, inv_type),

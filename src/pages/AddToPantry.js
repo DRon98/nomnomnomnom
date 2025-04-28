@@ -140,24 +140,26 @@ const AddToPantry = () => {
 
   const handleComplete = (selections) => {
     // Add all selected items to pantry
-    Object.entries(selections).forEach(([category, items]) => {
-      items.forEach(item => {
-        dispatch(addToPantry({
-          food: {
-            id: item.toLowerCase().replace(/[^a-z0-9]+/g, '_'),
-            name: item,
-            category: PANTRY_CATEGORIES[category].title,
-            unit: 'unit'
-          },
-          amount: 1
-        }));
-      });
-    });
-    navigate('/pantry');
+    // Object.entries(selections).forEach(([category, items]) => {
+    //   items.forEach(item => {
+    //     dispatch(addToPantry({
+    //       food: {
+    //         id: item.toLowerCase().replace(/[^a-z0-9]+/g, '_'),
+    //         name: item,
+    //         category: PANTRY_CATEGORIES[category].title,
+    //         unit: 'unit'
+    //       },
+    //       amount: 1
+    //     }));
+    //   });
+    // });
+    // navigate('/pantry');
+    console.log("selections",selections)
   };
 
   return (
     <Selector
+      inventoryType="pantry"
       categories={PANTRY_CATEGORIES}
       onComplete={handleComplete}
       onBack={() => navigate('/pantry')}

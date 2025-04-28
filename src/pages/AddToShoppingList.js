@@ -29,6 +29,7 @@ const AddToShoppingList = () => {
 
   return (
     <Selector
+      inventoryType="shopping_list"
       categories={PANTRY_CATEGORIES}
       onComplete={handleComplete}
       onBack={() => navigate('/grocery-list')}
