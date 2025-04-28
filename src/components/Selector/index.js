@@ -1,9 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState,useEffect, useMemo } from 'react';
 import { FaCheck, FaSearch, FaTimes } from 'react-icons/fa';
 import './styles.css';
-
+import { useFoods } from '../../hooks/useFoods'; 
+import { useInventory } from '../../hooks/useInventory';
+import { getCurrentUserId } from '../../utils/auth';
 const Selector = ({ 
-  categories,
+    categories,
   onComplete,
   onBack,
   title = "Select Items",
@@ -17,7 +19,19 @@ const Selector = ({
       return acc;
     }, {})
   );
-
+  const [userId, setUserId] = useState(null);
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const id = await getCurrentUserId();
+      setUserId(id);
+    };
+    fetchUserId();
+  }, []);
+  const { data: foods, isLoading, error } = useFoods();
+  console.log(typeof userId)
+  const { pantrydata, isLoading: pantryLoading, error: pantryError } = useInventory(userId, 'pantry');
+  console.log("pantry",pantrydata)
+  console.log("foods add to pantry",foods)
   // Create a flat list of all items with their categories for search
   const allItems = useMemo(() => {
     return Object.entries(categories).reduce((acc, [categoryKey, category]) => {
@@ -25,7 +39,7 @@ const Selector = ({
         acc.push({
           item,
           category: categoryKey,
-          categoryTitle: category.title
+          categoryTitle: category
         });
       });
       return acc;
@@ -99,6 +113,17 @@ const Selector = ({
       return acc;
     }, {});
 
+    if (isLoading) {
+      return <div>Loading...
+
+        {console.log("loading")}
+      </div>;
+    }
+
+    if (error) {
+      return <div>Error: {error.message}</div>;
+    }
+
     return (
       <div className="search-results">
         {Object.entries(groupedResults).map(([category, { title, items }]) => (
@@ -162,7 +187,7 @@ const Selector = ({
         {!searchQuery ? (
           <>
             <div className="tabs-header">
-              {Object.keys(categories).map(category => (
+              {/* {Object.keys(categories).map(category => (
                 <button
                   key={category}
                   className={`tab-button ${activeTab === category ? 'active' : ''}`}
@@ -175,12 +200,26 @@ const Selector = ({
                     </span>
                   )}
                 </button>
+              ))} */}
+              {foods?.map(food => (
+                 <button
+                 key={food.id}
+                 className={`tab-button ${activeTab === food.category ? 'active' : ''}`}
+                 onClick={() => setActiveTab(food.category)}
+               >
+                 {food.category}
+                 {selections[food.category] > 0 && (
+                   <span className="selection-badge">
+                     {selections[food.category]}
+                   </span>
+                 )}
+               </button>
               ))}
             </div>
 
             <div className="tab-content">
               <div className="tab-header">
-                <h2>{categories[activeTab].title}</h2>
+                <h2>{activeTab}</h2>
                 <button className="select-all-btn" onClick={handleSelectAll}>
                   {selections[activeTab].size === categories[activeTab].items.length 
                     ? 'Deselect All' 
@@ -189,7 +228,7 @@ const Selector = ({
               </div>
 
               <div className="options-grid">
-                {categories[activeTab].items.map(item => (
+                {/* {categories[activeTab].items.map(item => (
                   <button
                     key={item}
                     className={`option-bubble ${selections[activeTab].has(item) ? 'selected' : ''}`}
@@ -198,6 +237,16 @@ const Selector = ({
                     {item}
                     {selections[activeTab].has(item) && <FaCheck className="check-icon" />}
                   </button>
+                ))} */}
+                {foods?.map(food => (
+                <button
+                key={food.id}
+                className={`option-bubble ${selections[activeTab].has(food.name) ? 'selected' : ''}`}
+                onClick={() => handleSelect(food.name, activeTab)}
+              >
+                {food.name}
+                {selections[activeTab].has(food.name) && <FaCheck className="check-icon" />}
+              </button>
                 ))}
               </div>
             </div>
@@ -212,14 +261,15 @@ const Selector = ({
       <div className="footer-actions">
         <button 
           className="complete-button"
-          onClick={() => onComplete(selections)}
+          onClick={}
           disabled={getTotalSelectedCount() === 0}
         >
           {completeButtonText} ({getTotalSelectedCount()})
         </button>
+      
       </div>
     </div>
   );
 };
-
+  //() => onComplete(selections)
 export default Selector; 

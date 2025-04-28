@@ -6,18 +6,26 @@ export const foodService = {
 
 
   // Get all appliances for a user
-  getFoods: async () => {
-    console.log('Getting user appliances for user:');
-    const token = await getAuthToken();
-    const response = await axios.get(
-      `${API_URL}/foods`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+  getFoods: async (token) => {
+    try {
+      //const token = await getAuthToken();
+      if (!token) {
+        throw new Error('No authentication token available');
       }
-    );
-    return response.data;
+      
+      const response = await axios.get(
+        `${API_URL}/foods`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching foods:', error);
+      throw error;
+    }
   },
 };
 

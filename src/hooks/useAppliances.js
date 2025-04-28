@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { applianceService } from '../utils/applianceService';
+import { applianceService } from '../services/applianceService';
 
 // Query key for kitchen appliances
 const APPLIANCES_QUERY_KEY = 'appliances';

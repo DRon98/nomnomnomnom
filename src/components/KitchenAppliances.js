@@ -8,7 +8,7 @@ import { useUserAppliances } from '../hooks/useAppliances';
 import { getCurrentUserId } from '../utils/auth';
 import { ERROR_MESSAGES } from '../constants';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { applianceService } from '../utils/applianceService';
+import { applianceService } from '../services/applianceService';
 
 const APPLIANCE_CATEGORIES = {
   basics: {

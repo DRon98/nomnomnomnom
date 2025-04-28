@@ -24,12 +24,27 @@ import './App.css';
 import './components/ErrorBoundary/styles.css';
 import { queryClient } from './utils/queryClient';
 import { AuthProvider } from './utils/authContext';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
 // Create a client
 
 
 function App() {
+  const persister = createSyncStoragePersister({
+    storage: window.localStorage,
+    maxSize: 1 * 1024 * 1024, // 5MB limit
+  });
+
+
+
   return (
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider
+    client={queryClient}
+    persistOptions={{
+      persister,
+      keyFilter: (query) => query.queryKey[0] === 'foods', // Persist only ['foods']
+    }}
+  >
       <AuthProvider>
       <ErrorBoundary>
         <BrowserRouter>
@@ -56,7 +71,7 @@ function App() {
         </BrowserRouter>
       </ErrorBoundary>
       </AuthProvider>
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   );
 }
 

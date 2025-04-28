@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { addToPantry } from '../store/inventorySlice';
 import Selector from '../components/Selector';
+import { useFoods } from '../hooks/useFoods';
 
 export const PANTRY_CATEGORIES = {
   fruits: {
@@ -134,6 +135,8 @@ export const PANTRY_CATEGORIES = {
 const AddToPantry = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { data: foods, isLoading, error } = useFoods();
+  console.log("foods add to pantry",foods)
 
   const handleComplete = (selections) => {
     // Add all selected items to pantry
