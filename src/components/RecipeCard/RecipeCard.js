@@ -37,7 +37,7 @@ const RecipeCard = ({
     ingredients: recipe.ingredients || [],
     seasonings: recipe.seasonings || []
   }), [recipe]);
-
+  
   const handleViewRecipe = (e) => {
     e.stopPropagation();
     setIsModalOpen(true);

@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleResponse } from '../store/lifestyleSlice';
 import './LifestyleSurvey.css';
+import { useLifestyle } from '../hooks/useLifestyle';
 import BaseSurvey from './BaseSurvey';
+import { getCurrentUserId } from '../utils/auth';
 
 const LIFESTYLE_CATEGORIES = {
   activeCompetitive: {
@@ -54,14 +56,69 @@ const LIFESTYLE_CATEGORIES = {
 const LifestyleSurvey = () => {
   const dispatch = useDispatch();
   const responses = useSelector(state => state.lifestyle.responses);
+  const [userId, setUserId] = useState(null);
+
+  const { data: lifestyleData, isLoading, error, updateLifestyle, isUpdating, updateError } = useLifestyle(userId);
+
+  // Transform API data to match Redux state format
+  const transformApiDataToReduxFormat = (apiData) => {
+    if (!apiData) return {};
+    
+    return {
+      activeCompetitive: apiData.active_competitive || [],
+      fitnessSkill: apiData.fitness_skill || [],
+      outdoorRelaxation: apiData.outdoor_relaxation || [],
+      socialProfessional: apiData.social_professional || [],
+      dailyCognitive: apiData.daily_cognitive || []
+    };
+  };
+
+  // Initialize Redux state with API data when it's loaded
+  useEffect(() => {
+    if (lifestyleData) {
+      const transformedData = transformApiDataToReduxFormat(lifestyleData);
+      // Initialize each category with the API data
+      Object.entries(transformedData).forEach(([category, items]) => {
+        items.forEach(item => {
+          dispatch(toggleResponse({ category, subcategory: item }));
+        });
+      });
+    }
+  }, [lifestyleData, dispatch]);
 
   const handleToggle = (category, subcategory) => {
     dispatch(toggleResponse({ category, subcategory }));
   };
 
   const handleSubmit = () => {
-    console.log('Lifestyle Survey Responses:', responses);
+    if (!userId) {
+      console.error('No user ID available');
+      return;
+    }
+
+    // Transform the responses into the format expected by the API
+    const lifestyleData = {
+      active_competitive: responses.activeCompetitive || [],
+      fitness_skill: responses.fitnessSkill || [],
+      outdoor_relaxation: responses.outdoorRelaxation || [],
+      social_professional: responses.socialProfessional || [],
+      daily_cognitive: responses.dailyCognitive || []
+    };
+
+    console.log('Submitting lifestyle data:', lifestyleData);
+    updateLifestyle(lifestyleData);
   };
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const id = await getCurrentUserId();
+      setUserId(id);
+    };
+    fetchUserId();
+  }, []);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
 
   return (
     <BaseSurvey
@@ -70,6 +127,9 @@ const LifestyleSurvey = () => {
       responses={responses}
       onToggle={handleToggle}
       onSubmit={handleSubmit}
+      isSubmitting={isUpdating}
+      submitError={updateError}
+      initialData={transformApiDataToReduxFormat(lifestyleData)}
     />
   );
 };

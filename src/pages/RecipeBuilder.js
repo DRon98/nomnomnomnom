@@ -48,6 +48,7 @@ const RecipeBuilder = ({ recipeData, hide = false }) => {
         const response = await generateRecipeBuilderFromAPI(recipeData);
         setApiResponse(response); // Cache the response
         updateRecipeState(response);
+        console.log("response", response)
       } catch (err) {
         console.error('Error fetching recipe:', err);
         setError('Failed to load recipe. Please try again.');

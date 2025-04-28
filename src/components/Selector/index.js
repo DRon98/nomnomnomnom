@@ -82,7 +82,7 @@ const Selector = ({
   }, []);
 
   const { data: foods, isLoading, error } = useFoods();
-  console.log("invvv", inventoryType)
+
   const { data: pantrydata, isLoading: pantryLoading, error: pantryError } = useInventory(userId, inventoryType);
   console.log("paentrydata", pantrydata)
   const handleSelect = (food) => {

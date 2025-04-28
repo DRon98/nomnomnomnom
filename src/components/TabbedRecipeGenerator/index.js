@@ -7,7 +7,7 @@ import { FaCheck, FaClock, FaUsers, FaUtensils, FaTimes } from 'react-icons/fa';
 import { addMeal } from '../../store/mealTrackingSlice';
 import SavedRecipeDetails from '../SavedRecipeDetails/SavedRecipeDetails';
 import './styles.css';
-
+import { generateRecipeBuilderFromAPI } from '../../utils/api';
 const TabbedRecipeGenerator = () => {
   const dispatch = useDispatch();
   const selectedFoods = useSelector(state => state.foods.selectedFoods) || [];
@@ -36,8 +36,12 @@ const TabbedRecipeGenerator = () => {
     }));
   };
 
-  const handleRecipeChosen = (recipe) => {
-    console.log('Recipe chosen:', recipe.name);
+  const handleRecipeChosen = async (recipe) => {
+    console.log('Recipe chosen:', recipe);
+    //call recipe building llm call 
+    //append response to 
+    //may take time to await response, so make a seperate payload?
+    const response = await generateRecipeBuilderFromAPI();
     setChosenRecipes(prev => ({
       ...prev,
       [activeTabIndex]: recipe
@@ -104,6 +108,7 @@ console.log("chosen combo",selectedMealType,servingsCount,activeRecipe)
               <h2>Confirm Meal Plan</h2>
             {Object.keys(chosenRecipes).map((name) => (
               <p>
+                {console.log(chosenRecipes)}
                 {chosenRecipes[name].name}
               </p>
             ))}

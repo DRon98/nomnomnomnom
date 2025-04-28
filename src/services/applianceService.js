@@ -6,6 +6,7 @@ export const applianceService = {
   // Add a kitchen appliance
   addAppliance: async (userId, applianceData) => {
     const token = getAuthToken(); 
+    
     const response = await axios.post(
       `${API_URL}/users/${userId}/appliances`,
       applianceData,
