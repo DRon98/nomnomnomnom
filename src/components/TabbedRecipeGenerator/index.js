@@ -10,7 +10,7 @@ import './styles.css';
 import { generateRecipeBuilderFromAPI } from '../../utils/api';
 import { useCreateMealPlan } from '../../hooks/useMealPlan';
 import { getCurrentUserId } from '../../utils/auth';
-
+import { v4 as uuidv4 } from 'uuid';
 const TabbedRecipeGenerator = () => {
   const dispatch = useDispatch();
   const selectedFoods = useSelector(state => state.foods.selectedFoods) || [];
@@ -159,9 +159,11 @@ console.log("chosen combo",selectedMealType,servingsCount,activeRecipe)
 
     try {
       const mealPlanData={
-        name: "Meal Plcdcdan",
+        name: `Meal Plan ${uuidv4()}`,
         recipes: chosenRecipeData
       }
+
+      console.log("mealPlanData", mealPlanData.name)
 
       console.log("mealPlanData", JSON.stringify(mealPlanData))
       await createMealPlanMutation.mutateAsync({

@@ -42,7 +42,7 @@ function App() {
     client={queryClient}
     persistOptions={{
       persister,
-      keyFilter: (query) => query.queryKey[0] === 'foods', // Persist only ['foods']
+      keyFilter: (query) => ['foods', 'appliances','inventory'].includes(query.queryKey[0]), // Persist both 'foods' and 'appliances'
     }}
   >
       <AuthProvider>
