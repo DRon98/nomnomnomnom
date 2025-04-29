@@ -43,18 +43,6 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
     })
   }), [isRecipeBase, ingredients, food.id]);
 
-  const getRatingEmoji = (rating) => {
-    switch (rating) {
-      case 'Nomnomnomnom':
-        return '😋😋😋😋';
-      case 'Nom':
-        return '😋';
-      case 'Nono':
-        return '🚫';
-      default:
-        return '';
-    }
-  };
 
   const getCardClass = () => {
     let className = 'food-card';
@@ -82,27 +70,7 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
     return { text: 'Need to Purchase', className: 'status-tag need-purchase' };
   };
 
-  const handleAddToPantry = (e) => {
-    e.stopPropagation();
-    if (food.base_ingredients_for_grocery_list && food.base_ingredients_for_grocery_list.length > 0) {
-      food.base_ingredients_for_grocery_list.forEach(ingredient => {
-        dispatch(addToPantry({
-          food: {
-            id: `${food.id}_${ingredient}`,
-            name: ingredient,
-            category: food.category || 'other',
-            unit: 'unit'
-          }
-        }));
-      });
-    } else {
-      dispatch(addToPantry({ food: { ...food } }));
-    }
-  };
 
-  const handleAddToGroceries = () => {
-    dispatch(addToGroceries({ food: { ...food } }));
-  };
 
   const handleClick = () => {
     if (isBatchMode && onSelect) {
