@@ -43,7 +43,7 @@ const RecipeBuilder = ({ recipeData, hide = false }) => {
           setLoading(false);
           return;
         }
-
+        console.log("recipeData", recipeData)
         // Otherwise, make the API call
         const response = await generateRecipeBuilderFromAPI(recipeData);
         setApiResponse(response); // Cache the response
