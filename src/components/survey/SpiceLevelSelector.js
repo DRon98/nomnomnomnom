@@ -22,7 +22,7 @@ const SpiceLevelSelector = () => {
     <div>
       <h2 className="text-2xl font-bold mb-6">Spice Level Preference</h2>
       <p className="mb-6">
-        Select your preferred level of spiciness in your meals.
+        Select your preferred level of spiciiiiiness in your meals.
       </p>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
