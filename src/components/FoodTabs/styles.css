@@ -286,6 +286,7 @@
   font-size: 14px;
   transition: all 0.2s ease;
   white-space: nowrap;
+  min-width: fit-content;
 }
 
 .meal-count svg {
@@ -302,6 +303,7 @@
   color: #1D8348;
   background-color: #E6F4EA;
   border: 1px solid #C5E1D1;
+  padding-right: 16px; /* Extra padding for longer text */
 }
 
 .meal-count.snack {

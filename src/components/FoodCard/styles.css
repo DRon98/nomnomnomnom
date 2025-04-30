@@ -68,7 +68,7 @@
 }
 
 .food-card.main:hover {
-  background: linear-gradient(135deg, #D7EDE0, #C8E6D6);
+  background: linear-gradient(135deg, rgb(150, 220, 150), rgb(171, 233, 171));
 }
 
 .food-card.snack:hover {

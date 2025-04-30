@@ -251,7 +251,7 @@ const FoodTabs = ({ view = 'day' }) => {
             </span>
             <span className="meal-count main">
               <FaUtensils />
-              Main Dishes: {selectedItems.filter(item => item.meal === 'Main(Lunch/Dinner)').length}
+              Main(Lunch/Dinner): {selectedItems.filter(item => item.meal?.toLowerCase().includes('main')).length}
             </span>
             <span className="meal-count breakfast">
               <FaSun />
@@ -274,7 +274,7 @@ const FoodTabs = ({ view = 'day' }) => {
               selectedItems.map(item => (
                 <div 
                   key={item.id} 
-                  className={`food-chip ${item.meal?.toLowerCase().replace('(lunch/dinner)', '')}`}
+                  className={`food-chip ${item.meal?.toLowerCase().includes('main') || item.meal === 'Main(Lunch/Dinner)' ? 'main' : item.meal?.toLowerCase()}`}
                 >
                   <span>{item.name}</span>
                   <button

@@ -92,18 +92,15 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
 
   const handleClick = () => {
     if (isBatchMode && onSelect) {
-      onSelect();
+      onSelect(food);
     }
   };
 
-  const handleMakeRecipe = (e) => {
+  const handleAddOrRemove = (e) => {
     e.stopPropagation();
-    setIsRecipeBase(true);
-  };
-
-  const removeIngredient = (ingredientId, e) => {
-    e.stopPropagation();
-    setIngredients(ingredients.filter(ing => ing.id !== ingredientId));
+    if (onSelect) {
+      onSelect(food);
+    }
   };
 
   // Combine drag and drop refs
@@ -141,20 +138,14 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
           {isSelected ? (
             <button 
               className={`remove-button ${food.meal?.toLowerCase()}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (onRemove) onRemove(food);
-              }}
+              onClick={handleAddOrRemove}
             >
               <FaMinus />
             </button>
           ) : (
             <button 
               className={`add-button ${food.meal?.toLowerCase()}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (onSelect) onSelect(food);
-              }}
+              onClick={handleAddOrRemove}
             >
               <FaPlus />
             </button>
