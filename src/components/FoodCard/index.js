@@ -64,7 +64,12 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
   const getCardClass = () => {
     let className = 'food-card';
     
-    if (food.meal?.toLowerCase()) className += ` ${food.meal.toLowerCase()}`;
+    if (food.meal === 'Main(Lunch/Dinner)') {
+      className += ' main-lunch-dinner';
+    } else if (food.meal?.toLowerCase()) {
+      className += ` ${food.meal.toLowerCase()}`;
+    }
+    
     if (food.recommendation === 'high') className += ' high';
     if (food.recommendation === 'moderate') className += ' moderate';
     if (food.recommendation === 'avoid') className += ' avoid';

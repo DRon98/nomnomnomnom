@@ -429,3 +429,90 @@
 .confirm-meal-plan-button:active {
   transform: translateY(1px);
 }
+
+.meal-stats-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 20px;
+  background-color: #FFF4F0;
+  border: 1px solid #FFE5D9;
+  border-radius: 12px;
+  margin: 16px 0 24px 0;
+}
+
+.meal-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  padding: 12px 18px;
+  border-radius: 20px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  min-width: fit-content;
+  line-height: 1.4;
+}
+
+.meal-stat svg {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.meal-stat.breakfast {
+  color: #8B6B00;
+  background-color: #FFF9E5;
+  border: 1px solid #FFE5A3;
+}
+
+.meal-stat.main {
+  color: #166437;
+  background-color: #E6F4EA;
+  border: 1px solid #C5E1D1;
+}
+
+.meal-stat.snack {
+  color: #B14600;
+  background-color: #FFF5EB;
+  border: 1px solid #FFD7B8;
+}
+
+.meal-stat.dessert {
+  color: #A32C1F;
+  background-color: #FCE8EF;
+  border: 1px solid #F8D7E2;
+}
+
+.meal-stat.eating-out {
+  color: #1F6A9B;
+  background-color: #E1F0FA;
+  border: 1px solid #BDE0F7;
+}
+
+.meal-stat.calories {
+  color: #6E3587;
+  background-color: #F4ECF7;
+  border: 1px solid #E8DAF0;
+}
+
+.meal-stat strong {
+  margin-right: 6px;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.meal-stat-details {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: inherit;
+  opacity: 0.85;
+  font-size: 13px;
+}
+
+.meal-stat div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}

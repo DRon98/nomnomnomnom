@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import RecipeGenerator from '../../pages/RecipeGenerator';
 import SavedRecipesDropdown from '../SavedRecipesDropdown/SavedRecipesDropdown';
 import RecipeModal from '../RecipeModal/RecipeModal';
-import { FaCheck, FaClock, FaUsers, FaUtensils, FaTimes } from 'react-icons/fa';
+import { FaCheck, FaClock, FaUsers, FaUtensils, FaTimes, FaSun, FaAppleAlt, FaIceCream, FaCalendarAlt, FaCalculator } from 'react-icons/fa';
 import { addMeal } from '../../store/mealTrackingSlice';
 import SavedRecipeDetails from '../SavedRecipeDetails/SavedRecipeDetails';
 import './styles.css';
@@ -225,14 +225,64 @@ console.log("chosen combo",selectedMealType,servingsCount,activeRecipe)
         </div>
       )}
 
-      <div className="placeholder-container meal-stats-container">
-        <span><strong>Breakfast:</strong> {breakfastStats.servings} servings, {breakfastStats.avgCalories} avg calories</span>
-        <span><strong>Main (Lunch/Dinner):</strong> {mainStats.servings} servings, {mainStats.avgCalories} avg calories</span>
-        <span><strong>Snacks:</strong> {snackStats.servings} servings, {snackStats.avgCalories} avg calories</span>
-        <span><strong>Desserts:</strong> {dessertStats.servings} servings, {dessertStats.avgCalories} avg calories</span>
-        <span><strong>Eating Out:</strong> {eatingOutCount} times/week</span>
-        <span><strong>Avg Daily Calories:</strong> {avgDailyCalories} calories</span>
+      <div className="meal-stats-container">
+        <div className="meal-stat breakfast">
+          <FaSun />
+          <div>
+            <strong>Breakfast:</strong>
+            <span className="meal-stat-details">
+              {breakfastStats.servings} servings, {breakfastStats.avgCalories} avg calories
+            </span>
+          </div>
+        </div>
+        
+        <div className="meal-stat main">
+          <FaUtensils />
+          <div>
+            <strong>Main (Lunch/Dinner):</strong>
+            <span className="meal-stat-details">
+              {mainStats.servings} servings, {mainStats.avgCalories} avg calories
+            </span>
+          </div>
+        </div>
+        
+        <div className="meal-stat snack">
+          <FaAppleAlt />
+          <div>
+            <strong>Snacks:</strong>
+            <span className="meal-stat-details">
+              {snackStats.servings} servings, {snackStats.avgCalories} avg calories
+            </span>
+          </div>
+        </div>
+        
+        <div className="meal-stat dessert">
+          <FaIceCream />
+          <div>
+            <strong>Desserts:</strong>
+            <span className="meal-stat-details">
+              {dessertStats.servings} servings, {dessertStats.avgCalories} avg calories
+            </span>
+          </div>
+        </div>
+        
+        <div className="meal-stat eating-out">
+          <FaCalendarAlt />
+          <div>
+            <strong>Eating Out:</strong>
+            <span className="meal-stat-details">{eatingOutCount} times/week</span>
+          </div>
+        </div>
+        
+        <div className="meal-stat calories">
+          <FaCalculator />
+          <div>
+            <strong>Avg Daily Calories:</strong>
+            <span className="meal-stat-details">{avgDailyCalories} calories</span>
+          </div>
+        </div>
       </div>
+
       <div className="recipe-tabs">
         <SavedRecipesDropdown onAddRecipe={handleAddSavedRecipe} />
         {selectedFoods.map((food, index) => (
