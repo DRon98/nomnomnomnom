@@ -153,9 +153,9 @@
   color: white;
 }
 
-.generate-button {
+.food-tabs .generate-button {
   padding: 12px 24px;
-  background-color: #3498db;
+  background-color: #00C4B4 !important;
   color: white;
   border: none;
   border-radius: 6px;
@@ -163,27 +163,22 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-sizing: border-box; /* Ensure consistent box model */
-  /* line-height: normal; Removed to test alignment */
-  /* vertical-align: middle; Removed for flex alignment */
-  /* height: 44px; Restore explicit height */ /* Removed explicit height */
-  /* display: inline-flex; Restore display */ /* Removed */
-  /* align-items: center; Restore internal alignment */ /* Removed */
-  justify-content: center; /* Center content horizontally */
+  box-sizing: border-box;
+  justify-content: center;
 }
 
-.generate-button:hover:not(:disabled) {
-  background-color: #2980b9;
+.food-tabs .generate-button:hover:not(:disabled) {
+  background-color: #00a89a !important;
   transform: translateY(-1px);
+}
+
+.food-tabs .generate-button:disabled {
+  background-color: #bdc3c7 !important;
+  cursor: not-allowed;
 }
 
 .add-recipes-button:disabled {
   background-color: #bdc3c7; /* Explicit disabled state */
-  cursor: not-allowed;
-}
-
-.generate-button:disabled {
-  background-color: #bdc3c7;
   cursor: not-allowed;
 }
 
@@ -249,99 +244,195 @@
 }
 
 .tip-content {
-  font-size: 14px;
+  font-size: 16px;
   color: #666;
   text-align: center;
   margin-bottom: 10px;
 }
 
 .selected-foods-bar {
-  margin: 20px;
-  padding: 15px;
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
-  border-radius: 8px;
+  background-color: #FFF4F0;
+  border: 1px solid #FFE5D9;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
 }
 
 .selected-foods-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  padding: 4px;
 }
 
-.selected-foods-header span {
+.selected-foods-header > span:first-child {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-right: 8px;
+}
+
+/* Meal type count badges */
+.meal-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 20px;
   font-size: 14px;
-  color: #666;
-  font-weight: 500;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.meal-count svg {
+  font-size: 16px;
+}
+
+.meal-count.breakfast {
+  color: #B78E00;
+  background-color: #FFF9E5;
+  border: 1px solid #FFE5A3;
+}
+
+.meal-count.main {
+  color: #1D8348;
+  background-color: #E6F4EA;
+  border: 1px solid #C5E1D1;
+}
+
+.meal-count.snack {
+  color: #D35400;
+  background-color: #FFF5EB;
+  border: 1px solid #FFD7B8;
+}
+
+.meal-count.dessert {
+  color: #C0392B;
+  background-color: #FCE8EF;
+  border: 1px solid #F8D7E2;
+}
+
+.meal-count:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .clear-all {
-  background: none;
-  border: none;
-  color: #dc3545;
-  font-size: 14px;
+  color: #FF6F61;
+  font-weight: 500;
   cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
+  border: 1px solid #FF6F61;
+  border-radius: 12px;
+  padding: 4px 12px;
+  background: none;
   transition: all 0.2s ease;
+  margin-left: auto;
 }
 
 .clear-all:hover {
-  background: #fff1f0;
+  color: #E55A4F;
+  border-color: #E55A4F;
+  background-color: rgba(255, 111, 97, 0.1);
 }
 
 .clear-all:disabled {
-  color: #ced4da;
+  color: #ccc;
+  border-color: #ddd;
   cursor: not-allowed;
-  background: none;
-}
-
-.clear-all:disabled:hover {
-  background: none;
 }
 
 .selected-foods-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  min-height: 38px;
-  align-items: center;
-}
-
-.no-items-message {
-  font-size: 14px;
-  color: #adb5bd;
-  font-style: italic;
+  padding: 8px 0;
 }
 
 .food-chip {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   padding: 6px 12px;
-  background: white;
-  border: 1px solid #dee2e6;
-  border-radius: 20px;
+  border-radius: 16px;
   font-size: 14px;
-  color: #495057;
+  transition: all 0.2s ease;
+}
+
+/* Meal-specific chip styles */
+.food-chip.breakfast {
+  background-color: #FFF9E5;
+  border: 1px solid #FFE5A3;
+  color: #333;
+}
+
+.food-chip.main {
+  background-color: #E6F4EA;
+  border: 1px solid #C5E1D1;
+  color: #333;
+}
+
+.food-chip.snack {
+  background-color: #FFEFE5;
+  border: 1px solid #FFD7B8;
+  color: #333;
+}
+
+.food-chip.dessert {
+  background-color: #FCE8EF;
+  border: 1px solid #F8D7E2;
+  color: #333;
+}
+
+.food-chip:hover {
+  transform: scale(1.02);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .remove-chip {
   background: none;
   border: none;
-  color: #adb5bd;
   cursor: pointer;
   font-size: 18px;
-  padding: 0;
   line-height: 1;
+  padding: 0;
   display: flex;
   align-items: center;
-  transition: color 0.2s ease;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+/* Meal-specific remove button colors */
+.food-chip.breakfast .remove-chip {
+  color: #FFD700;
+}
+
+.food-chip.main .remove-chip {
+  color: #34C759;
+}
+
+.food-chip.snack .remove-chip {
+  color: #FF9500;
+}
+
+.food-chip.dessert .remove-chip {
+  color: #FF6B8A;
 }
 
 .remove-chip:hover {
-  color: #dc3545;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.no-items-message {
+  color: #666;
+  font-style: italic;
+  padding: 8px 0;
 }
 
 @keyframes fadeIn {
@@ -484,4 +575,17 @@
   .food-grid {
     grid-template-columns: 1fr;
   }
+}
+
+.states-message {
+  background-color: #fff3e0;
+  color: #f57c00;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 10px 0;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ffe0b2;
 }

@@ -5,7 +5,7 @@ import { addToGroceries } from '../../store/inventorySlice';
 import { generateRecommendationsFromAPI } from '../../utils/api';
 import { FILTER_OPTIONS, FOOD_CATEGORIES } from '../../constants';
 import FoodCard from '../FoodCard';
-import { FaSearch, FaFilter, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { FaSearch, FaFilter, FaChevronDown, FaChevronUp, FaAppleAlt, FaUtensils, FaSun, FaIceCream } from 'react-icons/fa';
 import WeeklyCalendar from '../../pages/WeeklyCalendar';
 import './styles.css';
 import { useNavigate } from 'react-router-dom';
@@ -210,98 +210,109 @@ const FoodTabs = ({ view = 'day' }) => {
       </div>
 
       <div className="tab-content">
-        {currentStates.length > 0 && desiredStates.length > 0 ? (
-          <>
-            <div className="action-bar">
-              <div className="button-group">
-                <button
-                  className="generate-button"
-                  onClick={handleGenerateRecommendations}
-                  disabled={loading}
-                >
-                  {loading ? 'Generating...' : 'Generate Recommendations'}
-                </button>
-                <button
-                  className={`add-recipes-button ${selectedItems.length > 0 ? 'active' : ''}`}
-                  onClick={handleAddToRecipes}
-                  disabled={selectedItems.length === 0}
-                >
-                  Add to Recipe Builder
-                </button>
-              </div>
-            </div>
+        <div className="action-bar">
+          <div className="button-group">
+            <button
+              className="generate-button"
+              onClick={handleGenerateRecommendations}
+              disabled={loading || currentStates.length === 0 || desiredStates.length === 0}
+            >
+              {loading ? 'Generating...' : 'Generate Recommendations'}
+            </button>
+            <button
+              className={`add-recipes-button ${selectedItems.length > 0 ? 'active' : ''}`}
+              onClick={handleAddToRecipes}
+              disabled={selectedItems.length === 0}
+            >
+              Add to Recipe Builder
+            </button>
+          </div>
+        </div>
 
-            {showTooltip && (
-              <div className="selection-tooltip">
-                Select food cards to add to recipes
-                <button className="close-tooltip" onClick={() => setShowTooltip(false)}>×</button>
-              </div>
-            )}
+        {(currentStates.length === 0 || desiredStates.length === 0) && (
+          <div className="states-message">
+            Select your current and desired moods to generate recommendations
+          </div>
+        )}
 
-            <div className="selected-foods-bar">
-              <div className="selected-foods-header">
-                <span>Selected Items ({selectedItems.length})</span>
-                <span> Snacks: {selectedItems.filter(item => item.meal === 'Snack').length}</span>
-                <span> Main Dishes: {selectedItems.filter(item => item.meal === 'Main(Lunch/Dinner)').length}</span>
-                <span> Breakfast: {selectedItems.filter(item => item.meal === 'Breakfast').length}</span>
-                <span> Desserts: {selectedItems.filter(item => item.meal === 'Dessert').length}</span>
-                <button 
-                  className="clear-all" 
-                  onClick={handleClearSelection}
-                  disabled={selectedItems.length === 0}
+        {showTooltip && (
+          <div className="selection-tooltip">
+            Select food cards to add to recipes
+            <button className="close-tooltip" onClick={() => setShowTooltip(false)}>×</button>
+          </div>
+        )}
+
+        <div className="selected-foods-bar">
+          <div className="selected-foods-header">
+            <span>Selected Items ({selectedItems.length})</span>
+            <span className="meal-count snack">
+              <FaAppleAlt />
+              Snacks: {selectedItems.filter(item => item.meal === 'Snack').length}
+            </span>
+            <span className="meal-count main">
+              <FaUtensils />
+              Main Dishes: {selectedItems.filter(item => item.meal === 'Main(Lunch/Dinner)').length}
+            </span>
+            <span className="meal-count breakfast">
+              <FaSun />
+              Breakfast: {selectedItems.filter(item => item.meal === 'Breakfast').length}
+            </span>
+            <span className="meal-count dessert">
+              <FaIceCream />
+              Desserts: {selectedItems.filter(item => item.meal === 'Dessert').length}
+            </span>
+            <button 
+              className="clear-all" 
+              onClick={handleClearSelection}
+              disabled={selectedItems.length === 0}
+            >
+              Clear All
+            </button>
+          </div>
+          <div className="selected-foods-chips">
+            {selectedItems.length > 0 ? (
+              selectedItems.map(item => (
+                <div 
+                  key={item.id} 
+                  className={`food-chip ${item.meal?.toLowerCase().replace('(lunch/dinner)', '')}`}
                 >
-                  {console.log("sel",selectedItems)}
-                  Clear All
-                </button>
-              </div>
-              <div className="selected-foods-chips">
-                {selectedItems.length > 0 ? (
-                  selectedItems.map(item => (
-                    <div key={item.id} className="food-chip">
-                      <span>{item.name}</span>
-                      <button
-                        className="remove-chip"
-                        onClick={() => handleRemoveFood(item.id)}
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ))
-                ) : (
-                  <span className="no-items-message">No items selected</span>
-                )}
-              </div>
-             
-            </div>
-            <div className="tip-content">Depending on how often you cook and eat out each week, we recommend you select at least 3 food combinations for lunch/dinner, 1-2 breakfast options, and your choice of snacks and desserts</div>
-            {loading ? (
-              <div className="loading">Generating recommendations...</div>
+                  <span>{item.name}</span>
+                  <button
+                    className="remove-chip"
+                    onClick={() => handleRemoveFood(item.id)}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))
             ) : (
-              <div className="food-grid">
-                {activeTab === 'recommended' ? (
-                  filteredRecommendedFoods.length > 0 ? (
-                    filteredRecommendedFoods.map(food => (
-                      <FoodCard
-                        key={food.id}
-                        food={food}
-                        isSelected={selectedCardIds.has(food.id)}
-                        onSelect={handleFoodSelect}
-                      />
-                    ))
-                  ) : (
-                    <div className="no-foods-message">
-                      Click "Generate Recommendations" to get food suggestions
-                    </div>
-                  )
-                ) : (
-                  <></>
-                )}
-              </div>
+              <span className="no-items-message">No items selected</span>
             )}
-          </>
+          </div>
+        </div>
+        <div className="tip-content">Depending on how often you cook and eat out each week, we recommend you select at least 3 food combinations for lunch/dinner, 1-2 breakfast options, and your choice of snacks and desserts</div>
+        {loading ? (
+          <div className="loading">Generating recommendations...</div>
         ) : (
-          <div className="select-states-message">
-            Please select your current and desired states to get recommendations
+          <div className="food-grid">
+            {activeTab === 'recommended' ? (
+              filteredRecommendedFoods.length > 0 ? (
+                filteredRecommendedFoods.map(food => (
+                  <FoodCard
+                    key={food.id}
+                    food={food}
+                    isSelected={selectedCardIds.has(food.id)}
+                    onSelect={handleFoodSelect}
+                  />
+                ))
+              ) : (
+                <div className="no-foods-message">
+                  Click "Generate Recommendations" to get food suggestions
+                </div>
+              )
+            ) : (
+              <></>
+            )}
           </div>
         )}
       </div>

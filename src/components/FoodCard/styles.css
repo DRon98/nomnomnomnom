@@ -1,25 +1,82 @@
 .food-card {
   position: relative;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 15px;
+  border-radius: 12px;
+  padding: 20px;
   margin: 10px;
-  background: white;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
   gap: 15px;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  min-height: 200px;
+}
+
+/* Meal-specific background colors */
+.food-card.main {
+  background: rgb(171, 233, 171);
+  border-color: #C5E1D1;
+}
+
+.food-card.breakfast {
+  background: #FFFBEB;
+  border-color: #FFE5A3;
+}
+
+.food-card.snack {
+  background: #FFF5EB;
+  border-color: #FFD7B8;
+}
+
+.food-card.dessert {
+  background: #FCE8EF;
+  border-color: #F8D7E2;
+}
+
+/* Selected card styles */
+.food-card.selected {
+  border-width: 2px;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.5);
+  outline: 2px solid #3498db;
+  outline-offset: -2px;
+}
+
+/* Maintain background colors when selected */
+.food-card.selected.main {
+  background: rgb(171, 233, 171);
+}
+
+.food-card.selected.breakfast {
+  background: #FFFBEB;
+}
+
+.food-card.selected.snack {
+  background: #FFF5EB;
+}
+
+.food-card.selected.dessert {
+  background: #FCE8EF;
 }
 
 .food-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
-.food-card.selected {
-  border-color: #3498db;
-  background-color: #f8f9fa;
+.food-card.breakfast:hover {
+  background: linear-gradient(135deg, #FFF0C2, #FFEDB8);
+}
+
+.food-card.main:hover {
+  background: linear-gradient(135deg, #D7EDE0, #C8E6D6);
+}
+
+.food-card.snack:hover {
+  background: linear-gradient(135deg, #FFE8D9, #FFE0CC);
+}
+
+.food-card.dessert:hover {
+  background: linear-gradient(135deg, #FAE0E8, #F8D7E2);
 }
 
 .food-card.high {
@@ -50,17 +107,15 @@
 
 .food-name {
   font-family: 'Comic Neue', cursive;
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 18px;
+  font-weight: 600;
   margin-bottom: 8px;
   color: #333;
 }
 
 .food-description {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 12px;
-  line-height: 1.4;
+  flex-grow: 1;
+  margin-bottom: 0;
 }
 
 .food-rating {
@@ -75,7 +130,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 0;
 }
 
 .food-card h3 {
@@ -446,18 +501,85 @@
   background: none;
   border: none;
   cursor: pointer;
-  padding: 5px;
+  padding: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #666;
-  transition: color 0.2s ease;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  transition: all 0.2s ease;
+}
+
+.add-button.main, .remove-button.main {
+  background-color: #34C759;
+  color: white;
+}
+
+.add-button.breakfast, .remove-button.breakfast {
+  background-color: #FFD700;
+  color: #333;
+}
+
+.add-button.snack, .remove-button.snack {
+  background-color: #FF9500;
+  color: white;
+}
+
+.add-button.dessert, .remove-button.dessert {
+  background-color: #FF6B8A;
+  color: white;
 }
 
 .add-button:hover {
-  color: #4CAF50;
+  transform: scale(1.1);
+  filter: brightness(1.1);
+}
+
+.remove-button {
+  background-color: #ff4757;
+  color: white;
 }
 
 .remove-button:hover {
-  color: #f44336;
+  background-color: #ff6b81;
+  transform: scale(1.1);
+}
+
+.meal-type-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: auto;
+  width: fit-content;
+  align-self: flex-start;
+}
+
+.meal-type-badge.main {
+  background-color: #34C759;
+  color: white;
+}
+
+.meal-type-badge.breakfast {
+  background-color: #FFD700;
+  color: #333;
+}
+
+.meal-type-badge.snack {
+  background-color: #FF9500;
+  color: white;
+}
+
+.meal-type-badge.dessert {
+  background-color: #FF6B8A;
+  color: white;
+}
+
+.meal-type-icon {
+  font-size: 16px;
 }

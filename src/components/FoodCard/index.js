@@ -3,8 +3,23 @@ import { useDrag, useDrop } from 'react-dnd/dist/hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToPantry, addToGroceries } from '../../store/inventorySlice';
 import { Link } from 'react-router-dom';
-import { FaUtensils, FaPlus, FaMinus } from 'react-icons/fa';
+import { FaUtensils, FaPlus, FaMinus, FaSun, FaCoffee, FaAppleAlt, FaIceCream } from 'react-icons/fa';
 import './styles.css';
+
+const getMealTypeIcon = (mealType) => {
+  switch (mealType?.toLowerCase()) {
+    case 'breakfast':
+      return <FaSun />;
+    case 'main':
+      return <FaUtensils />;
+    case 'snack':
+      return <FaAppleAlt />;
+    case 'dessert':
+      return <FaIceCream />;
+    default:
+      return <FaUtensils />;
+  }
+};
 
 const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isSelected = false, onSelect }) => {
   const dispatch = useDispatch();
@@ -49,6 +64,7 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
   const getCardClass = () => {
     let className = 'food-card';
     
+    if (food.meal?.toLowerCase()) className += ` ${food.meal.toLowerCase()}`;
     if (food.recommendation === 'high') className += ' high';
     if (food.recommendation === 'moderate') className += ' moderate';
     if (food.recommendation === 'avoid') className += ' avoid';
@@ -103,7 +119,7 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
   return (
     <div ref={refCombiner} className={getCardClass()} onClick={handleClick}>
       <div className="food-card-header">
-        <h3>{food.name}</h3>
+        <h3 className="food-name">{food.name}</h3>
         <div className="food-card-actions">
           <div 
             className="ingredients-tooltip-container"
@@ -124,7 +140,7 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
           </div>
           {isSelected ? (
             <button 
-              className="remove-button" 
+              className={`remove-button ${food.meal?.toLowerCase()}`}
               onClick={(e) => {
                 e.stopPropagation();
                 if (onRemove) onRemove(food);
@@ -134,7 +150,7 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
             </button>
           ) : (
             <button 
-              className="add-button" 
+              className={`add-button ${food.meal?.toLowerCase()}`}
               onClick={(e) => {
                 e.stopPropagation();
                 if (onSelect) onSelect(food);
@@ -145,7 +161,9 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
           )}
         </div>
       </div>
-      <p className="description">{food.description}</p>
+      
+      <p className="food-description">{food.description}</p>
+      
       {food.stats && (
         <div className="stats">
           {Object.entries(food.stats).map(([key, value]) => (
@@ -153,12 +171,11 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
           ))}
         </div>
       )}
-      {food.meal}
-      {food.tags && (
-        <div className="tags">
-          {food.tags.map(tag => (
-            <span key={tag} className="tag">{tag}</span>
-          ))}
+
+      {food.meal && (
+        <div className={`meal-type-badge ${food.meal.toLowerCase()}`}>
+          <span className="meal-type-icon">{getMealTypeIcon(food.meal)}</span>
+          {food.meal}
         </div>
       )}
 
