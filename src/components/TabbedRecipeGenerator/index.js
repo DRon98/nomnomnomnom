@@ -13,7 +13,9 @@ import { getCurrentUserId } from '../../utils/auth';
 import { v4 as uuidv4 } from 'uuid';
 const TabbedRecipeGenerator = () => {
   const dispatch = useDispatch();
+ 
   const selectedFoods = useSelector(state => state.foods.selectedFoods) || [];
+  console.log('selectedFoods', selectedFoods);
   const mealTrackingData = useSelector(state => state.mealTracking);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [recipesPerTab, setRecipesPerTab] = useState({});
@@ -27,7 +29,7 @@ const TabbedRecipeGenerator = () => {
   const [userId, setUserId] = useState(null);
 
   const createMealPlanMutation = useCreateMealPlan();
-
+  console.log(selectedFoods);
   useEffect(() => {
     const fetchUserId = async () => {
       const id = await getCurrentUserId();
@@ -282,6 +284,7 @@ console.log("chosen combo",selectedMealType,servingsCount,activeRecipe)
 
         {isGeneratorTab ? (
           <RecipeGenerator 
+            mealType={selectedFoods[activeTabIndex]?.meal}
             key={`generator-${activeTabIndex}`} 
             baseIngredients={selectedFoods[activeTabIndex]?.base_ingredients_for_grocery_list || []}
             recipes={recipesPerTab[activeTabIndex] || []}

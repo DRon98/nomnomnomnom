@@ -10,24 +10,17 @@ import './RecipeGenerator.css';
 import InventoryDropdowns from '../components/InventoryDropdowns';
 
 
-const DEFAULT_FILTERS = {
-  servings: 4,
-  maxCalories: null,
-  pantryOnly: false,
-  cuisines: [],
-  tastes: [],
-  cookingTime: 'any',
-  mealType: 'Breakfast',
-  skillLevel: 'intermediate'
-};
+
 
 const AVAILABLE_CUISINES = ["Italian", "Chinese", "Mexican", "Indian", "Japanese", "Thai", "French", "Greek", "Spanish", "Korean", "Vietnamese", "Brazilian", "Ethiopian", "Moroccan", "Turkish", "Lebanese", "German", "Russian", "Caribbean", "Peruvian", "Argentinian", "Malaysian", "Indonesian", "Filipino", "Egyptian", "Pakistani", "Bangladeshi", "Nigerian", "South African", "Polish"];
 const AVAILABLE_TASTES = ["savory", "sweet", "spicy", "umami", "sour", "bitter", "crunchy", "creamy", "chewy", "crispy", "smooth", "grainy", "aromatic", "earthy", "fragrant", "pungent", "floral", "smoky"]
 const COOKING_TIMES = ['any', '15', '30', '45', '60'];
 const MEAL_TYPES = ['Breakfast', 'Main(Lunch/Dinner)', 'Snack', 'Dessert'];
+
 const SKILL_LEVELS = ['beginner', 'intermediate', 'advanced'];
 
 const RecipeGenerator = ({ 
+  mealType,
   baseIngredients = [], 
   recipes: passedRecipes = [], 
   onRecipesUpdate,
@@ -35,6 +28,18 @@ const RecipeGenerator = ({
   chosenRecipe,
   handleUseRecipe
 }) => {
+
+  const DEFAULT_FILTERS = {
+    servings: 4,
+    maxCalories: null,
+    pantryOnly: false,
+    cuisines: [],
+    tastes: [],
+    cookingTime: 'any',
+    mealType: mealType,
+    skillLevel: 'intermediate'
+  };
+
   const location = useLocation();
   const dispatch = useDispatch(); // Get the dispatch function
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
@@ -50,6 +55,9 @@ const RecipeGenerator = ({
   const [recipeBuilderData, setRecipeBuilderData] = useState(null);
   const [selectedPreview, setSelectedPreview] = useState(null);
   const [activeIngredientsTab, setActiveIngredientsTab] = useState('ingredients');
+   
+  MEAL_TYPES.sort(key => key === mealType ? -1 : 1)
+  console.log(MEAL_TYPES)
   
   // Move useSelector hooks to component level
   const foodPreferences = useSelector(state => state.foodPreferences);
@@ -94,8 +102,7 @@ const RecipeGenerator = ({
       setError(null);
     }
   }, [selectedIngredients, error]);
-
-
+  
 
   // Add effect to populate ingredients when baseIngredients changes
   useEffect(() => {
@@ -113,6 +120,7 @@ const RecipeGenerator = ({
   }, [baseIngredients]);
 
 
+  
   const handleIngredientRemove = (ingredientId) => {
     setSelectedIngredients(selectedIngredients.filter(item => item.foodId !== ingredientId));
   };
@@ -132,6 +140,8 @@ const RecipeGenerator = ({
         : [...prev[filterName], value]
     }));
   }, []);
+
+  console.log(mealType)
 
   const generateRecipes = async () => {
     setIsLoading(true);
@@ -455,6 +465,7 @@ const RecipeGenerator = ({
             value={filters.mealType}
             onChange={(e) => handleFilterChange('mealType', e.target.value)}
           >
+            
             {MEAL_TYPES.map(type => (
               <option key={type} value={type}>
                 {type.charAt(0).toUpperCase() + type.slice(1)}

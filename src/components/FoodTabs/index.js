@@ -75,6 +75,8 @@ const FoodTabs = ({ view = 'day' }) => {
   const handleAddToRecipes = () => {
     // Store selected items in Redux
     dispatch(setSelectedFoods(selectedItems));
+    console.log('selectedItems', selectedItems);
+    
     // Navigate to the recipe generator
     navigate('/recipe-generator');
   };
