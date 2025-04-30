@@ -206,12 +206,7 @@ const FoodTabs = ({ view = 'day' }) => {
         >
           Recommended Foods
         </button>
-        <button
-          className={`tab-button ${activeTab === 'avoid' ? 'active' : ''}`}
-          onClick={() => setActiveTab('avoid')}
-        >
-          Calendar
-        </button>
+     
       </div>
 
       <div className="tab-content">

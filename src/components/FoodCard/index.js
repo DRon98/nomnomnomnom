@@ -3,6 +3,7 @@ import { useDrag, useDrop } from 'react-dnd/dist/hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToPantry, addToGroceries } from '../../store/inventorySlice';
 import { Link } from 'react-router-dom';
+import { FaUtensils, FaPlus, FaMinus } from 'react-icons/fa';
 import './styles.css';
 
 const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isSelected = false, onSelect }) => {
@@ -12,6 +13,7 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
   const [isRecipeBase, setIsRecipeBase] = useState(false);
   const [ingredients, setIngredients] = useState([]);
   const [showIngredients, setShowIngredients] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
   
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'FOOD',
@@ -102,15 +104,46 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
     <div ref={refCombiner} className={getCardClass()} onClick={handleClick}>
       <div className="food-card-header">
         <h3>{food.name}</h3>
-        <label className="checkbox-container">
-          <input
-            type="checkbox"
-            checked={isSelected}
-            onChange={() => onSelect(food)}
-            className="select-checkbox"
-          />
-          <span className="checkmark"></span>
-        </label>
+        <div className="food-card-actions">
+          <div 
+            className="ingredients-tooltip-container"
+            onMouseEnter={() => setShowTooltip(true)}
+            onMouseLeave={() => setShowTooltip(false)}
+          >
+            <FaUtensils className="ingredients-icon" />
+            {showTooltip && (
+              <div className="ingredients-tooltip">
+                <h4>Base Ingredients:</h4>
+                <ul>
+                  {food.base_ingredients_for_grocery_list.map((ingredient, index) => (
+                    <li key={index}>{ingredient}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+          {isSelected ? (
+            <button 
+              className="remove-button" 
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onRemove) onRemove(food);
+              }}
+            >
+              <FaMinus />
+            </button>
+          ) : (
+            <button 
+              className="add-button" 
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onSelect) onSelect(food);
+              }}
+            >
+              <FaPlus />
+            </button>
+          )}
+        </div>
       </div>
       <p className="description">{food.description}</p>
       {food.stats && (
@@ -133,18 +166,7 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
         <>
           {food.base_ingredients_for_grocery_list && food.base_ingredients_for_grocery_list.length > 0 && (
             <div className="ingredients-section">
-              <button 
-                className="toggle-ingredients-button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowIngredients(!showIngredients);
-                }}
-              >
-                {showIngredients ? 'Hide Ingredients' : 'Show Ingredients'} 
-                {showIngredients ? '▼' : '▶'}
-                
-              </button>
-              
+   
               {showIngredients && (
                 <div className="ingredients-list">
                   <h4>Base Ingredients:</h4>
@@ -159,26 +181,9 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
           )}
 
           <div className="food-actions">
-            {/* <button
-              className="food-action-button pantry"
-              onClick={handleAddToPantry}
-              title={food.base_ingredients_for_grocery_list ? 'Add' : 'Add to Pantry'}
-            >
-              🏠 {food.base_ingredients_for_grocery_list ? 'Add ' : 'Add to Pantry'}
-            </button>
-            <button
-              className="food-action-button groceries"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleAddToGroceries();
-              }}
-              title={food.base_ingredients_for_grocery_list ? 'Shopping List' : 'Add to Shopping List'}
-            >
-              🛒 {food.base_ingredients_for_grocery_list ? 'Add' : 'Add to List'}
-            </button> */}
+      
           </div>
-{/*           
-          <div className={status.className}>{status.text}</div> */}
+
         </>
       )}
 
@@ -190,15 +195,6 @@ const FoodCard = ({ food, onRemove, inMealPlan = false, isBatchMode = false, isS
         >
           Build Recipe
         </Link>
-      )}
-
-      {onRemove && (
-        <button className="remove-button" onClick={(e) => {
-          e.stopPropagation();
-          onRemove();
-        }}>
-          ×
-        </button>
       )}
     </div>
   );

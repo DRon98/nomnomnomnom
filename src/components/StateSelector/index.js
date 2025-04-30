@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   addCurrentState,
@@ -23,22 +23,6 @@ const StateSelector = ({ type, options, question, showSelectedStates = true }) =
     dispatch(action(state));
   }, [dispatch, selectedStates, type]);
 
-  const renderedOptions = useMemo(() => options.map(state => (
-    <button
-      key={state}
-      className={`state-bubble ${selectedStates.includes(state) ? 'selected' : ''} ${type}-state`}
-      onClick={() => handleStateToggle(state)}
-    >
-      {state}
-    </button>
-  )), [options, selectedStates, type, handleStateToggle]);
-
-  const selectedPreview = useMemo(() => selectedStates.map(state => (
-    <div key={state} className={`state-bubble selected ${type}-state`}>
-      {state}
-    </div>
-  )), [selectedStates, type]);
-
   return (
     <div className="state-selector">
       <div className="state-selector-header" onClick={() => setIsExpanded(!isExpanded)}>
@@ -56,13 +40,25 @@ const StateSelector = ({ type, options, question, showSelectedStates = true }) =
       
       {isExpanded && (
         <div className="state-bubbles-container">
-          {renderedOptions}
+          {options.map(state => (
+            <button
+              key={state}
+              className={`state-bubble ${selectedStates.includes(state) ? 'selected' : ''} ${type}-state`}
+              onClick={() => handleStateToggle(state)}
+            >
+              {state}
+            </button>
+          ))}
         </div>
       )}
       
-      {!isExpanded && selectedStates.length > 0 && (
+      {!isExpanded && selectedStates.length > 0 && showSelectedStates && (
         <div className="selected-states-preview">
-          {selectedPreview}
+          {selectedStates.map(state => (
+            <div key={state} className={`state-bubble selected ${type}-state`}>
+              {state}
+            </div>
+          ))}
         </div>
       )}
     </div>

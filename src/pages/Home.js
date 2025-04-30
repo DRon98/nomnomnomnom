@@ -22,10 +22,8 @@ function Home() {
               options={DESIRED_STATES}
               question="How do you want to feel?"
             />
+
           </div>
-        <div className="tabs-container">
-          <FoodTabs view="day" />
-        </div>
           <div className="dietary-restrictions">
             Dietary restrictions applied: {
               Object.entries(dietaryRestrictions)
@@ -36,6 +34,10 @@ function Home() {
             {' '}
             (Edit in Profile)
         </div>
+        <div className="tabs-container">
+          <FoodTabs view="day" />
+        </div>
+
       </div>
     </div>
   );
