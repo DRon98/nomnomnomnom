@@ -9,6 +9,7 @@ import { FaSearch, FaFilter, FaChevronDown, FaChevronUp, FaAppleAlt, FaUtensils,
 import WeeklyCalendar from '../../pages/WeeklyCalendar';
 import './styles.css';
 import { useNavigate } from 'react-router-dom';
+import { selectPriorities } from '../../redux/slices/prioritiesSlice';
 
 const FoodTabs = ({ view = 'day' }) => {
   const [activeTab, setActiveTab] = useState('recommended');
@@ -28,6 +29,7 @@ const FoodTabs = ({ view = 'day' }) => {
   const shoppingListItems = useSelector(state => state.inventory.groceries) || [];
   const foodPreferences = useSelector(state => state.foodPreferences);
   const weekFeelings = useSelector(state => state.user.weekFeelings) || [];
+  const selectedPriorities = useSelector(selectPriorities);
   
   // Get food and lifestyle survey data
   const surveyData = useSelector(state => state.foodPreferences);
@@ -118,9 +120,14 @@ const FoodTabs = ({ view = 'day' }) => {
         },
         currentFeelings: currentStates,
         desiredFeelings: desiredStates,
+        
         surveyData: foodSurveyData,
         lifestyleData: lifestyleData?.responses || {},
-        foodPreferences: surveyData?.responses || {}
+        foodPreferences: surveyData?.responses || {},
+        recommendationPriorities: {
+          selectedPriorities: selectedPriorities || [],
+          lastUpdated: now.toISOString()
+        }
       };
 
       console.log('Day View Data:', userData);
@@ -171,7 +178,11 @@ const FoodTabs = ({ view = 'day' }) => {
           prioritizedFeelingsPerDay: feelingsByDay
         },
         surveyData: foodSurveyData,
-        lifestyleData: lifestyleData?.responses || {}
+        lifestyleData: lifestyleData?.responses || {},
+        recommendationPriorities: {
+          selectedPriorities: selectedPriorities || [],
+          lastUpdated: now.toISOString()
+        }
       };
 
       console.log('Week View Data:', userData);

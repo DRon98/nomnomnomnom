@@ -11,6 +11,7 @@ import calendarReducer from './calendarSlice';
 import scheduleDataReducer from './scheduleDataSlice';
 import mealTrackingReducer from './mealTrackingSlice'; // Import the new reducer
 import favoritesReducer from './favoritesSlice';
+import prioritiesReducer from '../redux/slices/prioritiesSlice';
 
 const store = configureStore({
   reducer: {
@@ -25,7 +26,8 @@ const store = configureStore({
     calendar: calendarReducer,
     scheduleData: scheduleDataReducer,
     mealTracking: mealTrackingReducer,
-    favorites: favoritesReducer
+    favorites: favoritesReducer,
+    priorities: prioritiesReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

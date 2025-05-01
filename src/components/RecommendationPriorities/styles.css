@@ -1,0 +1,84 @@
+.recommendation-priorities {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.priority-option {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px 16px;
+  background: #FFF4F0;
+  border: 1px solid #FFE5D9;
+  border-radius: 20px;
+  transition: all 0.2s ease;
+}
+
+.priority-option:hover {
+  background: #FFE5D9;
+  transform: translateY(-1px);
+}
+
+.priority-checkbox {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.priority-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.priority-icon {
+  font-size: 18px;
+}
+
+/* Checked state */
+.priority-checkbox:checked + .priority-label {
+  color: #FF6B6B;
+}
+
+.priority-option:has(.priority-checkbox:checked) {
+  background: #FFE5D9;
+  border-color: #FF6B6B;
+  box-shadow: 0 2px 4px rgba(255, 107, 107, 0.1);
+}
+
+/* Focus state for accessibility */
+.priority-checkbox:focus-visible + .priority-label {
+  outline: 2px solid #FF6B6B;
+  outline-offset: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .recommendation-priorities {
+    gap: 12px;
+    padding: 16px;
+  }
+  
+  .priority-option {
+    padding: 8px 12px;
+  }
+  
+  .priority-label {
+    font-size: 13px;
+  }
+  
+  .priority-icon {
+    font-size: 16px;
+  }
+} 

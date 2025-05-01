@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-import { FaClock, FaUsers, FaUtensils, FaShoppingBasket, FaStar } from 'react-icons/fa';
+import { FaClock, FaUsers, FaUtensils, FaShoppingBasket,FaBookmark, FaStar } from 'react-icons/fa';
 import { toggleFavorite } from '../../store/favoritesSlice';
 import RecipeModal from '../RecipeModal/RecipeModal';
 import './RecipeCard.css';
@@ -71,7 +71,7 @@ const RecipeCard = ({
             }));
           }}
         >
-          <FaStar />
+          <FaBookmark />
         </button>
         <h3>{recipe.name}</h3>
         <p>{recipe.description}</p>

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import './RecipeBuilder.css';
-import { FaFire, FaClock, FaUtensils, FaListUl, FaChartBar, FaPlus, FaMinus, FaTrash, FaInfoCircle, FaSpinner, FaStar, FaCheck, FaShoppingCart } from 'react-icons/fa';
+import { FaFire, FaClock,FaBookmark, FaUtensils, FaListUl, FaChartBar, FaPlus, FaMinus, FaTrash, FaInfoCircle, FaSpinner, FaStar, FaCheck, FaShoppingCart } from 'react-icons/fa';
 import { generateRecipeBuilderFromAPI } from '../utils/api';
 import { addToGroceries } from '../store/inventorySlice';
 
